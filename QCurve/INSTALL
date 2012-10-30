@@ -1,0 +1,8 @@
+Requirements:
+- Qt 4.7+
+- CMake 2.8.5
+
+Build Instructions:
+Run the following commands from the desired directory 
+- $cmake {source} [-G "MinGW Makefiles"] [-DCMAKE_BUILD_TYPE={debug,release}]
+- $make
