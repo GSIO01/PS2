@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <semantics>
+  <mrow>
+   <mi>x</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mi/>
+   </mrow>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mn>2a</mn>
+     <mi>cos</mi>
+     <mrow>
+      <mrow>
+       <mo stretchy="false">(</mo>
+       <mrow>
+        <mi>t</mi>
+       </mrow>
+       <mo stretchy="false">)</mo>
+      </mrow>
+      <mo stretchy="false">+</mo>
+      <mi>t</mi>
+     </mrow>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi>cos</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>y</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mi/>
+   </mrow>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mn>2a</mn>
+     <mi>cos</mi>
+     <mrow>
+      <mrow>
+       <mo stretchy="false">(</mo>
+       <mrow>
+        <mi>t</mi>
+       </mrow>
+       <mo stretchy="false">)</mo>
+      </mrow>
+      <mo stretchy="false">+</mo>
+      <mi>b</mi>
+     </mrow>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi>sin</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>t</mi>
+   <mo stretchy="false">ϵ</mo>
+   <mo stretchy="false">ℝ</mo>
+  </mrow>
+  <annotation encoding="StarMath 5.0">x(t)`=`(2a cos(t)+t)cos(t)~,~y(t)`=`(2a cos(t)+b)sin(t)~,~t%epsilon setR</annotation>
+ </semantics>
+</math>

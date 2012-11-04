@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <semantics>
+  <mrow>
+   <mi>x</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mrow>
+     <mi/>
+     <mo stretchy="false">−</mo>
+     <mi>a</mi>
+    </mrow>
+   </mrow>
+   <mi>cos</mi>
+   <mrow>
+    <mrow>
+     <mo stretchy="false">(</mo>
+     <mrow>
+      <mi>t</mi>
+     </mrow>
+     <mo stretchy="false">)</mo>
+    </mrow>
+    <mo stretchy="false">−</mo>
+    <mi>a</mi>
+   </mrow>
+   <mi>ln</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>tan</mi>
+     <mrow>
+      <mo stretchy="false">(</mo>
+      <mrow>
+       <mfrac>
+        <mrow>
+         <mi>t</mi>
+        </mrow>
+        <mrow>
+         <mn>2</mn>
+        </mrow>
+       </mfrac>
+      </mrow>
+      <mo stretchy="false">)</mo>
+     </mrow>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>y</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mi/>
+   </mrow>
+   <mi>a</mi>
+   <mi>sin</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>t</mi>
+   <mo stretchy="false">ϵ</mo>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mn>0,</mn>
+     <mo stretchy="false">π</mo>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+  </mrow>
+  <annotation encoding="StarMath 5.0">x(t)`=`-a cos(t)-a ln(tan({t}over{2})) ~,~y(t)`=`a sin(t)~,~t %epsilon (0,%pi)</annotation>
+ </semantics>
+</math>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+ <semantics>
+  <mrow>
+   <mi>x</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mi/>
+   </mrow>
+   <mrow>
+    <munderover>
+     <mo stretchy="false">∫</mo>
+     <mrow>
+      <mn>0</mn>
+     </mrow>
+     <mrow>
+      <mi>t</mi>
+     </mrow>
+    </munderover>
+    <mi>cos</mi>
+   </mrow>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mfrac>
+      <mrow>
+       <msup>
+        <mi>s</mi>
+        <mrow>
+         <mn>2</mn>
+        </mrow>
+       </msup>
+      </mrow>
+      <mrow>
+       <msup>
+        <mn>2a</mn>
+        <mrow>
+         <mn>2</mn>
+        </mrow>
+       </msup>
+      </mrow>
+     </mfrac>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi mathvariant="italic">ds</mi>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>y</mi>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mi>t</mi>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mrow>
+    <mi/>
+    <mo stretchy="false">=</mo>
+    <mi/>
+   </mrow>
+   <mrow>
+    <munderover>
+     <mo stretchy="false">∫</mo>
+     <mrow>
+      <mn>0</mn>
+     </mrow>
+     <mrow>
+      <mi>t</mi>
+     </mrow>
+    </munderover>
+    <mi>sin</mi>
+   </mrow>
+   <mrow>
+    <mo stretchy="false">(</mo>
+    <mrow>
+     <mfrac>
+      <mrow>
+       <msup>
+        <mi>s</mi>
+        <mrow>
+         <mn>2</mn>
+        </mrow>
+       </msup>
+      </mrow>
+      <mrow>
+       <msup>
+        <mn>2a</mn>
+        <mrow>
+         <mn>2</mn>
+        </mrow>
+       </msup>
+      </mrow>
+     </mfrac>
+    </mrow>
+    <mo stretchy="false">)</mo>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mrow>
+    <mi>a</mi>
+    <mo stretchy="false">&gt;</mo>
+    <mn>0</mn>
+   </mrow>
+   <mi/>
+   <mi>,</mi>
+   <mi/>
+   <mi>a</mi>
+   <mi>,</mi>
+   <mi>t</mi>
+   <mo stretchy="false">ϵ</mo>
+   <mo stretchy="false">ℝ</mo>
+  </mrow>
+  <annotation encoding="StarMath 5.0">x(t)`=`int csup{t} csub{0} cos({s^{2}}over{2a^{2}})ds~,~y(t)`=`int csup{t} csub{0}sin({s^{2}}over{2a^{2}})~,~a&gt;0~,~a,t %epsilon setR</annotation>
+ </semantics>
+</math>
