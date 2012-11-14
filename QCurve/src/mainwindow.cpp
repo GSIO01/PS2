@@ -4,9 +4,17 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QAction>
 
-#include <Widgets/Splitter>
-
+#include "Widgets/Splitter"
+#include "Models/FunctionItemModel"
 #include "functionwidget.h"
+
+#include "Functions/Ellipse"
+#include "Functions/Parabola"
+#include "Functions/Hyperbola"
+#include "Functions/Strophoid"
+#include "Functions/Cissoid"
+#include "Functions/Limacon"
+#include "Functions/Lemniscate"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
@@ -16,11 +24,51 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   initMenu();
   initComponents();
   
+  m_functionItemModel->addCategory(tr("Rational functions"));
+  //m_functionItemModel->addFunction(tr("Line"), tr("Rational functions");
+  //m_functionItemModel->addFunction(tr("Polynomial"), tr("Rational functions");
+  
+  m_functionItemModel->addCategory(tr("Nonrational functions"));
+  
+  m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Ellipse(25, 25), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Ellipse(20, 30), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Parabola(10, 0), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Hyperbola(10, 5), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  
+  m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 3"));
+  m_functionItemModel->addFunction(Strophoid(10), tr("Plane algebraic curve of degree 3"));
+  m_functionItemModel->addFunction(Cissoid(15), tr("Plane algebraic curve of degree 3"));
+  
+  m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 4"));
+  m_functionItemModel->addFunction(Limacon(20, 30), tr("Plane algebraic curve of degree 4"));
+  m_functionItemModel->addFunction(Lemniscate(10), tr("Plane algebraic curve of degree 4"));
+  
+  m_functionItemModel->addCategory(tr("Cycloids"));
+  
+  m_functionItemModel->addCategory(tr("Spirals"));
+  
+  //m_functionItemModel->addCategory(tr("Other curves"));
+  //m_functionItemModel->addCategory(tr("Catenary"));
+  //m_functionItemModel->addCategory(tr("Clothoids (Euler spiral)"));
+  //m_functionItemModel->addCategory(tr("Tractrix"));
+  
+  //m_functionItemModel->addCategory(tr("3D curves"));
+  
   connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
+  connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
 }
 
 MainWindow::~MainWindow()
 { }
+
+void MainWindow::itemActivated(const QModelIndex& idx)
+{
+  Function* func = m_functionItemModel->functionAt(idx);
+  
+  if (func)
+  { m_functionWgt->setFunction(*func); }
+}
 
 void MainWindow::initMenu()
 {
@@ -56,7 +104,10 @@ void MainWindow::initMenu()
 
 void MainWindow::initComponents()
 {
+  m_functionItemModel = new FunctionItemModel(this);
+  
   m_treeView = new QTreeView();
+  m_treeView->setModel(m_functionItemModel);
   
   m_functionWgt = new FunctionWidget();
   

@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef HYPERBOLA_H
+#define HYPERBOLA_H
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
-class Ellipse : public Function
+/** Represents a hyperpolic curve. */
+class Hyperbola : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
-    Ellipse(const Ellipse& other);
+    Hyperbola(double a, double b, double x0 = 0, double y1 = 0);
+    Hyperbola(const Hyperbola& other);
     
     virtual Function* clone() const;
     
@@ -20,3 +20,4 @@ class Ellipse : public Function
 };
 
 #endif
+ 

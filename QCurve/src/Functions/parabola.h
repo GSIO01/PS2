@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef PARABOLA_H
+#define PARABOLA_H
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
-class Ellipse : public Function
+/** Represents a parabola. */
+class Parabola : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
-    Ellipse(const Ellipse& other);
+    Parabola(double p, double x0 = 0, double y0 = 0);
+    Parabola(const Parabola& other);
     
     virtual Function* clone() const;
     

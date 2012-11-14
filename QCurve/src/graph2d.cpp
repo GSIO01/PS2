@@ -1,45 +1,123 @@
 #include "graph2d.h"
 
 #include <QtGui/QGraphicsScene>
+#include <QGraphicsTextItem>
+
 #include <QtGui/QScrollBar>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QWheelEvent>
 
-#include <Core/Function>
+#include "Core/Function"
 
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
+ , m_animationDelay(100), m_stepRange(0.1), m_function(0)
 {
-   QGraphicsScene* scene = new QGraphicsScene(this);
-   setScene(scene);
+  m_timer = new QTimer(this);
+  m_timer->setInterval(m_animationDelay);
+  
+  QGraphicsScene* scene = new QGraphicsScene(this);
+  setScene(scene);
+  
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(drawFragment()));
 }
 
 Graph2D::~Graph2D()
 { }
 
+void Graph2D::setAnimationDelay(int delay)
+{
+  if (delay < 0)
+  { m_animationDelay = 0; }
+  else { m_animationDelay = delay; }
+  
+  m_timer->stop();
+  m_timer->setInterval(m_animationDelay);
+  
+  if (m_animationDelay != 0)
+  { m_timer->start(); }
+  else { drawFragment(); }
+}
+
+void Graph2D::setStepRange(float step)
+{
+  if (step < 0.01)
+  { m_stepRange = 0.01; }
+  else if (step > 1)
+  { m_stepRange = 1; }
+  else { m_stepRange = step; }
+}
+
 void Graph2D::plot(const Function& function)
 {
+  if (m_timer->isActive())
+  { m_timer->stop(); }
+
+  if (m_function) //TODO/ Reuse if possible
+  { delete m_function; }
+  
+  m_function = function.clone();
+  
   scene()->clear(); //TODO Don't clear the entire scene, reuse the coordinate system if possible
+  redraw();
+}
+
+/***
+ * Draws a connection between the last calculated point and a new point
+ * which than replace the old one.
+ **/
+void Graph2D::drawFragment()
+{
+  m_timer->stop();
   
-  double x1 = function.calculateX(function.parameter().from());
-  double y1 = function.calculateY(function.parameter().from());
   double x2, y2;
-  for (double t = function.parameter().from() + 0.05; t <= function.parameter().to() + 0.05; t += 0.05) //TODO
-  {
-    x2 = function.calculateX(t); y2 = function.calculateY(t);
-    scene()->addLine(x1, y1, x2, y2);
-    x1 = x2; y1 = y2;
+  
+  m_t += m_stepRange;
+
+  x2 = m_function->calculateX(m_t); 
+  y2 = m_function->calculateY(m_t);
+  scene()->addLine(m_lastX, m_lastY, x2, y2);
+  m_lastX = x2; m_lastY = y2;
+  
+  if (m_t >= m_function->parameter().to() + m_stepRange)
+  { 
+    foreach (const Point& p, m_function->points())
+    {
+      scene()->addRect(p.X()-0.5, p.Y()-0.5, 1, 1);
+      QGraphicsItem* item = scene()->addText(p.name());
+      item->setPos(p.X()-1, p.Y()-1);
+    }
+    
+    if (m_animationDelay != 0)
+    { QTimer::singleShot(2000, this, SLOT(redraw())); } //repeat the anmation...
+    
+    return;
   }
- 
-  qreal w = function.dimension().right() - function.dimension().left();
-  qreal h = function.dimension().top() - function.dimension().bottom();
-  qreal wh = w/2; qreal hh = h/2;
   
-  if (sceneRect() != function.dimension())
-  { setSceneRect(function.dimension()); }
+  if (m_animationDelay == 0)
+  { drawFragment(); }
+  else { m_timer->start(); }
+}
+
+void Graph2D::redraw()
+{ 
+  scene()->clear();
+    
+  qreal w = m_function->dimension().right() - m_function->dimension().left();
+  qreal h = m_function->dimension().top() - m_function->dimension().bottom();
   
-  scene()->addLine(function.dimension().left() + wh, -h, function.dimension().left() + wh, h); //TODO Reuse
-  scene()->addLine(-w, function.dimension().bottom() + hh, w, function.dimension().bottom() + hh); //TODO Reuse
-  //fitInView(function.dimension());
+  scene()->addLine(0, -h, 0, h);
+  scene()->addLine(-w, 0, w, 0);
+  
+  //setSceneRect(m_function->dimension());
+  fitInView(sceneRect() ,Qt::KeepAspectRatio); //TODO a sceneRect which is not set never shrinks...
+  
+  m_t = m_function->parameter().from(); 
+  m_lastX = m_function->calculateX(m_t);
+  m_lastY = m_function->calculateY(m_t); 
+  
+  if (m_animationDelay != 0)
+  { m_timer->start(); }
+  else { drawFragment(); }
 }
 
 void Graph2D::setCenter(const QPointF& centerPoint) 

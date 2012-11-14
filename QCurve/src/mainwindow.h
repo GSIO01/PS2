@@ -1,11 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtCore/QModelIndex>
+
 #include <QtGui/QMainWindow> 
 #include <QtGui/QTreeView>
 
 class Splitter;
 class FunctionWidget;
+class FunctionItemModel;
 class MainWindow : public QMainWindow 
 {
   Q_OBJECT
@@ -16,6 +19,7 @@ class MainWindow : public QMainWindow
     
   private slots:
     void splitterDoubleClicked();
+    void itemActivated(const QModelIndex& idx);
     
   private:
     void initMenu();
@@ -24,6 +28,8 @@ class MainWindow : public QMainWindow
     Splitter* m_splitter;
     FunctionWidget* m_functionWgt;
     QTreeView* m_treeView;
+    
+    FunctionItemModel* m_functionItemModel;
 };
 
 #endif

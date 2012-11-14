@@ -16,8 +16,8 @@ double Variable::value() const
 void Variable::setValue(double value)
 { m_value = value; }
 
-bool Variable::operator==(const Variable& other) const
-{ return other.m_name == m_name; }
+bool Variable::operator==(const Variable& other)
+{ m_name == other.m_name; }
 
 bool operator==(const Variable& variable, const QString& name)
 { return variable.m_name == name; }

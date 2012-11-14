@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef CISSOID_H
+#define CISSOID_H
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
-class Ellipse : public Function
+/** Represents a cissoid. */
+class Cissoid : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
-    Ellipse(const Ellipse& other);
+    Cissoid(double a, double x0 = 0, double y0 = 0);
+    Cissoid(const Cissoid& other);
     
     virtual Function* clone() const;
     

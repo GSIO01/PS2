@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef STROPHOID_H
+#define STROPHOID_H
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
-class Ellipse : public Function
+/** Represents a ellipse. */
+class Strophoid : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
-    Ellipse(const Ellipse& other);
+    Strophoid(double a, double x0 = 0, double y0 = 0);
+    Strophoid(const Strophoid& other);
     
     virtual Function* clone() const;
     
@@ -20,3 +20,4 @@ class Ellipse : public Function
 };
 
 #endif
+ 

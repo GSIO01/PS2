@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef LEMNISCATE_H
+#define LEMNISCATE_H
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
-class Ellipse : public Function
+/** Represents a lemniscate. */
+class Lemniscate : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
-    Ellipse(const Ellipse& other);
+    Lemniscate(double a, double x0 = 0, double y0 = 0);
+    Lemniscate(const Lemniscate& other);
     
     virtual Function* clone() const;
     
