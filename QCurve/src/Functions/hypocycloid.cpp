@@ -1,27 +1,28 @@
-#include "lemniscate.h"
+#include "hypocycloid.h"
 
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
 
-Lemniscate::Lemniscate(double x0, double y0, double a)
+Hypocycloid::Hypocycloid(double x0, double y0, double a, double c)
 {
-  m_name = "Lemniscate";
-  m_param = Parameter(0, cos(2 * PI), "t");
+  m_name = "Hypocycloid";
+  m_param = Parameter(0, 2 * PI, "t");
     
   setVariable("a", a);
+  setVariable("c", c);
   setVariable("x0", x0);
   setVariable("y0", y0);
 }
 
-Lemniscate::Lemniscate(const Lemniscate& other)
+Hypocycloid::Hypocycloid(const Hypocycloid& other)
 { *this = other; }
 
-Function* Lemniscate::clone() const
-{ return new Lemniscate(*this); }
+Function* Hypocycloid::clone() const
+{ return new Hypocycloid(*this); }
 
 
-QString Lemniscate::toParametricFormula() const
+QString Hypocycloid::toParametricFormula() const
 {
   static QString genFormula = QString("<math></math>");
   
@@ -32,9 +33,9 @@ QString Lemniscate::toParametricFormula() const
   return curFormula;
 }
     
-double Lemniscate::calculateX(double t) const
+double Hypocycloid::calculateX(double t) const
 {
-  double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
+  double result = getVariable("x0") + (0.25 * getVariable("a") * cos(t) + getVariable("c") * pow(cos(t), 3) );
     
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
@@ -44,9 +45,9 @@ double Lemniscate::calculateX(double t) const
   return result;
 }
  
-double Lemniscate::calculateY(double t) const
+double Hypocycloid::calculateY(double t) const
 {
-  double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
+  double result = getVariable("y0") + (0.25 * getVariable("a") * sin(t) - getVariable("c") * pow(sin(t), 3));
     
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
@@ -56,5 +57,5 @@ double Lemniscate::calculateY(double t) const
   return result;
 }
 
-double Lemniscate::calculateZ(double t) const
-{ return 0; }
+double Hypocycloid::calculateZ(double t) const
+{ return 0; } 

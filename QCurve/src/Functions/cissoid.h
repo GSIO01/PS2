@@ -3,11 +3,11 @@
 
 #include "Core/Function"
 
-/** Represents a cissoid. */
+/*** Represents a cissoid. */
 class Cissoid : public Function
 {
   public:
-    Cissoid(double a, double x0 = 0, double y0 = 0);
+    Cissoid(double x0 = 0, double y0 = 0, double a = 1);
     Cissoid(const Cissoid& other);
     
     virtual Function* clone() const;

@@ -1,22 +1,27 @@
-#include "cissoid.h"
+#include "tractrix.h"
 
-Cissoid::Cissoid(double x0, double y0, double a)
+#include <QtCore/qmath.h> //TODO
+
+#define PI 3.141592653589793
+
+Tractrix::Tractrix(double x0 = 0, double y0 = 0, double a = 1)
 {
-  m_name = "Cissoid";
-  m_param = Parameter(-100, 100, "t");
-  
+  m_name = "Tractrix";
+  m_param = Parameter(0,  PI, "t");
+    
   setVariable("a", a);
   setVariable("x0", x0);
   setVariable("y0", y0);
 }
 
-Cissoid::Cissoid(const Cissoid& other)
+Tractrix::Tractrix(const Tractrix& other)
 { *this = other; }
 
-Function* Cissoid::clone() const
-{ return new Cissoid(*this); }
+Function* Tractrix::clone() const
+{ return new Tractrix(*this); }
 
-QString Cissoid::toParametricFormula() const
+
+QString Tractrix::toParametricFormula() const
 {
   static QString genFormula = QString("<math></math>");
   
@@ -26,11 +31,11 @@ QString Cissoid::toParametricFormula() const
   
   return curFormula;
 }
-
-double Cissoid::calculateX(double t) const
+    
+double Tractrix::calculateX(double t) const
 {
-  double result = getVariable("x0") + ((getVariable("a")*(t*t))/(1+(t*t)));
-  
+  double result = getVariable("x0") + getVariable("a") * cos(t) * getVariable("a") * log(tan(t / 2));
+    
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
@@ -38,11 +43,11 @@ double Cissoid::calculateX(double t) const
   
   return result;
 }
-
-double Cissoid::calculateY(double t) const
+ 
+double Tractrix::calculateY(double t) const
 {
-  double result = getVariable("y0") + ((getVariable("a")*(t*t*t))/(1+(t*t)));
-  
+  double result = getVariable("y0") + getVariable("a") * sin(t);
+    
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
@@ -51,5 +56,5 @@ double Cissoid::calculateY(double t) const
   return result;
 }
 
-double Cissoid::calculateZ(double t) const
-{ return 0; }
+double Tractrix::calculateZ(double t) const
+{ return 0; } 

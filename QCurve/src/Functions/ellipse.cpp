@@ -24,8 +24,8 @@ Ellipse::Ellipse(double a, double b, double x0, double y0)
   
   m_points.append(Point(a, y0, "a"));
   m_points.append(Point(-a, y0, "-a"));
-  m_points.append(Point(x0, -b, "b"));
-  m_points.append(Point(x0, b, "-b"));
+  m_points.append(Point(x0, -b, "-b"));
+  m_points.append(Point(x0, b, "b"));
     
   m_dimension = QRectF(-a, -b, 2*a, 2*b);
   

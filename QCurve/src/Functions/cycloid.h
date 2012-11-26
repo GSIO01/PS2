@@ -1,14 +1,14 @@
-#ifndef LEMNISCATE_H
-#define LEMNISCATE_H
+#ifndef CYCLOID_H
+#define CYCLOID_H
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
-class Lemniscate : public Function
+/*** Represents a cycloid. */
+class Cycloid : public Function
 {
   public:
-    Lemniscate(double x0 = 0, double y0 = 0, double a = 1);
-    Lemniscate(const Lemniscate& other);
+    Cycloid(double x0 = 0, double y0 = 0, double r = 1, double m = 1);
+    Cycloid(const Cycloid& other);
     
     virtual Function* clone() const;
     

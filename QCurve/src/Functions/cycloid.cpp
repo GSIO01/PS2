@@ -1,27 +1,28 @@
-#include "lemniscate.h"
+#include "cycloid.h"
 
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
 
-Lemniscate::Lemniscate(double x0, double y0, double a)
+Cycloid::Cycloid(double x0, double y0, double r, double m)
 {
-  m_name = "Lemniscate";
-  m_param = Parameter(0, cos(2 * PI), "t");
+  m_name = "Cycloid";
+  m_param = Parameter(-25, 25, "t");
     
-  setVariable("a", a);
+  setVariable("r", r);
+  setVariable("m", m);
   setVariable("x0", x0);
   setVariable("y0", y0);
 }
 
-Lemniscate::Lemniscate(const Lemniscate& other)
+Cycloid::Cycloid(const Cycloid& other)
 { *this = other; }
 
-Function* Lemniscate::clone() const
-{ return new Lemniscate(*this); }
+Function* Cycloid::clone() const
+{ return new Cycloid(*this); }
 
 
-QString Lemniscate::toParametricFormula() const
+QString Cycloid::toParametricFormula() const
 {
   static QString genFormula = QString("<math></math>");
   
@@ -32,9 +33,9 @@ QString Lemniscate::toParametricFormula() const
   return curFormula;
 }
     
-double Lemniscate::calculateX(double t) const
+double Cycloid::calculateX(double t) const
 {
-  double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
+  double result = getVariable("x0") + getVariable("r") * (t - getVariable("m") * sin(t));
     
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
@@ -44,9 +45,9 @@ double Lemniscate::calculateX(double t) const
   return result;
 }
  
-double Lemniscate::calculateY(double t) const
+double Cycloid::calculateY(double t) const
 {
-  double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
+  double result = getVariable("y0") + getVariable("r") * (1 - getVariable("m") * cos(t)); //FIXME t or 1?
     
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
@@ -56,5 +57,5 @@ double Lemniscate::calculateY(double t) const
   return result;
 }
 
-double Lemniscate::calculateZ(double t) const
+double Cycloid::calculateZ(double t) const
 { return 0; }

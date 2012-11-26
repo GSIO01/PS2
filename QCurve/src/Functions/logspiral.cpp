@@ -1,27 +1,27 @@
-#include "lemniscate.h"
+#include "logspiral.h"
 
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
 
-Lemniscate::Lemniscate(double x0, double y0, double a)
+LogarithmicSpiral::LogarithmicSpiral(double x0, double y0, double a)
 {
-  m_name = "Lemniscate";
-  m_param = Parameter(0, cos(2 * PI), "t");
+  m_name = "Logarithmic Spiral";
+  m_param = Parameter(0, 2 * PI, "t");
     
   setVariable("a", a);
   setVariable("x0", x0);
   setVariable("y0", y0);
 }
 
-Lemniscate::Lemniscate(const Lemniscate& other)
+LogarithmicSpiral::LogarithmicSpiral(const LogarithmicSpiral& other)
 { *this = other; }
 
-Function* Lemniscate::clone() const
-{ return new Lemniscate(*this); }
+Function* LogarithmicSpiral::clone() const
+{ return new LogarithmicSpiral(*this); }
 
 
-QString Lemniscate::toParametricFormula() const
+QString LogarithmicSpiral::toParametricFormula() const
 {
   static QString genFormula = QString("<math></math>");
   
@@ -32,9 +32,9 @@ QString Lemniscate::toParametricFormula() const
   return curFormula;
 }
     
-double Lemniscate::calculateX(double t) const
+double LogarithmicSpiral::calculateX(double t) const
 {
-  double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
+  double result = getVariable("x0") + pow(getVariable("a"), t) * cos(t);
     
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
@@ -44,9 +44,9 @@ double Lemniscate::calculateX(double t) const
   return result;
 }
  
-double Lemniscate::calculateY(double t) const
+double LogarithmicSpiral::calculateY(double t) const
 {
-  double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
+  double result = getVariable("y0") + pow(getVariable("a"), t) * sin(t);
     
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
@@ -56,5 +56,5 @@ double Lemniscate::calculateY(double t) const
   return result;
 }
 
-double Lemniscate::calculateZ(double t) const
-{ return 0; }
+double LogarithmicSpiral::calculateZ(double t) const
+{ return 0; } 

@@ -1,14 +1,14 @@
-#ifndef LEMNISCATE_H
-#define LEMNISCATE_H
+#ifndef ARCHIMEDEANSPIRAL_H
+#define ARCHIMEDEANSPIRAL_H
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
-class Lemniscate : public Function
+/*** Represents a archimedean spiral. */
+class ArchimedeanSpiral : public Function
 {
   public:
-    Lemniscate(double x0 = 0, double y0 = 0, double a = 1);
-    Lemniscate(const Lemniscate& other);
+    ArchimedeanSpiral(double x0 = 0, double y0 = 0);
+    ArchimedeanSpiral(const ArchimedeanSpiral& other);
     
     virtual Function* clone() const;
     
@@ -20,3 +20,4 @@ class Lemniscate : public Function
 };
 
 #endif
+ 

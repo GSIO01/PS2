@@ -16,6 +16,15 @@
 #include "Functions/Limacon"
 #include "Functions/Lemniscate"
 
+#include "Functions/ArchimedeanSpiral"
+#include "Functions/LogarithmicSpiral"
+#include "Functions/Helix"
+#include "Functions/Cycloid"
+#include "Functions/Hypocycloid"
+#include "Functions/Tractrix"
+#include "Functions/Catenary"
+#include "Functions/Astroid"
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
   setWindowTitle("Parametric Curve Viewer");
@@ -45,15 +54,21 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   m_functionItemModel->addFunction(Lemniscate(10), tr("Plane algebraic curve of degree 4"));
   
   m_functionItemModel->addCategory(tr("Cycloids"));
+  m_functionItemModel->addFunction(Cycloid(), tr("Cycloids"));
+  m_functionItemModel->addFunction(Astroid(), tr("Cycloids"));
+  m_functionItemModel->addFunction(Hypocycloid(), tr("Cycloids"));
   
   m_functionItemModel->addCategory(tr("Spirals"));
+  m_functionItemModel->addFunction(ArchimedeanSpiral(), tr("Spirals"));
+  m_functionItemModel->addFunction(LogarithmicSpiral(), tr("Spirals"));
   
-  //m_functionItemModel->addCategory(tr("Other curves"));
-  //m_functionItemModel->addCategory(tr("Catenary"));
-  //m_functionItemModel->addCategory(tr("Clothoids (Euler spiral)"));
-  //m_functionItemModel->addCategory(tr("Tractrix"));
+  m_functionItemModel->addCategory(tr("Other curves"));
+  m_functionItemModel->addFunction(Catenary(), tr("Other Spirals"));
+  //m_functionItemModel->addFunction(tr("Clothoids (Euler spiral)"));
+  m_functionItemModel->addFunction(Tractrix(2,2,2), tr("Other Spirals"));
   
-  //m_functionItemModel->addCategory(tr("3D curves"));
+  m_functionItemModel->addCategory(tr("3D curves"));
+  m_functionItemModel->addFunction(Helix(), tr("3D curves"));
   
   connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
   connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));

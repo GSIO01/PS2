@@ -1,14 +1,14 @@
-#ifndef LEMNISCATE_H
-#define LEMNISCATE_H
+#ifndef LOGARITHMICSPIRAL_H
+#define LOGARITHMICSPIRAL_H
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
-class Lemniscate : public Function
+/*** Represents a logarithmic spiral. */
+class LogarithmicSpiral : public Function
 {
   public:
-    Lemniscate(double x0 = 0, double y0 = 0, double a = 1);
-    Lemniscate(const Lemniscate& other);
+    LogarithmicSpiral(double x0 = 0, double y0 = 0, double a = 1);
+    LogarithmicSpiral(const LogarithmicSpiral& other);
     
     virtual Function* clone() const;
     
@@ -20,3 +20,4 @@ class Lemniscate : public Function
 };
 
 #endif
+ 

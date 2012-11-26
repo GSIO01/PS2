@@ -1,14 +1,14 @@
-#ifndef LEMNISCATE_H
-#define LEMNISCATE_H
+#ifndef CATENARY_H
+#define CATENARY_H
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
-class Lemniscate : public Function
+/*** Represents a catenary. */
+class Catenary : public Function
 {
   public:
-    Lemniscate(double x0 = 0, double y0 = 0, double a = 1);
-    Lemniscate(const Lemniscate& other);
+    Catenary(double x0 = 0, double y0 = 0, double a = 1);
+    Catenary(const Catenary& other);
     
     virtual Function* clone() const;
     
@@ -20,3 +20,4 @@ class Lemniscate : public Function
 };
 
 #endif
+ 

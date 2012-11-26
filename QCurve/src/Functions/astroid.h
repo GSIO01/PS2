@@ -3,11 +3,11 @@
 
 #include "Core/Function"
 
-/** Represents a cissoid. */
+/*** Represents a astroid. */
 class Astroid : public Function
 {
   public:
-    Astroid(double a, double x0 = 0, double y0 = 0);
+    Astroid(double x0 = 0, double y0 = 0, double a = 1);
     Astroid(const Astroid& other);
     
     virtual Function* clone() const;

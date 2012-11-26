@@ -10,7 +10,7 @@
 #include "Core/Function"
 
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
- , m_animationDelay(100), m_stepRange(0.1), m_function(0)
+ , m_animationDelay(50), m_stepRange(0.1), m_function(0)
 {
   m_timer = new QTimer(this);
   m_timer->setInterval(m_animationDelay);
@@ -101,7 +101,13 @@ void Graph2D::drawFragment()
 void Graph2D::redraw()
 { 
   scene()->clear();
-    
+  
+  for (double t = m_function->parameter().from(); t < m_function->parameter().to() + m_stepRange; t += m_stepRange)
+  {
+    m_function->calculateX(t);
+    m_function->calculateY(t);
+  }
+  
   qreal w = m_function->dimension().right() - m_function->dimension().left();
   qreal h = m_function->dimension().top() - m_function->dimension().bottom();
   
