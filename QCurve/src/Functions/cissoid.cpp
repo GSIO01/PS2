@@ -1,9 +1,9 @@
 #include "cissoid.h"
 
-Cissoid::Cissoid(double x0, double y0, double a)
+Cissoid::Cissoid(double a, double x0, double y0)
 {
   m_name = "Cissoid";
-  m_param = Parameter(-100, 100, "t");
+  m_param = Parameter(-1, 1, "t");
   
   setVariable("a", a);
   setVariable("x0", x0);

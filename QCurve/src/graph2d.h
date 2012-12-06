@@ -51,6 +51,10 @@ class Graph2D : public QGraphicsView
      */
     void setStepRange(float stepRange);
     
+    int getScaleFactor() const;
+    
+    void setScaleFactor(int factor);
+    
     /***
      * Draws the specified function.
      */
@@ -76,6 +80,8 @@ class Graph2D : public QGraphicsView
     
     QPointF m_curCenterPoint;
     QPoint m_lastPanPoint;
+    
+    int scaleFactor; //*Range 50 - 400 */
     
     int m_animationDelay;
     float m_stepRange;

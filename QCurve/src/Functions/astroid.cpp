@@ -4,15 +4,16 @@
 
 #define PI 3.141592653589793
 
-Astroid::Astroid(double x0, double y0, double a)
+Astroid::Astroid(double a, double x0, double y0)
 {
   m_name = "Astroid";
   m_param = Parameter(0, 2 * PI, "t");
   
-  setVariable("x0", x0);
-  setVariable("y0", y0);
   if (a > 0) { setVariable("a", a); }
   else { setVariable("a", 1.0); }
+  
+  setVariable("x0", x0);
+  setVariable("y0", y0);
 }
 
 Astroid::Astroid(const Astroid& other)

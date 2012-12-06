@@ -8,7 +8,7 @@ Hyperbola::Hyperbola(double a, double b, double x0, double y0)
 {
   m_name = "Hyperbola";
   m_param = Parameter(-PI, PI, "t");
-  
+
   setVariable("a", a);
   setVariable("b", b);
   setVariable("x0", x0);
@@ -48,10 +48,10 @@ double Hyperbola::calculateY(double t) const
 {
   double result = getVariable("y0") + getVariable("b") * sinh(t);
   
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
+  if (result < m_dimension.bottom())
+  { m_dimension.setBottom(result); }
+  else if (result > m_dimension.top())
+  { m_dimension.setTop(result); }
   
   return result;
 }

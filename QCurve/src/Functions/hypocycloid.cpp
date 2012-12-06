@@ -4,7 +4,7 @@
 
 #define PI 3.141592653589793
 
-Hypocycloid::Hypocycloid(double x0, double y0, double a, double c)
+Hypocycloid::Hypocycloid( double a, double c, double x0, double y0)
 {
   m_name = "Hypocycloid";
   m_param = Parameter(0, 2 * PI, "t");
@@ -35,7 +35,7 @@ QString Hypocycloid::toParametricFormula() const
     
 double Hypocycloid::calculateX(double t) const
 {
-  double result = getVariable("x0") + (0.25 * getVariable("a") * cos(t) + getVariable("c") * pow(cos(t), 3) );
+  double result = getVariable("x0") + (0.75 * getVariable("a") * cos(t) + getVariable("c") * cos(3*t));
     
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
@@ -47,7 +47,7 @@ double Hypocycloid::calculateX(double t) const
  
 double Hypocycloid::calculateY(double t) const
 {
-  double result = getVariable("y0") + (0.25 * getVariable("a") * sin(t) - getVariable("c") * pow(sin(t), 3));
+  double result = getVariable("y0") + (0.75 * getVariable("a") * sin(t) - getVariable("c") * sin(3*t));
     
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }

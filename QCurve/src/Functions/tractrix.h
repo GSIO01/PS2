@@ -7,7 +7,7 @@
 class Tractrix : public Function
 {
   public:
-    Tractrix(double x0, double y0, double a);
+    Tractrix(double a = 1, double x0 = 0, double y0 = 0);
     Tractrix(const Tractrix& other);
     
     virtual Function* clone() const;

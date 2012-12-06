@@ -7,7 +7,7 @@
 class LogarithmicSpiral : public Function
 {
   public:
-    LogarithmicSpiral(double x0 = 0, double y0 = 0, double a = 1);
+    LogarithmicSpiral(double a = 1.1, double x0 = 0, double y0 = 0);
     LogarithmicSpiral(const LogarithmicSpiral& other);
     
     virtual Function* clone() const;

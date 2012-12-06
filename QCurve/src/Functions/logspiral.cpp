@@ -4,10 +4,10 @@
 
 #define PI 3.141592653589793
 
-LogarithmicSpiral::LogarithmicSpiral(double x0, double y0, double a)
+LogarithmicSpiral::LogarithmicSpiral(double a, double x0, double y0)
 {
   m_name = "Logarithmic Spiral";
-  m_param = Parameter(0, 2 * PI, "t");
+  m_param = Parameter(0, 4 * PI, "t");
     
   setVariable("a", a);
   setVariable("x0", x0);

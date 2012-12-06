@@ -7,7 +7,7 @@
 class Hyperbola : public Function
 {
   public:
-    Hyperbola(double a, double b, double x0 = 0, double y1 = 0);
+    Hyperbola(double a = 1, double b = 1, double x0 = 0, double y1 = 0);
     Hyperbola(const Hyperbola& other);
     
     virtual Function* clone() const;

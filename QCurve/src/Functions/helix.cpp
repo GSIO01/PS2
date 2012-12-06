@@ -4,10 +4,10 @@
 
 #define PI 3.141592653589793
 
-Helix::Helix(double x0, double y0, double z0, double r, double h)
+Helix::Helix(double r, double h, double x0, double y0, double z0)
 {
   m_name = "Helix";
-  m_param = Parameter(25, 25, "t");
+  m_param = Parameter(-PI, PI, "t"); //TODO
 
   if (r > 0) { setVariable("r", r); }
   else { setVariable("r", 0); }

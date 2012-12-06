@@ -1,7 +1,9 @@
 #include "graph2d.h"
 
+#include <QtCore/QDebug>
+
 #include <QtGui/QGraphicsScene>
-#include <QGraphicsTextItem>
+#include <QtGui/QGraphicsTextItem>
 
 #include <QtGui/QScrollBar>
 #include <QtGui/QMouseEvent>
@@ -10,13 +12,12 @@
 #include "Core/Function"
 
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
- , m_animationDelay(50), m_stepRange(0.1), m_function(0)
+ , m_animationDelay(10), m_stepRange(0.01), m_function(0)
 {
   m_timer = new QTimer(this);
   m_timer->setInterval(m_animationDelay);
   
-  QGraphicsScene* scene = new QGraphicsScene(this);
-  setScene(scene);
+  scale(1, -1); //TODO/FIXME Invert Y-axis
   
   connect(m_timer, SIGNAL(timeout()), this, SLOT(drawFragment()));
 }
@@ -54,11 +55,15 @@ void Graph2D::plot(const Function& function)
 
   if (m_function) //TODO/ Reuse if possible
   { delete m_function; }
-  
+
   m_function = function.clone();
+
+  setScene(new QGraphicsScene(this));
   
-  scene()->clear(); //TODO Don't clear the entire scene, reuse the coordinate system if possible
   redraw();
+
+  fitInView(sceneRect() ,Qt::KeepAspectRatio); //TODO a sceneRect which is not set never shrinks...
+  qDebug() << getScaleFactor();
 }
 
 /***
@@ -84,6 +89,7 @@ void Graph2D::drawFragment()
     {
       scene()->addRect(p.X()-0.5, p.Y()-0.5, 1, 1);
       QGraphicsItem* item = scene()->addText(p.name());
+      item->scale(1, -1); //TODO/FIXME revert
       item->setPos(p.X()-1, p.Y()-1);
     }
     
@@ -102,6 +108,7 @@ void Graph2D::redraw()
 { 
   scene()->clear();
   
+  //precalculate to get boundaries...
   for (double t = m_function->parameter().from(); t < m_function->parameter().to() + m_stepRange; t += m_stepRange)
   {
     m_function->calculateX(t);
@@ -114,9 +121,6 @@ void Graph2D::redraw()
   scene()->addLine(0, -h, 0, h);
   scene()->addLine(-w, 0, w, 0);
   
-  //setSceneRect(m_function->dimension());
-  fitInView(sceneRect() ,Qt::KeepAspectRatio); //TODO a sceneRect which is not set never shrinks...
-  
   m_t = m_function->parameter().from(); 
   m_lastX = m_function->calculateX(m_t);
   m_lastY = m_function->calculateY(m_t); 
@@ -124,6 +128,15 @@ void Graph2D::redraw()
   if (m_animationDelay != 0)
   { m_timer->start(); }
   else { drawFragment(); }
+}
+
+int Graph2D::getScaleFactor() const
+{ return transform().m11() * 100; }
+
+void Graph2D::setScaleFactor(int factor)
+{
+  matrix().reset();
+  scale(factor/100.0f, factor/100.0f);
 }
 
 void Graph2D::setCenter(const QPointF& centerPoint) 
@@ -196,6 +209,8 @@ void Graph2D::wheelEvent(QWheelEvent* event)
   if(event->delta() > 0) 
   { scale(scaleFactor, scaleFactor); }
   else { scale(1.0 / scaleFactor, 1.0 / scaleFactor); }
+ 
+  qDebug() << getScaleFactor();
  
   QPointF pointAfterScale(mapToScene(event->pos()));
   QPointF offset = pointBeforeScale - pointAfterScale;

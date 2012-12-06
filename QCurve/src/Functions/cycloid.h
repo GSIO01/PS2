@@ -7,7 +7,7 @@
 class Cycloid : public Function
 {
   public:
-    Cycloid(double x0 = 0, double y0 = 0, double r = 1, double m = 1);
+    Cycloid(double r = 1, double m = 1, double x0 = 0, double y0 = 0);
     Cycloid(const Cycloid& other);
     
     virtual Function* clone() const;

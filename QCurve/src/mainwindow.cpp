@@ -40,18 +40,18 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   m_functionItemModel->addCategory(tr("Nonrational functions"));
   
   m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 2 (Conic sections)"));
-  m_functionItemModel->addFunction(Ellipse(25, 25), tr("Plane algebraic curve of degree 2 (Conic sections)"));
-  m_functionItemModel->addFunction(Ellipse(20, 30), tr("Plane algebraic curve of degree 2 (Conic sections)"));
-  m_functionItemModel->addFunction(Parabola(10, 0), tr("Plane algebraic curve of degree 2 (Conic sections)"));
-  m_functionItemModel->addFunction(Hyperbola(10, 5), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Ellipse(1, 1), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Ellipse(), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Parabola(), tr("Plane algebraic curve of degree 2 (Conic sections)"));
+  m_functionItemModel->addFunction(Hyperbola(), tr("Plane algebraic curve of degree 2 (Conic sections)"));
   
   m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 3"));
-  m_functionItemModel->addFunction(Strophoid(10), tr("Plane algebraic curve of degree 3"));
-  m_functionItemModel->addFunction(Cissoid(15), tr("Plane algebraic curve of degree 3"));
+  m_functionItemModel->addFunction(Strophoid(), tr("Plane algebraic curve of degree 3"));
+  m_functionItemModel->addFunction(Cissoid(), tr("Plane algebraic curve of degree 3"));
   
   m_functionItemModel->addCategory(tr("Plane algebraic curve of degree 4"));
-  m_functionItemModel->addFunction(Limacon(20, 30), tr("Plane algebraic curve of degree 4"));
-  m_functionItemModel->addFunction(Lemniscate(10), tr("Plane algebraic curve of degree 4"));
+  m_functionItemModel->addFunction(Limacon(), tr("Plane algebraic curve of degree 4"));
+  m_functionItemModel->addFunction(Lemniscate(), tr("Plane algebraic curve of degree 4"));
   
   m_functionItemModel->addCategory(tr("Cycloids"));
   m_functionItemModel->addFunction(Cycloid(), tr("Cycloids"));
@@ -63,9 +63,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   m_functionItemModel->addFunction(LogarithmicSpiral(), tr("Spirals"));
   
   m_functionItemModel->addCategory(tr("Other curves"));
-  m_functionItemModel->addFunction(Catenary(), tr("Other Spirals"));
+  m_functionItemModel->addFunction(Catenary(), tr("Other curves"));
   //m_functionItemModel->addFunction(tr("Clothoids (Euler spiral)"));
-  m_functionItemModel->addFunction(Tractrix(2,2,2), tr("Other Spirals"));
+  m_functionItemModel->addFunction(Tractrix(), tr("Other curves"));
   
   m_functionItemModel->addCategory(tr("3D curves"));
   m_functionItemModel->addFunction(Helix(), tr("3D curves"));

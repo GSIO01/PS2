@@ -7,7 +7,7 @@
 class Strophoid : public Function
 {
   public:
-    Strophoid(double a, double x0 = 0, double y0 = 0);
+    Strophoid(double a = 1, double x0 = 0, double y0 = 0);
     Strophoid(const Strophoid& other);
     
     virtual Function* clone() const;

@@ -4,10 +4,10 @@
 
 #define PI 3.141592653589793
 
-Cycloid::Cycloid(double x0, double y0, double r, double m)
+Cycloid::Cycloid(double r, double m, double x0, double y0)
 {
   m_name = "Cycloid";
-  m_param = Parameter(-25, 25, "t");
+  m_param = Parameter(-10, 10, "t");
     
   setVariable("r", r);
   setVariable("m", m);
@@ -47,8 +47,8 @@ double Cycloid::calculateX(double t) const
  
 double Cycloid::calculateY(double t) const
 {
-  double result = getVariable("y0") + getVariable("r") * (1 - getVariable("m") * cos(t)); //FIXME t or 1?
-    
+  double result = getVariable("y0") + getVariable("r") * (1 - getVariable("m") * cos(t));
+ 
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())

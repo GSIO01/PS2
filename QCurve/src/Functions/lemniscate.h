@@ -7,7 +7,7 @@
 class Lemniscate : public Function
 {
   public:
-    Lemniscate(double x0 = 0, double y0 = 0, double a = 1);
+    Lemniscate(double a = 1, double x0 = 0, double y0 = 0);
     Lemniscate(const Lemniscate& other);
     
     virtual Function* clone() const;

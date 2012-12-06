@@ -4,10 +4,10 @@
 
 #define PI 3.141592653589793
 
-Lemniscate::Lemniscate(double x0, double y0, double a)
+Lemniscate::Lemniscate(double a, double x0, double y0)
 {
   m_name = "Lemniscate";
-  m_param = Parameter(0, cos(2 * PI), "t");
+  m_param = Parameter(0, 2*PI, "t");
     
   setVariable("a", a);
   setVariable("x0", x0);
@@ -36,6 +36,8 @@ double Lemniscate::calculateX(double t) const
 {
   double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
     
+  if (result != result) { return getVariable("x0"); }
+  
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
@@ -48,6 +50,8 @@ double Lemniscate::calculateY(double t) const
 {
   double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
     
+  if (result != result) { return getVariable("y0"); }
+  
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())

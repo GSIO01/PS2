@@ -7,7 +7,7 @@
 ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0)
 {
   m_name = "Archimedean Spiral";
-  m_param = Parameter(0, 2 * PI, "t");
+  m_param = Parameter(0, 4 * PI, "t");
     
   setVariable("x0", x0);
   setVariable("y0", y0);

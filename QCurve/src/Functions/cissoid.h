@@ -7,7 +7,7 @@
 class Cissoid : public Function
 {
   public:
-    Cissoid(double x0 = 0, double y0 = 0, double a = 1);
+    Cissoid(double a = 1, double x0 = 0, double y0 = 0);
     Cissoid(const Cissoid& other);
     
     virtual Function* clone() const;

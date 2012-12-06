@@ -5,10 +5,10 @@
 
 #define PI 3.141592653589793
 
-Catenary::Catenary(double x0, double y0, double a)
+Catenary::Catenary(double a, double x0, double y0)
 {
   m_name = "Catenary";
-  m_param = Parameter(-25, 25, "t");
+  m_param = Parameter(-1, 1, "t");
     
   setVariable("a", a);
   setVariable("x0", x0);

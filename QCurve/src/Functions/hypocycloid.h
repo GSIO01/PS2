@@ -7,7 +7,7 @@
 class Hypocycloid : public Function
 {
   public:
-    Hypocycloid(double x0 = 0, double y0 = 0, double a = 1, double c = 1);
+    Hypocycloid(double a = 1, double c = 0.4, double x0 = 0, double y0 = 0);
     Hypocycloid(const Hypocycloid& other);
     
     virtual Function* clone() const;

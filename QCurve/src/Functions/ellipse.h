@@ -7,7 +7,7 @@
 class Ellipse : public Function
 {
   public:
-    Ellipse(double a, double b, double x0 = 0, double y1 = 0);
+    Ellipse(double a = 1, double b = 2, double x0 = 0, double y1 = 0);
     Ellipse(const Ellipse& other);
     
     virtual Function* clone() const;

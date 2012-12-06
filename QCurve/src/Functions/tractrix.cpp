@@ -2,12 +2,14 @@
 
 #include <QtCore/qmath.h> //TODO
 
+#include <limits>
+
 #define PI 3.141592653589793
 
-Tractrix::Tractrix(double x0 = 0, double y0 = 0, double a = 1)
+Tractrix::Tractrix(double a, double x0, double y0)
 {
   m_name = "Tractrix";
-  m_param = Parameter(0,  PI, "t");
+  m_param = Parameter(0, PI/1.1, "t");//TODO
     
   setVariable("a", a);
   setVariable("x0", x0);
@@ -34,8 +36,11 @@ QString Tractrix::toParametricFormula() const
     
 double Tractrix::calculateX(double t) const
 {
-  double result = getVariable("x0") + getVariable("a") * cos(t) * getVariable("a") * log(tan(t / 2));
+  double result = getVariable("x0") + (-getVariable("a") * cos(t) - getVariable("a") * log(tan(t / 2)));
     
+  if (result > std::numeric_limits<qreal>::max()) { return m_dimension.right();  }
+  else if (result < -std::numeric_limits<qreal>::max()) { return m_dimension.left(); }
+  
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
@@ -47,7 +52,7 @@ double Tractrix::calculateX(double t) const
 double Tractrix::calculateY(double t) const
 {
   double result = getVariable("y0") + getVariable("a") * sin(t);
-    
+  
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
