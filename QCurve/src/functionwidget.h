@@ -4,6 +4,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QGroupBox>
 #include <QtGui/QScrollArea>
+#include <QtGui/QSlider>
 #include <QtGui/QDoubleSpinBox>
 
 #include "Core/Function"
@@ -18,24 +19,25 @@ class Graph2D;
 class FunctionWidget : public QWidget
 {
   Q_OBJECT
-  
+
   public:
     FunctionWidget(QWidget* parent = 0);
     virtual ~FunctionWidget();
-    
+
     const Function& function() const;
     void setFunction(const Function& function);
 
   private slots:
     void fromValueChanged(double value);
     void toValueChanged(double value);
-    /*** Reacts on the recent change of a variable */
-    void varValueChanged(double value);
-    
+    void varValueChanged(const QString& var, double value);
+
+		void scaleFactorChanged(int value);
+
   private:
     void initComponents();
     void updateFormula();
-    
+
     Function* m_function;
 
     QtMmlWidget* m_mmlWgt;
@@ -43,6 +45,8 @@ class FunctionWidget : public QWidget
 
     QDoubleSpinBox* m_paramFrom;
     QDoubleSpinBox* m_paramTo;
+
+		QSlider* m_scaleFactor;
 
     QScrollArea* m_varInputPanel;
     QBoxLayout* m_variablesLyt;

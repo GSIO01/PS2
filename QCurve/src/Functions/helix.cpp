@@ -9,13 +9,23 @@ Helix::Helix(double r, double h, double x0, double y0, double z0)
   m_name = "Helix";
   m_param = Parameter(-PI, PI, "t"); //TODO
 
-  if (r > 0) { setVariable("r", r); }
-  else { setVariable("r", 0); }
-  if (h > 0) { setVariable("h", h); }
-  else { setVariable("h", 0); }
   setVariable("x0", x0);
   setVariable("y0", y0);
-  setVariable("z0", z0);
+
+  Variable var("z0", z0);
+  var.setFormula("<math><mrow><msub><mi>z</mi><mr>0</mr></msub></mrow></math>");
+  var.setDescription("Moves the function on the z-axis");
+  setVariable(var);
+
+  var = Variable("r");
+  var.interval().setLowerEnd(0);
+  var.setValue(r);
+  setVariable(var);
+
+  var = Variable("h");
+  var.interval().setLowerEnd(0);
+  var.setValue(h);
+  setVariable(var);
 }
 
 Helix::Helix(const Helix& other)

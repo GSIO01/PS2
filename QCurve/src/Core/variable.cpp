@@ -2,19 +2,27 @@
 
 Variable::Variable(const QString& name, double value)
   : m_name(name), m_value(value)
-{ }
+{ m_formula = "<math><mi>" + name + "</mi></math>"; }
 
 Variable::~Variable()
 { }
 
-QString Variable::name() const
-{ return m_name; }
+void Variable::setFormula(const QString& formula)
+{ m_formula = formula; }
 
-double Variable::value() const
-{ return m_value; }
+void Variable::setDescription(const QString& desc)
+{ m_description = desc; }
+
+void Variable::setInterval(const Interval& interval)
+{ m_interval = interval; }
 
 void Variable::setValue(double value)
-{ m_value = value; }
+{
+  //TODO Respect open interval bounds...
+  if (value < m_interval.lowerEnd()) { m_value = m_interval.lowerEnd(); }
+  else if (value > m_interval.upperEnd()) { m_value = m_interval.upperEnd(); }
+  else { m_value = value; }
+}
 
 bool Variable::operator==(const Variable& other)
 { m_name == other.m_name; }

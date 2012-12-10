@@ -8,7 +8,7 @@ Lemniscate::Lemniscate(double a, double x0, double y0)
 {
   m_name = "Lemniscate";
   m_param = Parameter(0, 2*PI, "t");
-    
+
   setVariable("a", a);
   setVariable("x0", x0);
   setVariable("y0", y0);
@@ -23,40 +23,40 @@ Function* Lemniscate::clone() const
 
 QString Lemniscate::toParametricFormula() const
 {
-  static QString genFormula = QString("<math></math>");
-  
+  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mfrac> <mi>a</mi> <msqrt> <mn>2</mn> </msqrt> <mi>cos</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <mo>(</mo> <msup> <mi>t</mi> <mn>2</mn> </msup> <mo>)</mo> <mo>+</mo> <mn>1</mn> </mfrac> <mi/> <mi>,</mi> <mi/> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mfrac> <mi>a</mi> <msqrt> <mn>2</mn> </msqrt> <mi>cos</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mn>2</mn> </msup> <mo>+</mo> <mn>1</mn> </mfrac> <mi/> <mi>,</mi> <mi/> <mn>0</mn> <mo>&lt</mo> <mi>t</mi> <mo>&lt;</mo> <mn>2</mn> <mo>p</mo> </semantics> </math>");
+
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
-  
+
   return curFormula;
 }
-    
+
 double Lemniscate::calculateX(double t) const
 {
   double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
-    
+
   if (result != result) { return getVariable("x0"); }
-  
+
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
   { m_dimension.setRight(result); }
-  
+
   return result;
 }
- 
+
 double Lemniscate::calculateY(double t) const
 {
   double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
-    
+
   if (result != result) { return getVariable("y0"); }
-  
+
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
   { m_dimension.setTop(result); }
-  
+
   return result;
 }
 

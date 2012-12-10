@@ -23,36 +23,36 @@ Function* Hyperbola::clone() const
 
 QString Hyperbola::toParametricFormula() const
 {
-  static QString genFormula = QString("<math></math>");
-  
+  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi> <mo>·</mo> <mi>cosh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>b</mi> <mo>·</mo> <mi>sinh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>t</mi> <mo>?</mo> <mo>R</mo> </semantics> </math>");
+
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
-  
+
   return curFormula;
 }
 
 double Hyperbola::calculateX(double t) const
 {
   double result = getVariable("x0") + getVariable("a") * cosh(t);
-  
+
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
   { m_dimension.setRight(result); }
-  
+
   return result;
 }
 
 double Hyperbola::calculateY(double t) const
 {
   double result = getVariable("y0") + getVariable("b") * sinh(t);
-  
+
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
   { m_dimension.setTop(result); }
-  
+
   return result;
 }
 

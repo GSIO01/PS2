@@ -24,6 +24,7 @@
 #include "Functions/Tractrix"
 #include "Functions/Catenary"
 #include "Functions/Astroid"
+#include "Functions/Clothoids"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
@@ -64,7 +65,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   
   m_functionItemModel->addCategory(tr("Other curves"));
   m_functionItemModel->addFunction(Catenary(), tr("Other curves"));
-  //m_functionItemModel->addFunction(tr("Clothoids (Euler spiral)"));
+  m_functionItemModel->addFunction(Clothoids(1), tr("Other curves"));
   m_functionItemModel->addFunction(Tractrix(), tr("Other curves"));
   
   m_functionItemModel->addCategory(tr("3D curves"));

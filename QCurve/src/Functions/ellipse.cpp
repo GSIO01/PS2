@@ -7,30 +7,30 @@
 #define PI 3.141592653589793
 
 Ellipse::Ellipse(double a, double b, double x0, double y0)
-{ 
+{
   m_param = Parameter(0, 2 * PI, "t");
-  
+
   if (a != b)
   {
     m_name = "Ellipse";
     setVariable("a", a);
     setVariable("b", b);
   }
-  else 
-  { 
+  else
+  {
     m_name = "Circle";
     setVariable("r", a);
   }
-  
+
+  setVariable("x0", x0);
+  setVariable("y0", y0);
+
   /*m_points.append(Point(a, y0, "a"));
   m_points.append(Point(-a, y0, "-a"));
   m_points.append(Point(x0, -b, "-b"));
   m_points.append(Point(x0, b, "b"));*/
-    
+
   m_dimension = QRectF(-a, -b, 2*a, 2*b);
-  
-  setVariable("x0", x0);
-  setVariable("y0", y0);
 }
 
 Ellipse::Ellipse(const Ellipse& other)
@@ -41,12 +41,19 @@ Function* Ellipse::clone() const
 
 QString Ellipse::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)=<mi>a</mi>*cos(t), y(t)=<mi>b</mi>*sin(t)</math>");
-  
+  static QString genFormula = QString("<math>x(t)=<mi>x0</mi>+<mi>a</mi>*<mi>cos</mi>(<mi>t</mi>), y(t)=<mi>y0</mi>+<mi>b</mi>*<mi>sin</mi>(<mi>t</mi>)</math>");
+
   QString curFormula = genFormula;
-  foreach (const Variable& var, m_variables)
+
+  if (m_name == "Circle")
+  {
+    curFormula.replace(QString("<mi>a</mi>"), QString("<mi>r</mi>"));
+    curFormula.replace(QString("<mi>b</mi>"), QString("<mi>r</mi>"));
+  }
+
+  foreach (const Variable& var, m_variables) //TODO
   { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
-  
+
   return curFormula;
 }
 
@@ -55,26 +62,26 @@ double Ellipse::calculateX(double t) const
   double val = (m_name == "Circle") ? getVariable("r") : getVariable("a");
 
   double result = getVariable("x0") + val * qCos(t);
-  
+
   if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
   { m_dimension.setRight(result); }
-  
+
   return result;
-} 
+}
 
 double Ellipse::calculateY(double t) const
 {
   double val = (m_name == "Circle") ? getVariable("r") : getVariable("b");
-  
+
   double result = getVariable("y0") + val * qSin(t);
-  
+
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
   { m_dimension.setTop(result); }
-  
+
   return result;
 }
 

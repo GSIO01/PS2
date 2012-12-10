@@ -9,7 +9,7 @@
 Tractrix::Tractrix(double a, double x0, double y0)
 {
   m_name = "Tractrix";
-  m_param = Parameter(0, PI/1.1, "t");//TODO
+  m_param = Parameter(0, PI-0.04, "t");//TODO
     
   setVariable("a", a);
   setVariable("x0", x0);

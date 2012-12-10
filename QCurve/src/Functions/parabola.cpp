@@ -22,7 +22,11 @@ Function* Parabola::clone() const
 
 QString Parabola::toParametricFormula() const
 {
-  static QString genFormula = QString("<math></math>");
+  static QString genFormula = QString("<math><mrow>\
+    <mi>x</mi>(<mi>t</mi>)&ThinSpace;=<mi>&ThinSpace;a</mi><mi>&ThinSpace;cosh</mi>(<mi>t</mi>)\
+    ,&ThinSpace\
+    <mi>y</mi>(<mi>t</mi>)&ThinSpace;=<mi>&ThinSpace;b</mi><mi>&ThinSpace;sinh</mi>(<mi>t</mi>)\
+    </mrow></math>");
   
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

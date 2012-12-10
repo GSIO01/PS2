@@ -11,8 +11,6 @@ Catenary::Catenary(double a, double x0, double y0)
   m_param = Parameter(-1, 1, "t");
     
   setVariable("a", a);
-  setVariable("x0", x0);
-  setVariable("y0", y0);
 }
 
 Catenary::Catenary(const Catenary& other)

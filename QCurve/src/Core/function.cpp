@@ -2,7 +2,17 @@
 
 Function::Function()
   : m_dimension(QRectF(0, 0, 0, 0))
-{ }
+{ 
+  Variable var("x0", 0);
+  var.setFormula("<math><mrow><msub><mi>x</mi><mr>0</mr></msub></mrow></math>");
+  var.setDescription("Moves the function on the x-axis");
+  setVariable(var);
+
+  var = Variable("y0", 0);
+  var.setFormula("<math><mrow><msub><mi>y</mi><mr>0</mr></msub></mrow></math>");
+  var.setDescription("Moves the function on the y-axis");
+  setVariable(var);
+}
 
 Function::~Function()
 { }

@@ -1,7 +1,5 @@
 #include "graph2d.h"
 
-#include <QtCore/QDebug>
-
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsTextItem>
 
@@ -16,9 +14,9 @@ Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
 {
   m_timer = new QTimer(this);
   m_timer->setInterval(m_animationDelay);
-  
+
   scale(1, -1); //TODO/FIXME Invert Y-axis
-  
+
   connect(m_timer, SIGNAL(timeout()), this, SLOT(drawFragment()));
 }
 
@@ -30,10 +28,10 @@ void Graph2D::setAnimationDelay(int delay)
   if (delay < 0)
   { m_animationDelay = 0; }
   else { m_animationDelay = delay; }
-  
+
   m_timer->stop();
   m_timer->setInterval(m_animationDelay);
-  
+
   if (m_animationDelay != 0)
   { m_timer->start(); }
   else { drawFragment(); }
@@ -59,11 +57,11 @@ void Graph2D::plot(const Function& function)
   m_function = function.clone();
 
   setScene(new QGraphicsScene(this));
-  
+
   redraw();
 
-  fitInView(sceneRect() ,Qt::KeepAspectRatio); //TODO a sceneRect which is not set never shrinks...
-  qDebug() << getScaleFactor();
+  fitInView(sceneRect(), Qt::KeepAspectRatio); //TODO a sceneRect which is not set never shrinks...
+	m_scaleBase = transform().m11();
 }
 
 /***
@@ -73,18 +71,18 @@ void Graph2D::plot(const Function& function)
 void Graph2D::drawFragment()
 {
   m_timer->stop();
-  
+
   double x2, y2;
-  
+
   m_t += m_stepRange;
 
-  x2 = m_function->calculateX(m_t); 
+  x2 = m_function->calculateX(m_t);
   y2 = m_function->calculateY(m_t);
   scene()->addLine(m_lastX, m_lastY, x2, y2);
   m_lastX = x2; m_lastY = y2;
-  
+
   if (m_t >= m_function->parameter().to() + m_stepRange)
-  { 
+  {
     foreach (const Point& p, m_function->points())
     {
       scene()->addRect(p.X()-0.5, p.Y()-0.5, 1, 1);
@@ -92,137 +90,140 @@ void Graph2D::drawFragment()
       item->scale(1, -1); //TODO/FIXME revert
       item->setPos(p.X()-1, p.Y()-1);
     }
-    
+
     if (m_animationDelay != 0)
-    { QTimer::singleShot(2000, this, SLOT(redraw())); } //repeat the anmation...
-    
+    { QTimer::singleShot(3000, this, SLOT(redraw())); } //repeat the anmation...
+
     return;
   }
-  
+
   if (m_animationDelay == 0)
   { drawFragment(); }
   else { m_timer->start(); }
 }
 
 void Graph2D::redraw()
-{ 
+{
   scene()->clear();
-  
+
   //precalculate to get boundaries...
   for (double t = m_function->parameter().from(); t < m_function->parameter().to() + m_stepRange; t += m_stepRange)
   {
     m_function->calculateX(t);
     m_function->calculateY(t);
   }
-  
+
   qreal w = m_function->dimension().right() - m_function->dimension().left();
   qreal h = m_function->dimension().top() - m_function->dimension().bottom();
-  
+
   scene()->addLine(0, -h, 0, h);
   scene()->addLine(-w, 0, w, 0);
-  
-  m_t = m_function->parameter().from(); 
+
+  m_t = m_function->parameter().from();
   m_lastX = m_function->calculateX(m_t);
-  m_lastY = m_function->calculateY(m_t); 
-  
+  m_lastY = m_function->calculateY(m_t);
+
   if (m_animationDelay != 0)
   { m_timer->start(); }
   else { drawFragment(); }
 }
 
 int Graph2D::getScaleFactor() const
-{ return transform().m11() * 100; }
+{ return transform().m11()/m_scaleBase * 100; }
 
 void Graph2D::setScaleFactor(int factor)
 {
-  matrix().reset();
-  scale(factor/100.0f, factor/100.0f);
+	if (factor < 50) { factor = 50; }
+	else if (factor > 400) { factor = 400; }
+
+  double val = m_scaleBase * factor/100.0f;
+
+	setTransform(QTransform::fromScale(val, -val));
+
+  emit scaleFactorChanged(factor);
 }
 
-void Graph2D::setCenter(const QPointF& centerPoint) 
+void Graph2D::setCenter(const QPointF& centerPoint)
 {
   QRectF visibleArea = mapToScene(rect()).boundingRect();
   QRectF sceneBounds = sceneRect();
- 
+
   double boundX = visibleArea.width() / 2.0;
   double boundY = visibleArea.height() / 2.0;
   double boundWidth = sceneBounds.width() - 2.0 * boundX;
   double boundHeight = sceneBounds.height() - 2.0 * boundY;
- 
+
   QRectF bounds(boundX, boundY, boundWidth, boundHeight);
- 
+
   if (bounds.contains(centerPoint))
   { m_curCenterPoint = centerPoint; }
-  else 
+  else
   {
     if (visibleArea.contains(sceneBounds))
     { m_curCenterPoint = sceneBounds.center(); }
-    else 
+    else
     {
       m_curCenterPoint = centerPoint;
- 
-      if(centerPoint.x() > bounds.x() + bounds.width()) 
+
+      if(centerPoint.x() > bounds.x() + bounds.width())
       { m_curCenterPoint.setX(bounds.x() + bounds.width()); }
-      else if(centerPoint.x() < bounds.x()) 
+      else if(centerPoint.x() < bounds.x())
       { m_curCenterPoint.setX(bounds.x()); }
- 
-      if(centerPoint.y() > bounds.y() + bounds.height()) 
+
+      if(centerPoint.y() > bounds.y() + bounds.height())
       { m_curCenterPoint.setY(bounds.y() + bounds.height()); }
-      else if(centerPoint.y() < bounds.y()) 
+      else if(centerPoint.y() < bounds.y())
       { m_curCenterPoint.setY(bounds.y()); }
- 
+
     }
   }
 
   centerOn(m_curCenterPoint);
 }
- 
-void Graph2D::mousePressEvent(QMouseEvent* event) 
+
+void Graph2D::mousePressEvent(QMouseEvent* event)
 {
   m_lastPanPoint = event->pos();
   setCursor(Qt::ClosedHandCursor);
 }
- 
-void Graph2D::mouseReleaseEvent(QMouseEvent* event) 
+
+void Graph2D::mouseReleaseEvent(QMouseEvent* event)
 {
   setCursor(Qt::OpenHandCursor);
   m_lastPanPoint = QPoint();
 }
- 
-void Graph2D::mouseMoveEvent(QMouseEvent* event) 
+
+void Graph2D::mouseMoveEvent(QMouseEvent* event)
 {
-  if(!m_lastPanPoint.isNull()) 
+  if(!m_lastPanPoint.isNull())
   {
     QPointF delta = mapToScene(m_lastPanPoint) - mapToScene(event->pos());
     m_lastPanPoint = event->pos();
- 
+
     setCenter(center() + delta);
   }
 }
- 
-void Graph2D::wheelEvent(QWheelEvent* event) 
-{ 
+
+void Graph2D::wheelEvent(QWheelEvent* event)
+{
   QPointF pointBeforeScale(mapToScene(event->pos()));
   QPointF screenCenter = center();
- 
-  double scaleFactor = 1.15;
-  if(event->delta() > 0) 
-  { scale(scaleFactor, scaleFactor); }
-  else { scale(1.0 / scaleFactor, 1.0 / scaleFactor); }
- 
-  qDebug() << getScaleFactor();
- 
+
+  if(event->delta() > 0)
+  { setScaleFactor(getScaleFactor() * 1.1); }
+  else { setScaleFactor(getScaleFactor() * 0.9); }
+
   QPointF pointAfterScale(mapToScene(event->pos()));
   QPointF offset = pointBeforeScale - pointAfterScale;
- 
+
   QPointF newCenter = screenCenter + offset;
   setCenter(newCenter);
 }
- 
-void Graph2D::resizeEvent(QResizeEvent* event) 
+
+void Graph2D::resizeEvent(QResizeEvent* event)
 {
   QRectF visibleArea = mapToScene(rect()).boundingRect();
   setCenter(visibleArea.center());
- 
+
   QGraphicsView::resizeEvent(event);
 }
