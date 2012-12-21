@@ -2,14 +2,16 @@
 
 #include <limits>
 
+#define INF std::numeric_limits<double>::infinity()
+
 Interval::Interval()
-  : m_lower(-std::numeric_limits<double>::infinity()), m_lowerIsClosed(false),
-    m_upper(std::numeric_limits<double>::infinity()), m_upperIsClosed(false)
+  : m_lower(-INF), m_lowerIsClosed(false),
+    m_upper(INF), m_upperIsClosed(false)
 { }
 
 Interval::Interval(double lower, bool isClosed)
   : m_lower(lower), m_lowerIsClosed(isClosed),
-    m_upper(std::numeric_limits<double>::infinity()), m_upperIsClosed(false)
+    m_upper(INF), m_upperIsClosed(false)
 { }
 
 Interval::Interval(double lower, double upper, bool lowerIsClosed, bool upperIsClosed)
@@ -18,24 +20,26 @@ Interval::Interval(double lower, double upper, bool lowerIsClosed, bool upperIsC
 { }
 
 void Interval::setLowerEnd(double val, bool closed)
-{ 
+{
   m_lower = val;
   m_lowerIsClosed = closed;
 }
 
 void Interval::setUpperEnd(double val, bool closed)
-{ 
+{
   m_lower = val;
   m_lowerIsClosed = closed;
 }
 
 QString Interval::toString() const
-{ 
+{
   QString result;
 
   result += (m_lowerIsClosed) ? "[" : "(";
-  result += QString::number(m_lower) + "," + QString::number(m_upper);
+  result += (m_lower != -INF) ? QString::number(m_lower) : QString("-%1").arg(QChar(0x221E));
+  result += ",";
+  result += (m_upper != INF) ? QString::number(m_upper) : QChar(0x221E);
   result += (m_upperIsClosed) ? "]" : ")";
 
   return result;
-} 
+}

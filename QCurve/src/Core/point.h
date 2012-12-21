@@ -5,7 +5,7 @@
 
 /***
  * Represents a point in space.
- * 
+ *
  * A point is a ordered pair or rather a ordered triplet of numbers.
  */
 class Point
@@ -17,17 +17,19 @@ class Point
     Point(double x, double y, double z,const QString& name = QString());
 
     /*** Returns the horizontal component of the point. */
-    double X() const; 
+    double X() const;
     /*** Returns the vertical component of the point. */
     double Y() const;
     /*** Returns the depth component of the point. */
     double Z() const;
-    
+
     /*** Returns a descriptive name e.g. the focal point of an ellipse. */
     QString name() const;
 
     bool operator==(const Point& other);
-    
+
+    Point toRadial() const;
+
   private:
     double m_x;
     double m_y;

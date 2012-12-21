@@ -9,52 +9,55 @@ LogarithmicSpiral::LogarithmicSpiral(double a, double x0, double y0)
   m_name = "Logarithmic Spiral";
   m_param = Parameter(0, 4 * PI, "t");
 
-  setVariable("a", a);
+  Variable var("a", a);
+  var.setColor(QColor(255, 255, 0));
+  setVariable(var);
+
   setVariable("x0", x0);
   setVariable("y0", y0);
+
+  initDimension();
 }
 
 LogarithmicSpiral::LogarithmicSpiral(const LogarithmicSpiral& other)
 { *this = other; }
 
 Function* LogarithmicSpiral::clone() const
-{ return new LogarithmicSpiral(*this); }
-
+{ return new LogarithmicSpiral(getVariable("a"), getVariable("x0"), getVariable("y0")); }
 
 QString LogarithmicSpiral::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mi>k</mi> <msup> <mi>e</mi> <mo>(</mo> <mi>a</mi> <mo>·</mo> <mi>t</mi> <mo>)</mo> </msup> <mi>cos</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mi>,</mi> <mi/> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mi>k</mi> <msup> <mi>e</mi> <mo>(</mo> <mi>a</mi> <mo>·</mo> <mi>t</mi> <mo>)</mo> </msup> <mi>sin</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mi>,</mi> <mi/> <mi>a</mi> <mo>&gt;</mo> <mn>0</mn> <mi/> <mi>,</mi> <mi/> <mi>a</mi> <mi>,</mi> <mi>t</mi> <mo>&isin;</mo> <mo>R</mo> </semantics> </math>");
+  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo>  </mrow> <mi>k</mi> <msup> <mi>e</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mrow> <mi>a</mi> <mo stretchy=\"false\">&middot;</mo> <mi>t</mi> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> </msup> <mi>cos</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow>  <mi>,</mi>  <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo>  </mrow> <mi>k</mi> <msup> <mi>e</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mrow> <mi>a</mi> <mo stretchy=\"false\">&middot;</mo> <mi>t</mi> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> </msup> <mi>sin</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow>  <mi>,</mi>  <mrow> <mi>a</mi> <mo stretchy=\"false\">&gt;</mo> <mn>0</mn> </mrow>  <mi>,</mi>  <mi>a</mi> <mi>,</mi> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mo stretchy=\"false\">R</mo> </mrow></semantics> </math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
+  {
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
+  }
 
   return curFormula;
 }
 
 double LogarithmicSpiral::calculateX(double t) const
-{
-  double result = getVariable("x0") + pow(getVariable("a"), t) * cos(t);
-
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
-  return result;
-}
+{ return getVariable("x0") + pow(getVariable("a"), t) * cos(t); }
 
 double LogarithmicSpiral::calculateY(double t) const
-{
-  double result = getVariable("y0") + pow(getVariable("a"), t) * sin(t);
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
+{ return getVariable("y0") + pow(getVariable("a"), t) * sin(t); }
 
 double LogarithmicSpiral::calculateZ(double t) const
 { return 0; }
+
+void LogarithmicSpiral::initDimension()
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
+
+  double h = pow(a, m_param.to()) * sin(m_param.to());
+  double w = pow(a, m_param.to()) * cos(m_param.to());
+
+  if (w < h) { w = h; }
+
+  m_dimension = QRectF(-w + x0, -w + y0 , w * 2, w * 2);
+}

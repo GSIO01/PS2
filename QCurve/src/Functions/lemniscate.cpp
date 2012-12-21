@@ -9,25 +9,33 @@ Lemniscate::Lemniscate(double a, double x0, double y0)
   m_name = "Lemniscate";
   m_param = Parameter(0, 2*PI, "t");
 
-  setVariable("a", a);
+  Variable var("a", a);
+  var.setColor(QColor(255, 255, 0));
+  setVariable(var);
+
   setVariable("x0", x0);
   setVariable("y0", y0);
+
+  initDimension();
 }
 
 Lemniscate::Lemniscate(const Lemniscate& other)
 { *this = other; }
 
 Function* Lemniscate::clone() const
-{ return new Lemniscate(*this); }
+{ return new Lemniscate(getVariable("a"), getVariable("x0"), getVariable("y0")); }
 
 
 QString Lemniscate::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mfrac> <mi>a</mi> <msqrt> <mn>2</mn> </msqrt> <mi>cos</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <mo>(</mo> <msup> <mi>t</mi> <mn>2</mn> </msup> <mo>)</mo> <mo>+</mo> <mn>1</mn> </mfrac> <mi/> <mi>,</mi> <mi/> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi/> <mo>=</mo> <mi/> <mfrac> <mi>a</mi> <msqrt> <mn>2</mn> </msqrt> <mi>cos</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>sin</mi> <msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mn>2</mn> </msup> <mo>+</mo> <mn>1</mn> </mfrac> <mi/> <mi>,</mi> <mi/> <mn>0</mn> <mo>&lt</mo> <mi>t</mi> <mo>&lt;</mo> <mn>2</mn> <mo>p</mo> </semantics> </math>");
+  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mfrac> <mrow> <mi>a</mi> <msqrt> <mrow> <mn>2</mn> </mrow> </msqrt> <mi>cos</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mi>sin</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">+</mo> <mn>1</mn> </mrow> </mrow> </mfrac> <mi/> <mi>,</mi> <mi/> <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mfrac> <mrow> <mi>a</mi> <msqrt> <mrow> <mn>2</mn> </mrow> </msqrt> <mi>cos</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi>sin</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mi>sin</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">+</mo> <mn>1</mn> </mrow> </mrow> </mfrac> <mi/> <mi>,</mi> <mi/> <mrow> <mrow> <mn>0</mn> <mo stretchy=\"false\">&leq;</mo> <mi>t</mi> </mrow> <mo stretchy=\"false\">&lt;</mo> <mn>2</mn> </mrow> <mo stretchy=\"false\">&pi;</mo> </mrow> </semantics> </math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
+  {
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
+  }
 
   return curFormula;
 }
@@ -38,11 +46,6 @@ double Lemniscate::calculateX(double t) const
 
   if (result != result) { return getVariable("x0"); }
 
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
   return result;
 }
 
@@ -52,13 +55,17 @@ double Lemniscate::calculateY(double t) const
 
   if (result != result) { return getVariable("y0"); }
 
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
   return result;
 }
 
 double Lemniscate::calculateZ(double t) const
 { return 0; }
+
+void Lemniscate::initDimension()
+{
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+
+  m_dimension = QRectF(-2 * a + x0, -a + y0, 4 * a, 2 * a);
+}

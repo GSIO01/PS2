@@ -1,7 +1,5 @@
 #include "ellipse.h"
 
-#include <QtCore/QDebug>
-
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
@@ -9,28 +7,25 @@
 Ellipse::Ellipse(double a, double b, double x0, double y0)
 {
   m_param = Parameter(0, 2 * PI, "t");
+  m_name = "Ellipse";
 
-  if (a != b)
-  {
-    m_name = "Ellipse";
-    setVariable("a", a);
-    setVariable("b", b);
-  }
-  else
-  {
-    m_name = "Circle";
-    setVariable("r", a);
-  }
+  Variable var("a", a);
+  var.setDescription("Major radius (radius along x-axis) of the ellipse.");
+  var.setColor(QColor(255, 255, 0));
+  var.interval().setLowerEnd(0);
+  setVariable(var);
+
+  var = Variable("b", b);
+  var.setDescription("Minor radius (radius along y-axis) of the ellipse.");
+  var.setColor(QColor(0, 255, 255));
+  var.interval().setLowerEnd(0);
+  setVariable(var);
 
   setVariable("x0", x0);
   setVariable("y0", y0);
 
-  /*m_points.append(Point(a, y0, "a"));
-  m_points.append(Point(-a, y0, "-a"));
-  m_points.append(Point(x0, -b, "-b"));
-  m_points.append(Point(x0, b, "b"));*/
-
-  m_dimension = QRectF(-a, -b, 2*a, 2*b);
+  updatePoints();
+  initDimension();
 }
 
 Ellipse::Ellipse(const Ellipse& other)
@@ -41,49 +36,56 @@ Function* Ellipse::clone() const
 
 QString Ellipse::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)=<mi>x0</mi>+<mi>a</mi>*<mi>cos</mi>(<mi>t</mi>), y(t)=<mi>y0</mi>+<mi>b</mi>*<mi>sin</mi>(<mi>t</mi>)</math>");
+  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>), y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>b</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
 
   QString curFormula = genFormula;
-
-  if (m_name == "Circle")
+  foreach (const Variable& var, m_variables)
   {
-    curFormula.replace(QString("<mi>a</mi>"), QString("<mi>r</mi>"));
-    curFormula.replace(QString("<mi>b</mi>"), QString("<mi>r</mi>"));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
-
-  foreach (const Variable& var, m_variables) //TODO
-  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
 
   return curFormula;
 }
 
-double Ellipse::calculateX(double t) const
+void Ellipse::updatePoints(const QString& name, double value)
 {
-  double val = (m_name == "Circle") ? getVariable("r") : getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
+  double b = getVariable("b");
 
-  double result = getVariable("x0") + val * qCos(t);
+  double f = sqrt(pow(getVariable("a"), 2) - pow(getVariable("b"), 2)); //foci of the ellipse
+  setPoint(Point(-f + x0, y0, "F1"));
+  setPoint(Point( f + x0, y0, "F2"));
 
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
-  return result;
+  if (name != "b")
+  {
+    setPoint(Point( a + x0, y0, "a" ));
+    setPoint(Point(-a + x0, y0, "-a"));
+  }
+  else if (name != "a")
+  {
+    setPoint(Point(x0,-b + y0, "-b"));
+    setPoint(Point(x0, b + y0, "b" ));
+  }
 }
+
+double Ellipse::calculateX(double t) const
+{ return getVariable("x0") + getVariable("a") * qCos(t); }
 
 double Ellipse::calculateY(double t) const
-{
-  double val = (m_name == "Circle") ? getVariable("r") : getVariable("b");
-
-  double result = getVariable("y0") + val * qSin(t);
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
+{ return getVariable("y0") + getVariable("b") * qSin(t); }
 
 double Ellipse::calculateZ(double t) const
 { return 0; }
+
+void Ellipse::initDimension()
+{
+  double a = getVariable("a");
+  double b = getVariable("b");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+
+  m_dimension = QRectF(-a + x0, -b + y0, 2 * a, 2 * b);
+}

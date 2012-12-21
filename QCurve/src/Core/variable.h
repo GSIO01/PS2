@@ -2,6 +2,7 @@
 #define VARIABLE_H
 
 #include <QtCore/QString>
+#include <QtGui/QColor>
 
 #include "Core/Interval"
 
@@ -18,13 +19,16 @@ class Variable
 
     QString name() const { return m_name; }
 
-		QString formula() const { return m_formula; }
+    QColor color() const { return m_color; }
+    void setColor(const QColor& color);
+
+    QString formula() const;
     void setFormula(const QString& formula);
 
-		QString description() const { return m_description; }
+    QString description() const { return m_description; }
     void setDescription(const QString& desc);
 
-		Interval& interval() const { return const_cast<Interval&>(m_interval); }
+    Interval& interval() const { return const_cast<Interval&>(m_interval); }
     void setInterval(const Interval& interval);
 
     double value() const { return m_value; }
@@ -39,6 +43,7 @@ class Variable
     QString m_name;
     QString m_formula;
     QString m_description;
+    QColor m_color;
 
     double m_value;
 

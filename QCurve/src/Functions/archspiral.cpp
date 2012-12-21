@@ -11,48 +11,48 @@ ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0)
 
   setVariable("x0", x0);
   setVariable("y0", y0);
+
+  initDimension();
 }
 
 ArchimedeanSpiral::ArchimedeanSpiral(const ArchimedeanSpiral& other)
 { *this = other; }
 
 Function* ArchimedeanSpiral::clone() const
-{ return new ArchimedeanSpiral(*this); }
+{ return new ArchimedeanSpiral(getVariable("x0"), getVariable("y0")); }
 
 QString ArchimedeanSpiral::toParametricFormula() const
 {
-	static QString genFormula = QString("<math> <apply>  <mrow>   <mi>x</mi>   <mrow>    <mo>(</mo>    <mrow>    <mi>t</mi>    </mrow>    <mo>)</mo>   </mrow>   <mrow>    <mi/>    <mo>=</mo>    <mi/>   </mrow>   <mi>t</mi>   <mi>cos</mi>   <mrow>    <mo>(</mo>    <mrow>     <mi>t</mi>    </mrow>    <mo>)</mo>   </mrow>   <mi/>   <mi>,</mi>   <mi/>   <mi>y</mi>   <mrow>    <mo>(</mo>    <mrow>     <mi>t</mi>    </mrow>    <mo>)</mo>   </mrow>   <mrow>    <mi/>    <mo>=</mo>    <mi/>   </mrow>   <mi>t</mi>   <mi>sin</mi>   <mrow>    <mo>(</mo>    <mrow>     <mi>t</mi>    </mrow>    <mo>)</mo>   </mrow>   <mi/>   <mi>,</mi>   <mi/>   <mrow>    <mi>t</mi>    <mo>&gt;</mo>    <mn>0</mn>   </mrow>   <mi/>   <mi>,</mi>   <mi/>   <mi>t</mi><mo stretchy=\"false\"> <in/> </mo> <mo>R</mo>  </mrow> </apply></math>");
+  static QString genFormula = QString("<math><apply><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>t</mi><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>t</mi><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>t</mi><mo>&gt;</mo><mn>0</mn><mi/><mi>,</mi><mi/><mi>t</mi><mo stretchy=\"false\">&isin;</mo><mo>R</mo></apply></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
+  {
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
+  }
 
   return curFormula;
 }
 
 double ArchimedeanSpiral::calculateX(double t) const
-{
-  double result = getVariable("x0") + (t * cos(t));
-
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
-  return result;
-}
+{ return getVariable("x0") + (t * cos(t)); }
 
 double ArchimedeanSpiral::calculateY(double t) const
-{
-  double result = getVariable("y0") + (t * sin(t));
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
+{ return getVariable("y0") + (t * sin(t)); }
 
 double ArchimedeanSpiral::calculateZ(double t) const
 { return 0; }
+
+void ArchimedeanSpiral::initDimension()
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+
+  double w = m_param.to() * cos(m_param.to());
+  double h = m_param.to() * sin(m_param.to());
+
+  if (w < h) { w = h; }
+
+  m_dimension = QRectF(-w + x0, -w + y0, 2 * w, 2 * w);
+}

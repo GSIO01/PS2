@@ -2,10 +2,12 @@
 #define GRAPH2D_H
 
 #include <QtCore/QTimer>
+#include <QtCore/QTimer>
 
 #include <QtGui/QGraphicsView>
 
 class Function;
+class Point;
 /***
  * Implements a widget which can be used to viusalize the graph
  * of a mathmatical function.
@@ -17,7 +19,8 @@ class Graph2D : public QGraphicsView
   Q_OBJECT
 
   signals:
-		void scaleFactorChanged(int factor);
+    void scaleFactorChanged(int factor);
+    void currentPositionChanged(double x, double y);
 
   public:
     Graph2D(QWidget* parent = 0);
@@ -54,14 +57,27 @@ class Graph2D : public QGraphicsView
      */
     void setStepRange(float stepRange);
 
-    int getScaleFactor() const;
+    /***
+     * Returns the scale factor as normalized value between 50 and 400.
+     */
+    int scaleFactor() const;
 
-    void setScaleFactor(int factor);
+    /***
+     * Returns a reference to the current function.
+     * TODO/FIXME Should only be accessible by friends
+     */
+    Function& function() const { return *m_function; }
+
+    void setVariable(const QString& var, double value);
 
     /***
      * Draws the specified function.
      */
     void plot(const Function& function);
+
+
+  public slots:
+    void setScaleFactor(int factor);
 
   protected:
     virtual void mousePressEvent(QMouseEvent* event);
@@ -75,9 +91,24 @@ class Graph2D : public QGraphicsView
 
   private slots:
     void drawFragment();
-    void redraw();
+    void autoRedraw();
+    void init();
 
   private:
+    void redraw();
+    Point transfromTo2D(const Point& p);
+    void fitInView();
+    void drawCoordinateSystem();
+
+    void addTextToScene(QList<QGraphicsItem*>& group, const QString& text, double x, double y);
+    void addTextToScene(QList<QGraphicsItem*>& group, const QColor& color, const QString& text, double x, double y);
+    void addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
+    void addLineToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
+    void addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, double x1, double y1, double x2, double y2);
+
+    QList<QGraphicsItem*> m_coordSysGroup;
+    QList<QGraphicsItem*> m_functionGroup;
+
     QTimer* m_timer;
     Function* m_function;
 
@@ -92,6 +123,8 @@ class Graph2D : public QGraphicsView
     double m_lastX;
     double m_lastY;
     double m_t;
+
+    bool m_ignoreAutoRedraw;
 };
 
 #endif

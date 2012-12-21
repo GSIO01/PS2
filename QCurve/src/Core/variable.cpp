@@ -2,10 +2,18 @@
 
 Variable::Variable(const QString& name, double value)
   : m_name(name), m_value(value)
-{ m_formula = "<math><mi>" + name + "</mi></math>"; }
+{ }
 
 Variable::~Variable()
 { }
+
+QString Variable::formula() const
+{
+  if (m_formula.isEmpty())
+  { return QString("<math><mi color=\"%1\">%2</mi></math>").arg(m_color.name()).arg(m_name); }
+
+  return m_formula;
+}
 
 void Variable::setFormula(const QString& formula)
 { m_formula = formula; }
@@ -24,8 +32,11 @@ void Variable::setValue(double value)
   else { m_value = value; }
 }
 
+void Variable::setColor(const QColor& color) //replace colors...
+{ m_color = color; }
+
 bool Variable::operator==(const Variable& other)
-{ m_name == other.m_name; }
+{ return m_name == other.m_name; }
 
 bool operator==(const Variable& variable, const QString& name)
 { return variable.m_name == name; }

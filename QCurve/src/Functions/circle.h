@@ -1,14 +1,14 @@
-#ifndef LEMNISCATE_H
-#define LEMNISCATE_H
+#ifndef CIRCLE_H
+#define CIRCLE_H
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
-class Lemniscate : public Function
+/*** Represents a circle. */
+class Circle : public Function
 {
   public:
-    Lemniscate(double a = 1, double x0 = 0, double y0 = 0);
-    Lemniscate(const Lemniscate& other);
+    Circle(double r = 1, double x0 = 0, double y1 = 0);
+    Circle(const Circle& other);
 
     virtual Function* clone() const;
 
@@ -23,3 +23,4 @@ class Lemniscate : public Function
 };
 
 #endif
+

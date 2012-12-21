@@ -4,7 +4,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QDoubleSpinBox>
 
-#include "Core/variable.h"
+#include "Core/Variable"
 
 class QtMmlWidget;
 class QKeyEvent;
@@ -18,18 +18,19 @@ class VariableEdit : public QWidget
   public:
     VariableEdit(const Variable& var, QWidget* parent = 0);
 
+    double value() { return m_value->value(); }
+
     QString variable() const { return m_variable; }
     void setVariable(const Variable& var);
 
-  protected:
-     virtual void focusOutEvent(QFocusEvent* event);
-     virtual void keyPressEvent(QKeyEvent* event);
+  private slots:
+    void valueChanged(double value);
 
   private:
     QString m_variable;
 
     QtMmlWidget* m_variableLbl;
     QDoubleSpinBox* m_value;
-}; 
+};
 
 #endif

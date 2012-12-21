@@ -4,60 +4,78 @@
 
 #define PI 3.141592653589793
 
+#include <QtCore/QDebug>
+
 Parabola::Parabola(double p, double x0, double y0)
 {
   m_name = "Parabola";
   m_param = Parameter(-PI, PI, "t");
-  
-  setVariable("p", p);
+
+  Variable var("p", p);
+  var.setColor(QColor(255, 255, 0));
+  setVariable(var);
+
   setVariable("x0", x0);
   setVariable("y0", y0);
+
+  initDimension();
 }
 
 Parabola::Parabola(const Parabola& other)
 { *this = other; }
 
 Function* Parabola::clone() const
-{ return new Parabola(*this); }
+{ return new Parabola(getVariable("p"), getVariable("x0"), getVariable("y0")); }
 
 QString Parabola::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><mrow>\
-    <mi>x</mi>(<mi>t</mi>)&ThinSpace;=<mi>&ThinSpace;a</mi><mi>&ThinSpace;cosh</mi>(<mi>t</mi>)\
-    ,&ThinSpace\
-    <mi>y</mi>(<mi>t</mi>)&ThinSpace;=<mi>&ThinSpace;b</mi><mi>&ThinSpace;sinh</mi>(<mi>t</mi>)\
-    </mrow></math>");
-  
+  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mi>,</mi> <mi>y</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <mrow> <msqrt> <mrow> <mn>2</mn> <mo>&middot;</mo> <mi>p</mi> </mrow> </msqrt> <mo>&middot;</mo> <mi>t</mi> </mrow> </mrow> <mi>,</mi> <mi>t</mi> <mo>&isin;</mo> <mo>R</mo> </mrow> </semantics> </math>");
+
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), QString::number(var.value())); }
-  
+  {
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
+  }
+
   return curFormula;
 }
-    
+
 double Parabola::calculateX(double t) const
 {
   double result = getVariable("x0") + t * t;
-  
+
    if (result < m_dimension.left())
   { m_dimension.setLeft(result); }
   else if (result > m_dimension.right())
   { m_dimension.setRight(result); }
-  
+
   return result;
 }
 
 double Parabola::calculateY(double t) const
 {
   double result = getVariable("y0") + sqrt(2 * getVariable("p")) * t;
-  
+
   if (result < m_dimension.bottom())
   { m_dimension.setBottom(result); }
   else if (result > m_dimension.top())
   { m_dimension.setTop(result); }
-  
+
   return result;
 }
 
 double Parabola::calculateZ(double t) const
 { return 0; }
+
+void Parabola::initDimension()
+{
+  double x0 = getVariable("x0");
+  double p = getVariable("p");
+  double y0 = getVariable("y0");
+
+  double h = calculateY(m_param.to()) - calculateY(m_param.from());
+  double w = m_param.to() * m_param.to();  //width is correct but...
+
+  m_dimension = QRectF(x0, y0 + sqrt(2* p) * m_param.from(), w, h);
+}
