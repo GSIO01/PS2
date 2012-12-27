@@ -6,13 +6,13 @@ Function::Function()
   Variable var("x0", 0);
   var.setColor(QColor(0, 0, 255));
   var.setFormula("<math><mrow><msub><mi color=\"#0000FF\">x</mi><mr color=\"#00F\">0</mr></msub></mrow></math>");
-  var.setDescription("Moves the function on the x-axis");
+  var.setDescription("Moves the function on the x-axis.");
   setVariable(var);
 
   var = Variable("y0", 0);
   var.setColor(QColor(0, 255, 0));
   var.setFormula("<math><mrow><msub><mi color=\"#00FF00\">y</mi><mr color=\"#00FF00\">0</mr></msub></mrow></math>");
-  var.setDescription("Moves the function on the y-axis");
+  var.setDescription("Moves the function on the y-axis.");
   setVariable(var);
 }
 

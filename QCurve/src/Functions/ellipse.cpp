@@ -10,13 +10,13 @@ Ellipse::Ellipse(double a, double b, double x0, double y0)
   m_name = "Ellipse";
 
   Variable var("a", a);
-  var.setDescription("Major radius (radius along x-axis) of the ellipse.");
+  var.setDescription("The radius along the x-axis. The x-axis is the major radius [a > b] or the minor radius.");
   var.setColor(QColor(255, 255, 0));
   var.interval().setLowerEnd(0);
   setVariable(var);
 
   var = Variable("b", b);
-  var.setDescription("Minor radius (radius along y-axis) of the ellipse.");
+  var.setDescription("The radius along the y-axis. The y-axis is the major radius [b < a] or the minor radius.");
   var.setColor(QColor(0, 255, 255));
   var.interval().setLowerEnd(0);
   setVariable(var);
@@ -55,16 +55,28 @@ void Ellipse::updatePoints(const QString& name, double value)
   double a = getVariable("a");
   double b = getVariable("b");
 
-  double f = sqrt(pow(getVariable("a"), 2) - pow(getVariable("b"), 2)); //foci of the ellipse
-  setPoint(Point(-f + x0, y0, "F1"));
-  setPoint(Point( f + x0, y0, "F2"));
+  QString desc = "One focus point of the ellipse. \
+    The foci always lie on the major (longest) axis and \
+    are equidistant from the center point.";
+  if (b < a)
+  {
+    double f = sqrt(pow(a, 2) - pow(b, 2));
+    setPoint(Point(-f + x0, y0, "F1", desc));
+    setPoint(Point( f + x0, y0, "F2", desc));
+  }
+  else
+  {
+    double f = sqrt(pow(b, 2) - pow(a, 2));
+    setPoint(Point(x0, -f + y0, "F1", desc));
+    setPoint(Point(x0,  f + y0, "F2", desc));
+  }
 
   if (name != "b")
   {
     setPoint(Point( a + x0, y0, "a" ));
     setPoint(Point(-a + x0, y0, "-a"));
   }
-  else if (name != "a")
+  if (name != "a")
   {
     setPoint(Point(x0,-b + y0, "-b"));
     setPoint(Point(x0, b + y0, "b" ));

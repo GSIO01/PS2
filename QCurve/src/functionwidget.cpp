@@ -114,23 +114,23 @@ void FunctionWidget::initComponents()
 
 void FunctionWidget::fromValueChanged(double value)
 {
-  updateFormula();
-
   m_plotter->function().parameter().setFrom(value);
+
+  updateFormula();
 }
 
 void FunctionWidget::toValueChanged(double value)
 {
-  updateFormula();
-
   m_plotter->function().parameter().setTo(value);
+
+  updateFormula();
 }
 
 void FunctionWidget::varValueChanged(const QString& var, double value)
 {
-  updateFormula();
-
   m_plotter->setVariable(var, value);
+
+  updateFormula();
 }
 
 void FunctionWidget::positionChanged(double x, double y)
@@ -138,6 +138,12 @@ void FunctionWidget::positionChanged(double x, double y)
   m_statusBar->clearMessage();
   m_statusBar->showMessage(tr("Mouse Position(%1, %2)").arg(QString::number(x, 'f', 2)).arg(QString::number(y, 'f', 2)));
 }
+
+void FunctionWidget::setShowGrid(bool isVisible)
+{ m_plotter->setShowGrid(isVisible); }
+
+void FunctionWidget::setAnimationMode(int delay, bool repeat)
+{ m_plotter->setAnimationDelay(delay, repeat); }
 
 void FunctionWidget::updateFormula()
 {

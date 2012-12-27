@@ -22,6 +22,9 @@ class MainWindow : public QMainWindow
     void splitterDoubleClicked();
     void itemActivated(const QModelIndex& idx);
 
+    void setShowGrid(bool isVisible);
+    void setAnimationMode();
+
   private:
     void initMenu();
     void initComponents();

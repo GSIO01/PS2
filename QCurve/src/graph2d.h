@@ -41,7 +41,16 @@ class Graph2D : public QGraphicsView
      *
      * @Note: A value of 0 or less turns of the animation.
      */
-    void setAnimationDelay(int delay);
+    void setAnimationDelay(int delay, bool repeat = false);
+
+    /***
+     * Returns true if the grid is visible otherwise false.
+     */
+    bool showGrid() const { return m_showGrid; }
+    /***
+     * Sets a value which indicates if the grid should be visible or not.
+     */
+    void setShowGrid(bool isVisible);
 
     /***
      * Returns the step range which is used to calculate the next parameter value.
@@ -86,7 +95,7 @@ class Graph2D : public QGraphicsView
     virtual void wheelEvent(QWheelEvent* event);
     virtual void resizeEvent(QResizeEvent* event);
 
-    QPointF center() { return m_curCenterPoint; }
+    QPointF center() const { return m_curCenterPoint; }
     void setCenter(const QPointF& centerPoint);
 
   private slots:
@@ -95,14 +104,20 @@ class Graph2D : public QGraphicsView
     void init();
 
   private:
+    double gridRange();
+    double labelRange();
+
     void redraw();
-    Point transfromTo2D(const Point& p);
-    void fitInView();
     void drawCoordinateSystem();
+
+    void fitInView();
+    void updateSceneRect();
+
+    Point transfromTo2D(const Point& p);
 
     void addTextToScene(QList<QGraphicsItem*>& group, const QString& text, double x, double y);
     void addTextToScene(QList<QGraphicsItem*>& group, const QColor& color, const QString& text, double x, double y);
-    void addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
+    QGraphicsItem* addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
     void addLineToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
     void addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, double x1, double y1, double x2, double y2);
 
@@ -116,14 +131,18 @@ class Graph2D : public QGraphicsView
     QPoint m_lastPanPoint;
 
     double m_scaleBase;
-
-    int m_animationDelay;
-    float m_stepRange;
+    double m_stepRange;
 
     double m_lastX;
     double m_lastY;
     double m_t;
 
+    int m_xAngle;
+    int m_yAngle;
+
+    int m_animationDelay;
+    bool m_repeat;
+    bool m_showGrid;
     bool m_ignoreAutoRedraw;
 };
 

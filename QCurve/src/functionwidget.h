@@ -30,6 +30,9 @@ class FunctionWidget : public QWidget
     const Function& function() const;
     void setFunction(const Function& function);
 
+    void setAnimationMode(int delay, bool repeat);
+    void setShowGrid(bool isVisible);
+
   private slots:
     void fromValueChanged(double value);
     void toValueChanged(double value);

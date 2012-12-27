@@ -15,11 +15,13 @@ class Parameter
 {
   public:
     Parameter();
-    Parameter(double from, double to, const QString& name, const QList<double>& excluded = QList<double>());
+    Parameter(double from, double to, const QString& name, const QString& desc = QString());
     virtual ~Parameter();
 
     /*** The formal name (symbol) of the parameter (usualy 't'). */
     QString name() const;
+
+    QString description() const;
 
     /*** Returns the minimum value of the parameter. */
     double from() const;
@@ -33,12 +35,15 @@ class Parameter
     /*** Sets the maximum value of the parameter*/
     void setTo(double to);
 
-    QList<double> excludedValues() const;
-    void setExcludedValues(const QList<double>& excluded);
+    /*QList<double> excludedValues() const;
+    void setExcludedValues(const QList<double>& excluded);*/
+
+    QString toString() const;
 
   private:
     QString m_name;
-    QList<double> m_excludedValues;
+    QString m_description;
+    //QList<double> m_excludedValues;
 
     double m_to;
     double m_from;

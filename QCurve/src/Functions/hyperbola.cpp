@@ -31,7 +31,7 @@ Function* Hyperbola::clone() const
 
 QString Hyperbola::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi> <mo>&middot;</mo> <mi>cosh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>b</mi> <mo>&middot;</mo> <mi>sinh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>t</mi> <mo>?</mo> <mo>R</mo> </semantics> </math>");
+  static QString genFormula = QString("<math> <semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi> <mo>&middot;</mo> <mi>cosh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>b</mi> <mo>&middot;</mo> <mi>sinh</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>t</mi> <mo>&isin;</mo> <mo>R</mo> </semantics> </math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

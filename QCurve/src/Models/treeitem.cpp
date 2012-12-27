@@ -8,15 +8,15 @@ TreeItem::TreeItem(TreeItem* parent)
 {
   m_parent = 0;
   if (parent)
-  { parent->append(this); } 
+  { parent->append(this); }
 }
 
 int TreeItem::row() const
-{ 
-  if (m_parent) 
+{
+  if (m_parent)
   { return m_parent->children().indexOf(const_cast<TreeItem*>(this)); }
-  
-  return 0; 
+
+  return 0;
 };
 
 void CategoryItem::append(TreeItem* item)
@@ -44,5 +44,5 @@ FunctionItem::FunctionItem(const Function& function, TreeItem* parent) : TreeIte
 FunctionItem::~FunctionItem()
 { delete m_function; };
 
-const QString& FunctionItem::text() const
+QString FunctionItem::text() const
 { return m_function->name(); }

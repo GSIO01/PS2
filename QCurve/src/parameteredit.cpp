@@ -45,8 +45,6 @@ void ParameterEdit::initComponents()
   lyt->addWidget(m_from);
   lyt->addWidget(m_formula);
   lyt->addWidget(m_to);
-
-  //setToolTip(param.description());
 }
 
 void ParameterEdit::setParameter(const Parameter& param)
@@ -57,4 +55,8 @@ void ParameterEdit::setParameter(const Parameter& param)
 
   m_from->setValue(param.from());
   m_to->setValue(param.to());
+
+  QString toolTip = QString("<b>%1</b><br/>%2<br/>%3").arg(param.name()).
+    arg(param.description()).arg(param.toString());
+  setToolTip(toolTip);
 }

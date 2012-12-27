@@ -12,38 +12,44 @@
 
 #include <QtCore/qmath.h> //TODO
 
-#include <QtCore/QDebug>
-
 #include "Core/Function"
 
-Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
- , m_animationDelay(1), m_stepRange(0.005), m_function(0)
-{
-  setMouseTracking(true);
+double round(double val)
+{ return (val > 0.0) ? floor(val + 0.5) : ceil(val - 0.5); }
 
-  QTimer::singleShot(0, this, SLOT(init()));
-}
+Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
+  , m_animationDelay(1), m_stepRange(0.005), m_function(0)
+{ QTimer::singleShot(0, this, SLOT(init())); }
 
 Graph2D::~Graph2D()
 { }
 
 void Graph2D::init()
 {
+  m_repeat = false;
+  m_showGrid = true;
+  m_xAngle = 0;
+  m_yAngle = 0;
+
   setScene(new QGraphicsScene(this));
   scene()->setSceneRect(-1.5, -1.5, 3, 3);
 
-  //setRenderHints(QPainter::Antialiasing);
+  setRenderHints(QPainter::Antialiasing);
+  setOptimizationFlags(QGraphicsView::DontSavePainterState | QGraphicsView::DontAdjustForAntialiasing);
   scale(1, -1);
+
+  setMouseTracking(true);
 
   m_timer = new QTimer(this);
   m_timer->setInterval(m_animationDelay);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(drawFragment()));
 }
 
-void Graph2D::setAnimationDelay(int delay)
+void Graph2D::setAnimationDelay(int delay, bool repeat)
 {
   if (delay < 0) { m_animationDelay = 0; }
   else { m_animationDelay = delay; }
+  m_repeat = repeat;
 
   m_timer->stop();
   m_timer->setInterval(m_animationDelay);
@@ -62,22 +68,14 @@ void Graph2D::setStepRange(float step)
 void Graph2D::plot(const Function& function)
 {
   if (m_timer->isActive()) { m_timer->stop(); }
-
-  //TODO/ Reuse if possible
   if (m_function) { delete m_function; }
+
+  m_xAngle = 0;
+  m_yAngle = 0;
+
   m_function = function.clone();
 
-  /*if (m_function->dimension().isNull())
-  {
-    //precalculate to get boundaries...
-    for (double t = m_function->parameter().from(); t < m_function->parameter().to() + m_stepRange; t += m_stepRange)
-    {
-      m_function->calculateX(t);
-      m_function->calculateY(t);
-    }
-  }*/
-
-  scene()->setSceneRect(m_function->dimension());
+  updateSceneRect();
   fitInView();
   setScaleFactor(50);
 
@@ -103,18 +101,10 @@ void Graph2D::redraw()
 
   m_t = m_function->parameter().from();
 
-  if (m_function->name() != "Helix")  //TODO add identifier for 3D/2D function
-  {
-    m_lastX = m_function->calculateX(m_t);
-    m_lastY = m_function->calculateY(m_t);
-  }
-  else
-  {
-    Point p(m_function->calculateX(m_t), m_function->calculateY(m_t), m_function->calculateZ(m_t));
-    p = transfromTo2D(p);
-    m_lastX = p.X();
-    m_lastY = p.Y();
-  }
+  Point p(m_function->calculateX(m_t), m_function->calculateY(m_t), m_function->calculateZ(m_t));
+  p = transfromTo2D(p);
+  m_lastX = p.X();
+  m_lastY = p.Y();
 
   if (m_animationDelay != 0) { m_timer->start(); }
   else { drawFragment(); }
@@ -128,18 +118,10 @@ void Graph2D::drawFragment()
   m_t += m_stepRange;
   double x2; double y2;
 
-  if (m_function->name() != "Helix") //TODO add identifier for 3D/2D function
-  {
-    x2 = m_function->calculateX(m_t);
-    y2 = m_function->calculateY(m_t);
-  }
-  else
-  {
-    Point p(m_function->calculateX(m_t), m_function->calculateY(m_t), m_function->calculateZ(m_t));
-    p = transfromTo2D(p);
-    x2 = p.X();
-    y2 = p.Y();
-  }
+  Point p(m_function->calculateX(m_t), m_function->calculateY(m_t), m_function->calculateZ(m_t));
+  p = transfromTo2D(p);
+  x2 = p.X();
+  y2 = p.Y();
 
   addLineToScene(m_functionGroup, m_lastX, m_lastY, x2, y2);
 
@@ -148,13 +130,14 @@ void Graph2D::drawFragment()
   if (m_t >= m_function->parameter().to() + m_stepRange)
   {
     //mark special points after the complete function is drawn
-    foreach (const Point& p, m_function->points())
+    foreach (const Point& p, m_function->points()) //TODO apply transformation
     {
-      addRectToScene(m_functionGroup, p.X()- 0.025, p.Y() - 0.025, 0.05, 0.05);
+      QGraphicsItem* item = addRectToScene(m_functionGroup, p.X()- 0.025, p.Y() - 0.025, 0.05, 0.05);
+      item->setToolTip(p.toString());
       addTextToScene(m_functionGroup, p.name(), p.X() - 0.1, p.Y() - 0.1);
     }
 
-    if (m_animationDelay != 0) //repeat the anmation...
+    if (m_animationDelay != 0 && m_repeat) //repeat the anmation...
     {
       m_ignoreAutoRedraw = false;
       QTimer::singleShot(4000, this, SLOT(autoRedraw()));
@@ -174,27 +157,26 @@ Point Graph2D::transfromTo2D(const Point& p)
   double y0 = m_function->getVariable("y0");
   double z0 = m_function->getVariable("z0");
 
-  Point viewer(x0, y0, 5 + z0); //TODO
-  Point r(0, 0, 0); //TODO
-  Point cam(x0, y0, 5 + z0); //TODO
+  Point viewer(x0, y0, 1 + z0); //TODO
+  Point cam(x0, y0, 1 + z0); //TODO
+  Point r = Point(m_xAngle, m_yAngle, 0).toDegree(); //TODO
 
-  Point radR = r.toRadial();
-
-  double cosX = qCos(r.X()); double sinX = qSin(r.X());
-  double cosY = qCos(r.Y()); double sinY = qSin(r.Y());
-  double cosZ = qCos(r.Z()); double sinZ = qSin(r.Z());
+  double cosX = cos(r.X()); double sinX = sin(r.X());
+  double cosY = cos(r.Y()); double sinY = sin(r.Y());
+  double cosZ = cos(r.Z()); double sinZ = sin(r.Z());
 
   double x = cosY * (sinZ * (p.Y() - cam.Y())
-                   + cosZ * (p.X() - cam.X())) - sinY * (p.Z() - cam.Z());
+                   + cosZ * (p.X() - cam.X()))
+                   - sinY * (p.Z() - cam.Z());
   double y = sinX * (cosY * (p.Z() - cam.Z())
-                   + sinY * (sinZ * (p.Y() - cam.Y()) + cosZ * (p.X() - cam.X())))
-                   + cosX * (cosZ * (p.Y() - cam.Y()) - sinZ * (p.X() - cam.X()));
+           + sinY * (sinZ * (p.Y() - cam.Y()) + cosZ * (p.X() - cam.X())))
+           + cosX * (cosZ * (p.Y() - cam.Y()) - sinZ * (p.X() - cam.X()));
   double z = cosX * (cosY * (p.Z() - cam.Z())
-                   + sinY * (sinZ * (p.Y() - cam.Y()) + cosZ * (p.X() - cam.X())))
-                   - sinX * (cosZ * (p.Y() - cam.Y()) - sinZ * (p.X() - cam.X()));
+           + sinY * (sinZ * (p.Y() - cam.Y()) + cosZ * (p.X() - cam.X())))
+           - sinX * (cosZ * (p.Y() - cam.Y()) - sinZ * (p.X() - cam.X()));
 
-  x = (x - viewer.X()) * (z / viewer.Z()) + x0;
-  y = (y - viewer.Y()) * (z / viewer.Z()) + y0;
+  x = (x - viewer.X()) * (z / viewer.Z());
+  y = (y - viewer.Y()) * (z / viewer.Z());
 
   return Point(x, y);
 }
@@ -210,58 +192,58 @@ void Graph2D::drawCoordinateSystem()
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
   { delete m_coordSysGroup.takeAt(i); }
 
-  double x0 = 0;
-  double y0 = 0;
-  if (m_function)
-  {
-    x0 = m_function->getVariable("x0");
-    y0 = m_function->getVariable("y0");
-  }
+  QRectF rect = QRectF(mapToScene(0, 0),
+                       mapToScene(viewport()->width(), viewport()->height()));
 
-  QRectF rect(mapToScene(0, 0), mapToScene(viewport()->width(), viewport()->height()));
+  if (rect.left() > sceneRect().left()) { rect.setLeft(sceneRect().left()); }
+  if (rect.right() < sceneRect().right()) { rect.setRight(sceneRect().right()); }
+  if (rect.bottom() > sceneRect().bottom()) { rect.setBottom(sceneRect().bottom()); }
+  if (rect.top() < sceneRect().top()) { rect.setTop(sceneRect().top()); }
 
-  double scale = scaleFactor();
-  //coordinate system should always fill the entire visible viewport
-  double w = (scale >= 100) ?  rect.width() /2 * scale/100 :  rect.width() /2;
-  double h = (scale >= 100) ? -rect.height()/2 * scale/100 : -rect.height()/2;
+  double l = rect.left(); double r = rect.right();
+  double b = rect.bottom(); double t = rect.top();
 
   //y-axis arrowheads
-  addLineToScene(m_coordSysGroup, color, 0, -h + y0,  0.05, -h + y0 + 0.1);
-  addLineToScene(m_coordSysGroup, color, 0, -h + y0, -0.05, -h + y0 + 0.1);
-  addLineToScene(m_coordSysGroup, color, 0,  h + y0,  0.05,  h + y0 - 0.1);
-  addLineToScene(m_coordSysGroup, color, 0,  h + y0, -0.05,  h + y0 - 0.1);
+  addLineToScene(m_coordSysGroup, color, 0, b,  0.05, b + 0.1);
+  addLineToScene(m_coordSysGroup, color, 0, b, -0.05, b + 0.1);
+  addLineToScene(m_coordSysGroup, color, 0, t,  0.05, t - 0.1);
+  addLineToScene(m_coordSysGroup, color, 0, t, -0.05, t - 0.1);
 
-  int range = 0;
-  if (h >= 20) { range = 10; }
-  else if (h >= 8) { range = 5; }
+  double h = t-b;
+  double w = r-l;
+
+  double gridRange = 1;
+  if (w < 10 && h < 10) { gridRange = 0.5; } else { gridRange = 1; }
+
+  int range = 1;
+  if (h >= 25) { range = 10; }
+  else if (h >= 15) { range = 5; }
   else { range = 1; }
-  for (int i = -h + y0; i <= (h + y0); i++)
+  for (double i = round(b); i <= round(t); i += gridRange)
   {
-    if (i == -h + y0) continue;
+    if (i == 0) { addLineToScene(m_coordSysGroup, color, l, i, r, i); }
+    else if (m_showGrid) { addLineToScene(m_coordSysGroup, nColor, l, i, r, i); }
 
-    if (i == 0) { addLineToScene(m_coordSysGroup, color, -w + x0, i, w + x0, i); }
-    else { addLineToScene(m_coordSysGroup, nColor, -w + x0, i, w + x0, i); }
-
-    if (!(i % range)) { addTextToScene(m_coordSysGroup, QString::number(i), 0, i); }
+    if (!(int(round(i)) % range))
+    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0.1, i); }
   }
 
   //x-axis arrowheads
-  addLineToScene(m_coordSysGroup, color, -w + x0, 0, -w + x0 + 0.1, -0.05);
-  addLineToScene(m_coordSysGroup, color, -w + x0, 0, -w + x0 + 0.1,  0.05);
-  addLineToScene(m_coordSysGroup, color,  w + x0, 0,  w + x0 - 0.1, -0.05);
-  addLineToScene(m_coordSysGroup, color,  w + x0, 0,  w + x0 - 0.1,  0.05);
+  addLineToScene(m_coordSysGroup, color, l, 0, l + 0.1, -0.05);
+  addLineToScene(m_coordSysGroup, color, l, 0, l + 0.1,  0.05);
+  addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1, -0.05);
+  addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1,  0.05);
 
-  if (w >= 20) { range = 10; }
-  else if (w >= 8) { range = 5; }
+  if (w >= 25) { range = 10; }
+  else if (w >= 15) { range = 5; }
   else { range = 1; }
-  for (int i = -w + x0; i <= (w + x0); i++)
+  for (double i = round(l); i <= round(r); i += gridRange)
   {
-    if (i == -w + x0) continue;
+    if (i == 0) { addLineToScene(m_coordSysGroup, color, i, b, i, t); }
+    else if (m_showGrid) { addLineToScene(m_coordSysGroup, nColor, i, b, i, t); }
 
-    if (i == 0) { addLineToScene(m_coordSysGroup, color, i, -h + y0, i, h + y0); }
-    else { addLineToScene(m_coordSysGroup, nColor, i, -h + y0, i, h + y0); }
-
-    if (!(i % range)) { addTextToScene(m_coordSysGroup, QString::number(i), i, 0); }
+    if (!(int(round(i)) % range))
+    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), i + 0.1, 0); }
   }
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
@@ -287,12 +269,14 @@ void Graph2D::addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, 
   group.append(item);
 }
 
-void Graph2D::addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2)
+QGraphicsItem* Graph2D::addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2)
 {
   QGraphicsRectItem* item = scene()->addRect(x1, y1, x2, y2);
   item->setPen(QPen(QApplication::palette().color(QPalette::WindowText)));
 
   group.append(item);
+
+  return item;
 }
 
 void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QString& text, double x, double y)
@@ -315,6 +299,27 @@ void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QColor& color, 
   group.append(item);
 }
 
+void Graph2D::updateSceneRect()
+{
+  QRectF rect = m_function->dimension();
+  rect.setLeft(rect.left() - 0.5);
+  rect.setRight(rect.right() + 0.5);
+
+  if (rect.top() < rect.bottom())
+  {
+    double top = rect.bottom() + 0.5;
+    rect.setBottom(rect.top() - 0.5);
+    rect.setTop(top);
+  }
+  else
+  {
+    rect.setBottom(rect.bottom() - 0.5);
+    rect.setTop(rect.top() + 0.5);
+  }
+
+  scene()->setSceneRect(rect);
+}
+
 void Graph2D::fitInView()
 {
   QGraphicsView::fitInView(sceneRect(), Qt::KeepAspectRatio);
@@ -324,7 +329,7 @@ void Graph2D::fitInView()
 void Graph2D::setVariable(const QString& var, double value)
 {
   m_function->setVariable(var, value);
-  scene()->setSceneRect(m_function->dimension());
+  updateSceneRect();
 
   int scale = scaleFactor();
   fitInView();
@@ -348,6 +353,12 @@ void Graph2D::setScaleFactor(int factor)
   drawCoordinateSystem();
 
   emit scaleFactorChanged(factor);
+}
+
+void Graph2D::setShowGrid(bool isVisible)
+{
+  m_showGrid = isVisible;
+  drawCoordinateSystem();
 }
 
 void Graph2D::setCenter(const QPointF& centerPoint)
@@ -389,40 +400,25 @@ void Graph2D::setCenter(const QPointF& centerPoint)
 }
 
 void Graph2D::mousePressEvent(QMouseEvent* event)
-{
-  m_lastPanPoint = event->pos();
-  setCursor(Qt::ClosedHandCursor);
-}
+{ setCursor(Qt::ClosedHandCursor); }
 
 void Graph2D::mouseReleaseEvent(QMouseEvent* event)
-{
-  //if (delta < 0.15)
-  //{ emit positionChanged(mapToScene(event->pos().x(), event->pos().y())); }
-
-  setCursor(Qt::ArrowCursor);
-  m_lastPanPoint = QPoint();
-}
+{ setCursor(Qt::ArrowCursor); }
 
 void Graph2D::mouseMoveEvent(QMouseEvent* event)
 {
   QPointF pos = mapToScene(event->pos());
-  if (event->buttons() != Qt::NoButton && !m_lastPanPoint.isNull()) //TODO
+  if (event->buttons() != Qt::NoButton) //TODO
   {
-    QPointF delta = mapToScene(m_lastPanPoint) - pos;
-    m_lastPanPoint = event->pos();
+    QPointF delta = mapToScene(m_lastPanPoint);
 
-    setCenter(center() + delta);
-  }
+    if (delta.x() > 0) { m_yAngle -= 5; }
+    else if (delta.x() < 0) { m_yAngle += 5; }
 
-  if (m_function)
-  {
-    QString tooltip;
-    foreach (const Point& p, m_function->points())
-    {
-      if (p.X() == pos.x() && p.Y() == pos.y()) //TODO don't compare double values...
-      { tooltip += p.name(); }
-    }
-    setToolTip(tooltip);
+    if (delta.y() > 0) { m_xAngle -= 5; }
+    else if (delta.y() < 0) { m_xAngle += 5; }
+
+    redraw();
   }
 
   emit currentPositionChanged(pos.x(), pos.y());
@@ -448,13 +444,9 @@ void Graph2D::resizeEvent(QResizeEvent* event)
 {
   if (scene())
   {
-    //if (m_timer->isActive()) { m_timer->stop(); }
-
     int scaleFact = scaleFactor();
     fitInView();
     setScaleFactor(scaleFact);
-
-   // if (m_animationDelay != 0) { m_timer->start(); }
   }
 
   QRectF visibleArea = mapToScene(rect()).boundingRect();

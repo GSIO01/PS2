@@ -121,22 +121,29 @@ void MainWindow::initMenu()
   actionGroup = new QActionGroup(this);
   action = new QAction(tr("Repeat"), this);
   action->setCheckable(true);
-  action->setChecked(true);
+  action->setData(0);
   actionGroup->addAction(action);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(setAnimationMode()));
   subMenu->addAction(action);
   action = new QAction(tr("Once"), this);
   action->setCheckable(true);
+  action->setChecked(true);
+  action->setData(1);
   actionGroup->addAction(action);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(setAnimationMode()));
   subMenu->addAction(action);
   action = new QAction(tr("None"), this);
   action->setCheckable(true);
+  action->setData(2);
   actionGroup->addAction(action);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(setAnimationMode()));
   subMenu->addAction(action);
   menu->addMenu(subMenu);
 
   action = new QAction(tr("Grid"), this);
   action->setCheckable(true);
   action->setChecked(true);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(setShowGrid(bool)));
   menu->addAction(action);
 
   menu = new QMenu(tr("Help"));
@@ -166,6 +173,23 @@ void MainWindow::initComponents()
   m_splitter->addWidget(m_functionWgt);
 
   setCentralWidget(m_splitter);
+}
+
+void MainWindow::setShowGrid(bool isVisible)
+{ m_functionWgt->setShowGrid(isVisible); }
+
+void MainWindow::setAnimationMode()
+{
+  QAction* action = qobject_cast<QAction*>(sender());
+  if (!action)
+  { return; }
+
+  switch (action->data().toInt())
+  {
+    case 0: m_functionWgt->setAnimationMode(1, true); break;
+    case 1: m_functionWgt->setAnimationMode(1, false); break;
+    case 2: m_functionWgt->setAnimationMode(0, false); break;
+  }
 }
 
 void MainWindow::splitterDoubleClicked()

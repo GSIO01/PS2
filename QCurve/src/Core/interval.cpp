@@ -37,7 +37,7 @@ QString Interval::toString() const
 
   result += (m_lowerIsClosed) ? "[" : "(";
   result += (m_lower != -INF) ? QString::number(m_lower) : QString("-%1").arg(QChar(0x221E));
-  result += ",";
+  result += ", ";
   result += (m_upper != INF) ? QString::number(m_upper) : QChar(0x221E);
   result += (m_upperIsClosed) ? "]" : ")";
 

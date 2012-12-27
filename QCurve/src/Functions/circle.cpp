@@ -28,7 +28,7 @@ Function* Circle::clone() const
 
 QString Circle::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)=<mi>x0</mi>+<mi>r</mi>*<mi>cos</mi>(<mi>t</mi>), y(t)=<mi>y0</mi>+<mi>r</mi>*<mi>sin</mi>(<mi>t</mi>)</math>");
+  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>), y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

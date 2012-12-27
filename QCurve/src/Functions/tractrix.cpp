@@ -79,5 +79,5 @@ void Tractrix::initDimension() //TODO FIXME
 
   double w = -a * cos(3.14) - a * log(tan(3.14 / 2));
 
-  m_dimension = QRectF(-w + x0, y0, w * 2, a);
+  m_dimension = QRectF(w + x0, y0, -w * 2, a);
 }

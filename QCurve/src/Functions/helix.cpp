@@ -7,7 +7,7 @@
 Helix::Helix(double r, double h, double x0, double y0, double z0)
 {
   m_name = "Helix";
-  m_param = Parameter(-PI, PI, "t"); //TODO
+  m_param = Parameter(0, PI * 2, "t"); //TODO
 
   setVariable("x0", x0);
   setVariable("y0", y0);
