@@ -6,11 +6,13 @@
 
 Helix::Helix(double r, double h, double x0, double y0, double z0)
 {
+  m_is2Dimensional = false;
+
   m_name = "Helix";
   m_param = Parameter(0, PI * 2, "t"); //TODO
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   Variable var("z0", z0);
   var.setColor(QColor(255, 0, 0));
@@ -53,14 +55,16 @@ QString Helix::toParametricFormula() const
   return curFormula;
 }
 
-double Helix::calculateX(double t) const
-{ return getVariable("x0") + getVariable("r") * cos(t); }
+Point3D Helix::calculatePoint(double t) const
+{
+  double r = getVariable("r");
+  double h = getVariable("h");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double z0 = getVariable("z0");
 
-double Helix::calculateY(double t) const
-{ return getVariable("y0") + getVariable("r") * sin(t); }
-
-double Helix::calculateZ(double t) const
-{ return getVariable("z0") + getVariable("h") * t; }
+  return Point3D(x0 + r * cos(t), y0 + r * sin(t), z0 + h * t);
+}
 
 void Helix::initDimension()
 {
@@ -71,4 +75,3 @@ void Helix::initDimension()
 
   m_dimension = QRectF(-r + x0, -r + y0, 2 * r, 2 * r);
 }
-

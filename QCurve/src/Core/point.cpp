@@ -1,42 +1,21 @@
 #include "point.h"
 
-#define PI 3.141592653589793
-
-Point::Point(double x, double y, const QString& name, const QString& desc)
-  : m_x(x), m_y(y), m_z(0), m_name(name), m_description(desc)
+Point2D::Point2D(double x, double y)
+  : m_x(x), m_y(y)
 { }
 
-Point::Point(double x, double y, double z, const QString& name, const QString& desc)
-  : m_x(x), m_y(y), m_z(z), m_name(name), m_description(desc)
+bool Point2D::operator==(const Point2D& other) const
+{ return m_x == other.m_x && m_y == other.m_y; }
+
+QString Point2D::toString() const
+{ return QString("%1, %2").arg(QString::number(m_x)).arg(QString::number(m_y)); }
+
+Point3D::Point3D(double x, double y, double z)
+  : m_x(x), m_y(y), m_z(z)
 { }
 
-double Point::X() const
-{ return m_x; }
+bool Point3D::operator==(const Point3D& other) const
+{ return m_x == other.m_x && m_y == other.m_y && m_z == other.m_z; }
 
-double Point::Y() const
-{ return m_y; }
-
-double Point::Z() const
-{ return m_z; }
-
-QString Point::name() const
-{ return m_name; }
-
-QString Point::description() const
-{ return m_description; }
-
-bool Point::operator==(const Point& other)
-{ return (m_x == other.m_x && m_y == other.m_y && m_z == other.m_z) || (!m_name.isEmpty() && m_name == other.m_name); }
-
-Point Point::toRadial() const
-{ return Point(m_x * 180 / PI, m_y * 180 / PI, m_z * 180 / PI); }
-
-Point Point::toDegree() const
-{ return Point(m_x * PI / 180, m_y * PI / 180, m_z * PI / 180); }
-
-QString Point::toString() const
-{
-  return QString("<b>%1</b> [%2, %3, %4]<br/>%5").arg(m_name).
-    arg(QString::number(m_x)).arg(QString::number(m_y)).
-    arg(QString::number(m_z)).arg(m_description);
-}
+QString Point3D::toString() const
+{ return QString("%1, %2, %3").arg(QString::number(m_x)).arg(QString::number(m_y)).arg(QString::number(m_z)); }

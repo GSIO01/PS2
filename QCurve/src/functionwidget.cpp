@@ -136,7 +136,8 @@ void FunctionWidget::varValueChanged(const QString& var, double value)
 void FunctionWidget::positionChanged(double x, double y)
 {
   m_statusBar->clearMessage();
-  m_statusBar->showMessage(tr("Mouse Position(%1, %2)").arg(QString::number(x, 'f', 2)).arg(QString::number(y, 'f', 2)));
+  m_statusBar->showMessage(tr("Mouse Position(%1, %2)").
+    arg(QString::number(x, 'f', 2)).arg(QString::number(y, 'f', 2)));
 }
 
 void FunctionWidget::setShowGrid(bool isVisible)
@@ -144,6 +145,9 @@ void FunctionWidget::setShowGrid(bool isVisible)
 
 void FunctionWidget::setAnimationMode(int delay, bool repeat)
 { m_plotter->setAnimationDelay(delay, repeat); }
+
+void FunctionWidget::setUseAntialiasing(bool useAntialiasing)
+{ m_plotter->setUseAntialiasing(useAntialiasing); }
 
 void FunctionWidget::updateFormula()
 {

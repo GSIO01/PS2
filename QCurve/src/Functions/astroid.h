@@ -14,9 +14,7 @@ class Astroid : public Function
 
     virtual QString toParametricFormula() const;
 
-    virtual double calculateX(double t) const;
-    virtual double calculateY(double t) const;
-    virtual double calculateZ(double t) const;
+    virtual Point3D calculatePoint(double t) const;
 
   protected:
     virtual void initDimension();

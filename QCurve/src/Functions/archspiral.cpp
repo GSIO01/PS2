@@ -9,8 +9,8 @@ ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0)
   m_name = "Archimedean Spiral";
   m_param = Parameter(0, 4 * PI, "t");
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -35,14 +35,13 @@ QString ArchimedeanSpiral::toParametricFormula() const
   return curFormula;
 }
 
-double ArchimedeanSpiral::calculateX(double t) const
-{ return getVariable("x0") + (t * cos(t)); }
+Point3D ArchimedeanSpiral::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-double ArchimedeanSpiral::calculateY(double t) const
-{ return getVariable("y0") + (t * sin(t)); }
-
-double ArchimedeanSpiral::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + t * cos(t), y0 + t * sin(t), 0);
+}
 
 void ArchimedeanSpiral::initDimension()
 {

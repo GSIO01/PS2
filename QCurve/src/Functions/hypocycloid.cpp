@@ -9,8 +9,8 @@ Hypocycloid::Hypocycloid( double a, double c, double x0, double y0)
   m_name = "Hypocycloid";
   m_param = Parameter(0, 2 * PI, "t");
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   Variable var("a");
   var.setColor(QColor(255, 255, 0));
@@ -47,14 +47,16 @@ QString Hypocycloid::toParametricFormula() const
   return curFormula;
 }
 
-double Hypocycloid::calculateX(double t) const
-{ return getVariable("x0") + (0.75 * getVariable("a") * cos(t) + getVariable("c") * cos(3*t)); }
+Point3D Hypocycloid::calculatePoint(double t) const
+{
+  double a = getVariable("a");
+  double c = getVariable("c");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-double Hypocycloid::calculateY(double t) const
-{ return getVariable("y0") + (0.75 * getVariable("a") * sin(t) - getVariable("c") * sin(3*t)); }
-
-double Hypocycloid::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + (0.75 * a * cos(t) + c * cos(3 * t)),
+                 y0 + (0.75 * a * sin(t) - c * sin(3 * t)), 0);
+}
 
 void Hypocycloid::initDimension()
 {

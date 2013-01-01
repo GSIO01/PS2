@@ -17,8 +17,8 @@ Limacon::Limacon(double a, double b, double x0, double y0)
   var.setColor(QColor(0, 255, 255));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -43,14 +43,17 @@ QString Limacon::toParametricFormula() const
   return curFormula;
 }
 
-double Limacon::calculateX(double t) const
-{ return getVariable("x0") + (2 * getVariable("a") * cos(t) + getVariable("b")) * cos(t); }
+Point3D Limacon::calculatePoint(double t) const
+{
+  double a = getVariable("a");
+  double b = getVariable("b");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-double Limacon::calculateY(double t) const
-{ return getVariable("y0") + (2 * getVariable("a") * cos(t) + getVariable("b")) * sin(t); }
+  double tmp = 2 * a * cos(t) + b;
 
-double Limacon::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + tmp * cos(t), y0 + tmp * sin(t), 0);
+}
 
 void Limacon::initDimension()
 {

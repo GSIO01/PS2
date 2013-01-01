@@ -1,7 +1,9 @@
 #include "function.h"
 
+#include <QtCore/QDebug>
+
 Function::Function()
-  : m_dimension(QRectF(0, 0, 0, 0))
+  : m_dimension(QRectF(0, 0, 0, 0)), m_is2Dimensional(true)
 {
   Variable var("x0", 0);
   var.setColor(QColor(0, 0, 255));
@@ -17,7 +19,11 @@ Function::Function()
 }
 
 Function::~Function()
-{ }
+{
+  //TODO clear/delete helper items -> clone items in copy constructor...
+  //for (int i = m_helper.count() - 1; i >= 0; i--)
+  //{ delete m_helper.takeAt(i); }
+}
 
 Parameter& Function::parameter() const
 { return const_cast<Parameter&>(m_param); }
@@ -43,6 +49,9 @@ double Function::getVariable(const QString& name) const
 }
 
 void Function::setVariable(const QString& name, double value)
+{ setVariable(name, value, true); }
+
+void Function::setVariable(const QString& name, double value, bool triggerUpdate)
 {
   Variable tmp(name, value);
   if (m_variables.contains(tmp)) //TODO
@@ -54,8 +63,11 @@ void Function::setVariable(const QString& name, double value)
   }
   else { m_variables.append(Variable(name, value)); }
 
-  updatePoints(name, value);
-  initDimension();
+  if (triggerUpdate)
+  {
+    updatePoints(name, value);
+    initDimension();
+  }
 }
 
 void Function::setVariable(const Variable& variable)
@@ -68,20 +80,22 @@ void Function::setVariable(const Variable& variable)
   }
   else { m_variables.append(variable); }
 
-  updatePoints(variable.name(), variable.value());
-  initDimension();
+  //updatePoints(variable.name(), variable.value());
+  //initDimension();
 }
 
-void Function::setPoint(const Point& point)
+Primitive* Function::getHelperItem(const QString& name) const
 {
-  if (m_points.contains(point))
-  { m_points.removeOne(point); }
-
-  m_points.append(point);
+  for (int i = 0; i < m_helper.count(); i++)
+  {
+    Primitive* item = m_helper.at(i);
+    if (item->name() == name)
+    { return item; }
+  }
 }
 
-QList<Point> Function::points() const
-{ return m_points; }
+QList<Primitive*> Function::helperItems() const
+{ return m_helper; }
 
 const QRectF& Function::dimension() const
 { return m_dimension; }

@@ -1,5 +1,7 @@
 #include "ellipse.h"
 
+#include "Primitives/GraphicalPoint"
+
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
@@ -21,8 +23,8 @@ Ellipse::Ellipse(double a, double b, double x0, double y0)
   var.interval().setLowerEnd(0);
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   updatePoints();
   initDimension();
@@ -55,42 +57,54 @@ void Ellipse::updatePoints(const QString& name, double value)
   double a = getVariable("a");
   double b = getVariable("b");
 
-  QString desc = "One focus point of the ellipse. \
-    The foci always lie on the major (longest) axis and \
-    are equidistant from the center point.";
+  Point3D f1; Point3D f2;
   if (b < a)
   {
     double f = sqrt(pow(a, 2) - pow(b, 2));
-    setPoint(Point(-f + x0, y0, "F1", desc));
-    setPoint(Point( f + x0, y0, "F2", desc));
+    f1 = Point3D(-f + x0, y0, 0);
+    f2 = Point3D( f + x0, y0, 0);
   }
   else
   {
     double f = sqrt(pow(b, 2) - pow(a, 2));
-    setPoint(Point(x0, -f + y0, "F1", desc));
-    setPoint(Point(x0,  f + y0, "F2", desc));
+    f1 = Point3D(x0, -f + y0, 0);
+    f2 = Point3D(x0,  f + y0, 0);
   }
 
-  if (name != "b")
+  if (name.isNull()) // first call -> init
   {
-    setPoint(Point( a + x0, y0, "a" ));
-    setPoint(Point(-a + x0, y0, "-a"));
+    m_helper.clear();
+    QString desc = "One focus point of the ellipse. \
+    The foci always lie on the major (longest) axis and \
+    are equidistant from the center point.";
+
+    m_helper.append(new GraphicalPoint(f1, "F1", desc));
+    m_helper.append(new GraphicalPoint(f2, "F2", desc));
+    m_helper.append(new GraphicalPoint(Point3D( a + x0, y0, 0), "a"));
+    m_helper.append(new GraphicalPoint(Point3D(-a + x0, y0, 0), "-a"));
+    m_helper.append(new GraphicalPoint(Point3D(x0,  b + y0, 0), "b"));
+    m_helper.append(new GraphicalPoint(Point3D(x0, -b + y0, 0), "-b"));
   }
-  if (name != "a")
+  else //update helper items
   {
-    setPoint(Point(x0,-b + y0, "-b"));
-    setPoint(Point(x0, b + y0, "b" ));
+    ((GraphicalPoint*)getHelperItem("F1"))->setPoint(f1);
+    ((GraphicalPoint*)getHelperItem("F2"))->setPoint(f2);
+    ((GraphicalPoint*)getHelperItem("a"))->setPoint(Point3D( a + x0, y0, 0));
+    ((GraphicalPoint*)getHelperItem("-a"))->setPoint(Point3D(-a + x0, y0, 0));
+    ((GraphicalPoint*)getHelperItem("b"))->setPoint(Point3D(x0,  b + y0, 0));
+    ((GraphicalPoint*)getHelperItem("-b"))->setPoint(Point3D(x0, -b + y0, 0));
   }
 }
 
-double Ellipse::calculateX(double t) const
-{ return getVariable("x0") + getVariable("a") * qCos(t); }
+Point3D Ellipse::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
+  double b = getVariable("b");
 
-double Ellipse::calculateY(double t) const
-{ return getVariable("y0") + getVariable("b") * qSin(t); }
-
-double Ellipse::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + a * cos(t), y0 + b * sin(t), 0);
+}
 
 void Ellipse::initDimension()
 {

@@ -13,8 +13,8 @@ Lemniscate::Lemniscate(double a, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -40,26 +40,21 @@ QString Lemniscate::toParametricFormula() const
   return curFormula;
 }
 
-double Lemniscate::calculateX(double t) const
+Point3D Lemniscate::calculatePoint(double t) const
 {
-  double result = getVariable("x0") + (getVariable("a") * sqrt(2 * cos(2 * t)) * cos(t));
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-  if (result != result) { return getVariable("x0"); }
+  double tmp = a * sqrt(2 * cos(2 * t));
+  double x = x0 + (tmp * cos(t));
+  double y = y0 + (tmp * sin(t));
 
-  return result;
+  if (x != x) { x = x0; }
+  if (y != y) { y = y0; }
+
+  return Point3D(x, y, 0);
 }
-
-double Lemniscate::calculateY(double t) const
-{
-  double result = getVariable("y0") + (getVariable("a") * sqrt(2* cos(2 * t)) * sin(t));
-
-  if (result != result) { return getVariable("y0"); }
-
-  return result;
-}
-
-double Lemniscate::calculateZ(double t) const
-{ return 0; }
 
 void Lemniscate::initDimension()
 {

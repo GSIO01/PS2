@@ -108,11 +108,12 @@ void MainWindow::initMenu()
   QActionGroup* actionGroup = new QActionGroup(this);
   action = new QAction(tr("Paralell"), this);
   action->setCheckable(true);
-  action->setChecked(true);
+  action->setEnabled(false);
   actionGroup->addAction(action);
   subMenu->addAction(action);
   action = new QAction(tr("Perspective"), this);
   action->setCheckable(true);
+  action->setChecked(true);
   actionGroup->addAction(action);
   subMenu->addAction(action);
   menu->addMenu(subMenu);
@@ -146,6 +147,12 @@ void MainWindow::initMenu()
   connect(action, SIGNAL(triggered(bool)), this, SLOT(setShowGrid(bool)));
   menu->addAction(action);
 
+  action = new QAction(tr("Antialiasing"), this);
+  action->setCheckable(true);
+  action->setChecked(true);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(setUseAntialiasing(bool)));
+  menu->addAction(action);
+
   menu = new QMenu(tr("Help"));
   action = new QAction(QIcon::fromTheme("help-contents"), tr("Help"), this);
   //connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
@@ -177,6 +184,9 @@ void MainWindow::initComponents()
 
 void MainWindow::setShowGrid(bool isVisible)
 { m_functionWgt->setShowGrid(isVisible); }
+
+void MainWindow::setUseAntialiasing(bool useAntialiasing)
+{ m_functionWgt->setUseAntialiasing(useAntialiasing); }
 
 void MainWindow::setAnimationMode()
 {

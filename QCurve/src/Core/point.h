@@ -1,48 +1,42 @@
 #ifndef POINT_H
-#define POINT_h
+#define POINT_H
 
 #include <QtCore/QString>
 
-/***
- * Represents a point in space.
- *
- * A point is a ordered pair or rather a ordered triplet of numbers.
- */
-class Point
+class Point2D
 {
   public:
-    /*** Constructs a new 2 dimensional point. */
-    Point(double x, double y, const QString& name = QString(), const QString& desc = QString());
-    /*** Constructs a new point in the 3 dimensional space. */
-    Point(double x, double y, double z, const QString& name = QString(), const QString& desc = QString());
+    Point2D(double x = 0, double y = 0);
 
-    /*** Returns the horizontal component of the point. */
-    double X() const;
-    /*** Returns the vertical component of the point. */
-    double Y() const;
-    /*** Returns the depth component of the point. */
-    double Z() const;
-
-    /*** Returns a descriptive name e.g. the focal point of an ellipse. */
-    QString name() const;
-
-    /*** Returns a description for this point. */
-    QString description() const;
-
-    bool operator==(const Point& other);
-
-    Point toRadial() const;
-    Point toDegree() const;
+    double x() const { return m_x; }
+    double y() const { return m_y; }
 
     QString toString() const;
 
-  private:
+    bool operator==(const Point2D& other) const;
+
+  protected:
+    double m_x;
+    double m_y;
+};
+
+class Point3D
+{
+  public:
+    Point3D(double x = 0, double y = 0, double z = 0);
+
+    double x() const { return m_x; }
+    double y() const { return m_y; }
+    double z() const { return m_z; }
+
+    QString toString() const;
+
+    bool operator==(const Point3D& other) const;
+
+  protected:
     double m_x;
     double m_y;
     double m_z;
-
-    QString m_name;
-    QString m_description;
 };
 
 #endif

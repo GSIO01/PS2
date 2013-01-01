@@ -9,8 +9,8 @@ Astroid::Astroid(double a, double x0, double y0)
   m_name = "Astroid";
   m_param = Parameter(0, 2 * PI, "t");
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   Variable var("a");
   var.setColor(QColor(255, 255, 0));
@@ -41,14 +41,14 @@ QString Astroid::toParametricFormula() const
   return curFormula;
 }
 
-double Astroid::calculateX(double t) const
-{ return getVariable("x0") + (getVariable("a") * pow(cos(t), 3)); }
+Point3D Astroid::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
 
-double Astroid::calculateY(double t) const
-{ return getVariable("y0") + (getVariable("a") * pow(sin(t), 3)); }
-
-double Astroid::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + a * pow(cos(t), 3), x0 + a * pow(sin(t), 3), 0);
+}
 
 void Astroid::initDimension()
 {
@@ -57,7 +57,7 @@ void Astroid::initDimension()
   double a = getVariable("a");
 
   double w0 = a * pow(cos(PI), 3);
-  double h0 = a * pow(sin(PI*1.5), 3);
+  double h0 = a * pow(sin(PI * 1.5), 3);
 
   m_dimension = QRectF(x0 + w0, y0 + h0, -w0 * 2, -h0 * 2);
 }

@@ -6,8 +6,9 @@
 #include <QtCore/QList>
 
 #include "Core/Variable"
-#include "Core/Point"
 #include "Core/Parameter"
+#include "Core/Point"
+#include "Core/Primitive"
 
 /***
  * Represents a (abstract) class for mathmatical functions.
@@ -27,6 +28,8 @@ class Function
     /*** Returns the name of the function class. */
     QString name() const { return m_name; }
 
+    bool is2Dimensional() const { return m_is2Dimensional; }
+
     /*** Returns the parameter. */
     Parameter& parameter() const;
 
@@ -39,34 +42,35 @@ class Function
     /*** Returns the value of the specified variable. */
     double getVariable(const QString& name) const;
 
-    void setVariable(const Variable& var);
     void setVariable(const QString& name, double value);
 
-    /*** Returns a list of prominent points. */
-    QList<Point> points() const;
+    /*** Returns a list of helper primitves. */
+    QList<Primitive*> helperItems() const;
 
     /*** Returns the boundaries as rectangle. */
     const QRectF& dimension() const;
 
-    virtual double calculateY(double t) const = 0;
-    virtual double calculateX(double t) const = 0;
-    virtual double calculateZ(double t) const = 0;
+    virtual Point3D calculatePoint(double t) const = 0;
 
   protected:
+    void setVariable(const QString& name, double value, bool triggerUpdate);
+    void setVariable(const Variable& var);
+
     /*** Helper function to update points after a variable has changed. */
     virtual void updatePoints(const QString& var = QString(), double value = 0);
     /*** Calculates the boundaries. */
-    virtual void initDimension() { };
+    virtual void initDimension() = 0;
 
-    /*** Adds/Replaces a prominent point. */
-    void setPoint(const Point& point);
+    Primitive* getHelperItem(const QString& name) const;
 
     QString m_name;
     Parameter m_param;
     QList<Variable> m_variables;
 
-    mutable QRectF m_dimension;
-    QList<Point> m_points;
+    QRectF m_dimension;
+    QList<Primitive*> m_helper;
+
+    bool m_is2Dimensional;
 };
 
 #endif

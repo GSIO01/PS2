@@ -17,8 +17,8 @@ Hyperbola::Hyperbola(double a, double b, double x0, double y0)
   var.setColor(QColor(0, 255, 255));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -43,14 +43,15 @@ QString Hyperbola::toParametricFormula() const
   return curFormula;
 }
 
-double Hyperbola::calculateX(double t) const
-{ return getVariable("x0") + getVariable("a") * cosh(t); }
+Point3D Hyperbola::calculatePoint(double t) const
+{
+  double a = getVariable("a");
+  double b = getVariable("b");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-double Hyperbola::calculateY(double t) const
-{ return getVariable("y0") + getVariable("b") * sinh(t); }
-
-double Hyperbola::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + a * cosh(t), y0 + b * sinh(t), 0);
+}
 
 void Hyperbola::initDimension()
 {

@@ -15,8 +15,8 @@ Parabola::Parabola(double p, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -41,32 +41,14 @@ QString Parabola::toParametricFormula() const
   return curFormula;
 }
 
-double Parabola::calculateX(double t) const
+Point3D Parabola::calculatePoint(double t) const
 {
-  double result = getVariable("x0") + t * t;
+  double p = getVariable("p");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-   if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
-  return result;
+  return Point3D(x0 + t * t, y0 + sqrt(2 * p) * t, 0);
 }
-
-double Parabola::calculateY(double t) const
-{
-  double result = getVariable("y0") + sqrt(2 * getVariable("p")) * t;
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
-
-double Parabola::calculateZ(double t) const
-{ return 0; }
 
 void Parabola::initDimension()
 {
@@ -74,8 +56,8 @@ void Parabola::initDimension()
   double p = getVariable("p");
   double y0 = getVariable("y0");
 
-  double h = calculateY(m_param.to()) - calculateY(m_param.from());
-  double w = m_param.to() * m_param.to();  //width is correct but...
+  double h = calculatePoint(m_param.to()).y() - calculatePoint(m_param.from()).y(); //TODO
+  double w = m_param.to() * m_param.to();
 
   m_dimension = QRectF(x0, y0 + sqrt(2* p) * m_param.from(), w, h);
 }

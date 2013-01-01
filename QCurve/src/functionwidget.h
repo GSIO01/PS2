@@ -32,6 +32,7 @@ class FunctionWidget : public QWidget
 
     void setAnimationMode(int delay, bool repeat);
     void setShowGrid(bool isVisible);
+    void setUseAntialiasing(bool useAntialiasing);
 
   private slots:
     void fromValueChanged(double value);

@@ -33,25 +33,7 @@ class Clothoids : public Function
 
     virtual QString toParametricFormula() const;
 
-    /**
-    * Berechnung der X-Koordinate mittels nummerischer Integration
-    * Integrationsmethode Rechteckregel
-    * @param t Intervall
-    */
-    virtual double calculateX(double t) const;
-
-    /**
-    * Berechnung der Y-Koordinate mittels nummerischer Integration
-    * Integrationsmethode Rechteckregel
-    * @param t Intervall
-    */
-    virtual double calculateY(double t) const;
-
-  /**
-  * Z-Koordinate = 0
-  * @param t Intervall
-  */
-    virtual double calculateZ(double t) const;
+    virtual Point3D calculatePoint(double t) const;
 
   protected:
     void initDimension();

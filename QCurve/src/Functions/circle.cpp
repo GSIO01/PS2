@@ -14,8 +14,8 @@ Circle::Circle(double r, double x0, double y0)
   var.interval().setLowerEnd(0);
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -40,14 +40,14 @@ QString Circle::toParametricFormula() const
   return curFormula;
 }
 
-double Circle::calculateX(double t) const
-{ return getVariable("x0") + getVariable("r") * qCos(t); }
+Point3D Circle::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double r = getVariable("r");
 
-double Circle::calculateY(double t) const
-{ return getVariable("y0") + getVariable("r") * qSin(t); }
-
-double Circle::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + r * cos(t), y0 + r * sin(t), 0);
+}
 
 void Circle::initDimension()
 {

@@ -13,8 +13,8 @@ LogarithmicSpiral::LogarithmicSpiral(double a, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -39,14 +39,16 @@ QString LogarithmicSpiral::toParametricFormula() const
   return curFormula;
 }
 
-double LogarithmicSpiral::calculateX(double t) const
-{ return getVariable("x0") + pow(getVariable("a"), t) * cos(t); }
+Point3D LogarithmicSpiral::calculatePoint(double t) const
+{
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-double LogarithmicSpiral::calculateY(double t) const
-{ return getVariable("y0") + pow(getVariable("a"), t) * sin(t); }
+  double powat = pow(a, t);
 
-double LogarithmicSpiral::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + powat * cos(t), y0 + powat * sin(t), 0);
+}
 
 void LogarithmicSpiral::initDimension()
 {

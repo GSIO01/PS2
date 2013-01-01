@@ -9,8 +9,8 @@ Cissoid::Cissoid(double a, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -35,14 +35,16 @@ QString Cissoid::toParametricFormula() const
   return curFormula;
 }
 
-double Cissoid::calculateX(double t) const
-{ return getVariable("x0") + ((getVariable("a") * t * t) / (1 + (t * t))); }
+Point3D Cissoid::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
 
-double Cissoid::calculateY(double t) const
-{ return getVariable("y0") + ((getVariable("a") * t * t * t) / (1 + (t * t))); }
+  double t2 = t * t;
 
-double Cissoid::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + ((a * t2) / (1 + t2)), y0 + ((a * t2 * t) / (1 + t2)), 0);
+}
 
 void Cissoid::initDimension()
 {

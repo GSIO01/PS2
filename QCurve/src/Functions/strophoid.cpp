@@ -9,8 +9,8 @@ Strophoid::Strophoid(double a, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -35,32 +35,16 @@ QString Strophoid::toParametricFormula() const
   return curFormula;
 }
 
-double Strophoid::calculateX(double t) const
+Point3D Strophoid::calculatePoint(double t) const
 {
-  double result = getVariable("x0") + ((getVariable("a") * ((t*t)-1))/(1+(t*t)));
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
+  double t2 = t * t;
 
-  return result;
+  return Point3D(x0 + (a * (t2 - 1))/(1 + t2), x0 + (a * t * (t2 - 1))/(1 + t2), 0);
 }
-
-double Strophoid::calculateY(double t) const
-{
-  double result = getVariable("y0") + ((getVariable("a") * t * ((t*t)-1))/(1+(t*t)));
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
-
-double Strophoid::calculateZ(double t) const
-{ return 0; }
 
 void Strophoid::initDimension()
 {

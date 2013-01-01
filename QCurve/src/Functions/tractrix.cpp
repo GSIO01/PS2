@@ -15,8 +15,8 @@ Tractrix::Tractrix(double a, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  setVariable("x0", x0);
-  setVariable("y0", y0);
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
 
   initDimension();
 }
@@ -41,35 +41,18 @@ QString Tractrix::toParametricFormula() const
   return curFormula;
 }
 
-double Tractrix::calculateX(double t) const
+Point3D Tractrix::calculatePoint(double t) const
 {
-  double result = getVariable("x0") + (-getVariable("a") * cos(t) - getVariable("a") * log(tan(t / 2)));
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
 
-  if (result > std::numeric_limits<qreal>::max()) { return m_dimension.right();  }
-  else if (result < -std::numeric_limits<qreal>::max()) { return m_dimension.left(); }
+  double x = x0 + (-a * cos(t) - a * log(tan(t / 2)));
+  if (x > std::numeric_limits<qreal>::max()) { x =  m_dimension.right();  }
+  else if (x < -std::numeric_limits<qreal>::max()) { x = m_dimension.left(); }
 
-  if (result < m_dimension.left())
-  { m_dimension.setLeft(result); }
-  else if (result > m_dimension.right())
-  { m_dimension.setRight(result); }
-
-  return result;
+  return Point3D(x, y0 + a * sin(t), 0);
 }
-
-double Tractrix::calculateY(double t) const
-{
-  double result = getVariable("y0") + getVariable("a") * sin(t);
-
-  if (result < m_dimension.bottom())
-  { m_dimension.setBottom(result); }
-  else if (result > m_dimension.top())
-  { m_dimension.setTop(result); }
-
-  return result;
-}
-
-double Tractrix::calculateZ(double t) const
-{ return 0; }
 
 void Tractrix::initDimension() //TODO FIXME
 {

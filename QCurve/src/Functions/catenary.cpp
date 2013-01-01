@@ -9,6 +9,9 @@ Catenary::Catenary(double a, double x0, double y0)
   m_name = "Catenary";
   m_param = Parameter(-1, 1, "t");
 
+  setVariable("x0", x0, false);
+  setVariable("y0", y0, false);
+
   Variable var("a", a);
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
@@ -36,14 +39,14 @@ QString Catenary::toParametricFormula() const
   return curFormula;
 }
 
-double Catenary::calculateX(double t) const
-{ return getVariable("x0") + t; }
+Point3D Catenary::calculatePoint(double t) const
+{
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
 
-double Catenary::calculateY(double t) const
-{ return getVariable("y0") + getVariable("a") * cosh(t / getVariable("a")); }
-
-double Catenary::calculateZ(double t) const
-{ return 0; }
+  return Point3D(x0 + t, y0 + a * cosh(t / a), 0);
+}
 
 void Catenary::initDimension()
 {

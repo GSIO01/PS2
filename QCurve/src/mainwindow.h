@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
     void itemActivated(const QModelIndex& idx);
 
     void setShowGrid(bool isVisible);
+    void setUseAntialiasing(bool useAntialiasing);
     void setAnimationMode();
 
   private:
