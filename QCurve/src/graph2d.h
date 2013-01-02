@@ -66,7 +66,7 @@ class Graph2D : public QGraphicsView
 
     void setUseAntialiasing(bool useAntialiasing);
     /** Returns a value indicating whether the graph should be antialised or not.*/
-    bool useAntialiasing() const { m_useAntialiasing; }
+    bool useAntialiasing() const { return m_useAntialiasing; }
 
     /**
      * Returns a reference to the current function.

@@ -1,7 +1,9 @@
 #include "astroid.h"
 
-#include <QtCore/qmath.h> //TODO
+#include "Primitives/GraphicalCircle"
+#include "Primitives/GraphicalLine"
 
+#include <QtCore/qmath.h> //TODO
 #define PI 3.141592653589793
 
 Astroid::Astroid(double a, double x0, double y0)
@@ -13,11 +15,13 @@ Astroid::Astroid(double a, double x0, double y0)
   setVariable("y0", y0, false);
 
   Variable var("a");
+  var.setDescription("The radius of the circle where a circle (r=a/4) rolls around inside.");
   var.setColor(QColor(255, 255, 0));
   var.interval().setLowerEnd(0);
   var.setValue(a);
   setVariable(var);
 
+  updatePoints();
   initDimension();
 }
 
@@ -41,13 +45,57 @@ QString Astroid::toParametricFormula() const
   return curFormula;
 }
 
+void Astroid::updatePoints(const QString& name, double value)
+{
+  Q_UNUSED(value);
+
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
+
+  if (name.isNull())
+  {
+    Primitive* item = new GraphicalCircle(Point3D(x0, y0 + a/4, 0), a/4, "Rc");
+    item->setIsAnimated(true);
+    m_helper.append(item);
+
+    item = new GraphicalCircle(Point3D(x0, y0, 0), a, "K0");
+    item->setIsAnimated(true); //TODO
+    m_helper.append(item);
+
+    item = new GraphicalLine(Point3D(x0, y0 + a/4, 0), Point3D(x0, y0, 0), "Rcl");
+    item->setIsAnimated(true);
+    m_helper.append(item);
+  }
+  else
+  {
+    ((GraphicalLine*)getHelperItem("Rcl"))->setStartPoint(Point3D(x0, y0 + a/4, 0));
+
+    GraphicalCircle* item = (GraphicalCircle*)getHelperItem("Rc");
+    item->setMidPoint(Point3D(x0, y0 + a/4, 0));
+    if (name == "a") { item->setRadius(a/4); }
+
+    item = (GraphicalCircle*)getHelperItem("K0");
+    item->setMidPoint(Point3D(x0, y0, 0));
+    if (name == "a") { item->setRadius(a); }
+  }
+}
+
 Point3D Astroid::calculatePoint(double t) const
 {
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
   double a = getVariable("a");
 
-  return Point3D(x0 + a * pow(cos(t), 3), x0 + a * pow(sin(t), 3), 0);
+  Point3D result(x0 + a * pow(cos(t), 3), x0 + a * pow(sin(t), 3), 0);
+
+  ((GraphicalCircle*)getHelperItem("Rc"))->setMidPoint(Point3D(x0 + ((3*a)/4) * cos(t), y0 + ((3*a)/4) * sin(t), 0));
+
+  GraphicalLine* item = (GraphicalLine*)getHelperItem("Rcl");
+  item->setStartPoint(Point3D(x0 + ((3*a)/4) * cos(t), y0 + ((3*a)/4) * sin(t), 0));
+  item->setEndPoint(Point3D(result.x(), result.y(), 0));
+
+  return result;
 }
 
 void Astroid::initDimension()

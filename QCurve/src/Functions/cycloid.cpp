@@ -50,6 +50,8 @@ QString Cycloid::toParametricFormula() const
 
 void Cycloid::updatePoints(const QString& name, double value)
 {
+  Q_UNUSED(value);
+
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
   double r = getVariable("r");
@@ -64,13 +66,13 @@ void Cycloid::updatePoints(const QString& name, double value)
     item->setIsAnimated(true);
     m_helper.append(item);
   }
-  else if (name == "r")
+  else
   {
     ((GraphicalLine*)getHelperItem("Rcl"))->setStartPoint(Point3D(x0, y0 + r, 0));
 
     GraphicalCircle* item = (GraphicalCircle*)getHelperItem("Rc");
     item->setMidPoint(Point3D(x0, y0 + r, 0));
-    item->setRadius(value);
+    item->setRadius(r);
   }
 }
 
@@ -81,13 +83,13 @@ Point3D Cycloid::calculatePoint(double t) const
   double r = getVariable("r");
   double mu = getVariable("mu");
 
-  Point3D result = Point3D(x0 + r * (t - mu * sin(t)), y0 + r * (1 - mu * cos(t)), 0);
+  Point3D result(x0 + r * (t - mu * sin(t)), y0 + r * (1 - mu * cos(t)), 0);
 
   ((GraphicalCircle*)getHelperItem("Rc"))->setMidPoint(Point3D(result.x() + r * sin(t), y0 + r, 0));
 
-  Primitive* item = getHelperItem("Rcl");
-  ((GraphicalLine*)getHelperItem("Rcl"))->setStartPoint(Point3D(result.x() + r * sin(t), y0 + r, 0));
-  ((GraphicalLine*)getHelperItem("Rcl"))->setEndPoint(Point3D(result.x(), result.y(), 0));
+  GraphicalLine* item = (GraphicalLine*)getHelperItem("Rcl");
+  item->setStartPoint(Point3D(result.x() + r * sin(t), y0 + r, 0));
+  item->setEndPoint(Point3D(result.x(), result.y(), 0));
 
   return result;
 }

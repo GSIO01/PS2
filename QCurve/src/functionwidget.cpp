@@ -151,13 +151,14 @@ void FunctionWidget::setUseAntialiasing(bool useAntialiasing)
 
 void FunctionWidget::updateFormula()
 {
-  QString error_msg;
-  int error_line, error_column;
-  bool result = m_formula->setContent(m_plotter->function().toParametricFormula());
+  QString errMsg;
+  int errLine, errColumn;
+  bool result = m_formula->setContent(m_plotter->function().toParametricFormula(),
+                                      &errMsg, &errLine, &errColumn);
   if (!result)
   {
-    qDebug() << "Parse error: " + error_msg +
-      "(line " + QString::number(error_line) +
-      ", col " + QString::number(error_column) + ")";
+    qDebug() << "Parse error: " + errMsg +
+      "(line " + QString::number(errLine) +
+      ", col " + QString::number(errColumn) + ")";
   }
 }

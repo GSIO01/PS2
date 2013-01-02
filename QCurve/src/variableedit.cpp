@@ -6,7 +6,7 @@
 #include "Widgets/QtMmlWidget"
 
 VariableEdit::VariableEdit(const Variable& var, QWidget* parent)
-  : m_variable(var.name())
+  : QWidget(parent), m_variable(var.name())
 {
   m_variableLbl = new QtMmlWidget();
   m_value = new QDoubleSpinBox();

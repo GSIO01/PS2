@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource>
+    <file>icons/oxygen/index.theme</file>
+    <file>icons/oxygen/16x16/actions/window-close.png</file>
+    <file>icons/oxygen/16x16/actions/help-about.png</file>
+    <file>icons/oxygen/16x16/actions/help-contents.png</file>
+  </qresource>
+</RCC>

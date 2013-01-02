@@ -62,8 +62,8 @@ void Hyperbola::initDimension()
 
   double t = (abs(m_param.to()) > abs(m_param.from())) ? m_param.to() : m_param.from();
   double w = a * cosh(t);
-  double h0 = a * sinh(m_param.from());
-  double h = a * sinh(m_param.to()) - h0;
+  double h0 = b * sinh(m_param.from());
+  double h = b * sinh(m_param.to()) - h0;
 
   m_dimension = QRectF(a + x0, h0 + y0, w, h);
 }

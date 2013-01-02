@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=QCurve
+Icon=qcurve
+Exec=qcurve
+X-DocPath=qcurve/index.html
+Terminal=false
+Categories=Qt;KDE;Education;Math;Science;
+GenericName=Graphical Curve Plotter
+GenericName[de]=Kurvendarsteller

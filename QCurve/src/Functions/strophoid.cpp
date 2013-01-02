@@ -43,7 +43,7 @@ Point3D Strophoid::calculatePoint(double t) const
 
   double t2 = t * t;
 
-  return Point3D(x0 + (a * (t2 - 1))/(1 + t2), x0 + (a * t * (t2 - 1))/(1 + t2), 0);
+  return Point3D(x0 + (a * (t2 - 1))/(1 + t2), y0 + (a * t * (t2 - 1))/(1 + t2), 0);
 }
 
 void Strophoid::initDimension()

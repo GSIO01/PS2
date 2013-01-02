@@ -35,7 +35,7 @@ QList<Variable> Function::variables() const
 { return m_variables; }
 
 void Function::updatePoints(const QString& var, double value)
-{ }
+{ Q_UNUSED(var); Q_UNUSED(value); }
 
 double Function::getVariable(const QString& name) const
 {
@@ -92,6 +92,8 @@ Primitive* Function::getHelperItem(const QString& name) const
     if (item->name() == name)
     { return item; }
   }
+
+  return 0;
 }
 
 QList<Primitive*> Function::helperItems() const

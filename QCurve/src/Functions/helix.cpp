@@ -69,7 +69,7 @@ Point3D Helix::calculatePoint(double t) const
 void Helix::initDimension()
 {
   double r = getVariable("r");
-  double h = getVariable("h");
+  //double h = getVariable("h");
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
 

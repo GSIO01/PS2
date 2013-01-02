@@ -52,6 +52,8 @@ QString Ellipse::toParametricFormula() const
 
 void Ellipse::updatePoints(const QString& name, double value)
 {
+  Q_UNUSED(value);
+
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
   double a = getVariable("a");

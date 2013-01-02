@@ -9,7 +9,7 @@
 
 #define INF std::numeric_limits<double>::infinity()
 
-ParameterEdit::ParameterEdit(QWidget* parent)
+ParameterEdit::ParameterEdit(QWidget* parent) : QWidget(parent)
 {
   initComponents();
 
@@ -18,7 +18,7 @@ ParameterEdit::ParameterEdit(QWidget* parent)
 }
 
 ParameterEdit::ParameterEdit(const Parameter& param, QWidget* parent)
-  : m_parameter(param.name())
+  : QWidget(parent), m_parameter(param.name())
 {
   initComponents();
   setParameter(param);

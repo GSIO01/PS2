@@ -17,7 +17,7 @@ double round(double val) //TODO move
 { return (val > 0.0) ? floor(val + 0.5) : ceil(val - 0.5); }
 
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
-  , m_animationDelay(1), m_stepRange(0.005), m_function(0)
+  , m_function(0), m_stepRange(0.005), m_animationDelay(1)
 { QTimer::singleShot(0, this, SLOT(init())); }
 
 Graph2D::~Graph2D()
@@ -101,18 +101,6 @@ void Graph2D::drawFragment()
   Point2D tmp = transfromTo2D(m_function->calculatePoint(m_t));
   addLineToScene(m_functionGroup, m_lastPoint.x(), m_lastPoint.y(), tmp.x(), tmp.y());
 
-  foreach (Primitive* p, m_function->helperItems()) //TODO/FIXME apply transformation...
-  {
-    if (p->isAnimated())
-    {
-      QGraphicsItem* item = p->toGraphicsItem();
-      item->setZValue(-1);
-      m_helperAnimationGroup.append(item);
-      scene()->addItem(item);
-    }
-    //addTextToScene(m_functionGroup, item->name(), item->point()..x() - 0.1, p.y() - 0.1);
-  }
-
   m_lastPoint = tmp; //replace old point with the new one
 
   if (m_t >= m_function->parameter().to() + m_stepRange)
@@ -120,10 +108,12 @@ void Graph2D::drawFragment()
     //draw helper items after the complete function is drawn
     foreach (Primitive* p, m_function->helperItems()) //TODO apply transformation...
     {
+      if (p->isAnimated()) { continue; }
+
       QGraphicsItem* item = p->toGraphicsItem();
       m_functionGroup.append(item);
       scene()->addItem(item);
-      //addTextToScene(m_functionGroup, item->name(), item->point()..x() - 0.1, p.y() - 0.1);
+      //addTextToScene(m_functionGroup, p->name(), item->pos().x() - 0.1, item->pos().y() - 0.1);
     }
 
     if (m_animationDelay != 0 && m_repeat) //repeat the anmation...
@@ -134,6 +124,17 @@ void Graph2D::drawFragment()
   }
   else
   {
+    foreach (Primitive* p, m_function->helperItems()) //TODO/FIXME apply transformation...
+    {
+      if (p->isAnimated())
+      {
+        QGraphicsItem* item = p->toGraphicsItem();
+        item->setZValue(-1);
+        m_helperAnimationGroup.append(item);
+        scene()->addItem(item);
+      }
+    }
+
     if (m_animationDelay == 0) { drawFragment(); }
     else { m_timer->start(); }
   }
@@ -427,10 +428,16 @@ void Graph2D::setCenter(const QPointF& centerPoint)
 }
 
 void Graph2D::mousePressEvent(QMouseEvent* event)
-{ setCursor(Qt::ClosedHandCursor); }
+{
+  Q_UNUSED(event);
+  setCursor(Qt::ClosedHandCursor);
+}
 
 void Graph2D::mouseReleaseEvent(QMouseEvent* event)
-{ setCursor(Qt::ArrowCursor); }
+{
+  Q_UNUSED(event);
+  setCursor(Qt::ArrowCursor);
+}
 
 void Graph2D::mouseMoveEvent(QMouseEvent* event)
 {

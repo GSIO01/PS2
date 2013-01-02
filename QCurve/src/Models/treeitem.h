@@ -69,8 +69,8 @@ class FunctionItem : public TreeItem
     bool hasChildren() const { return false; }
     const QList<TreeItem*>& children() const { return m_list; }
 
-    void append(TreeItem* item) { }
-    void remove(TreeItem* item) { }
+    void append(TreeItem* item) { Q_UNUSED(item); }
+    void remove(TreeItem* item) { Q_UNUSED(item); }
     void clear() { }
 
   private:

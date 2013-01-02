@@ -3,23 +3,45 @@ PROJECT(QCurve)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 SET(CMAKE_AUTOMOC TRUE)
 
-IF (UNIX AND APPLE)
-  SET()
-ENDIF()
-
 FIND_PACKAGE(Qt4 4.7 REQUIRED QtCore QtGui QtXml)
+
+IF (CMAKE_COMPILER_IS_GNUCXX OR MINGW)
+  ADD_DEFINITIONS("-Wall -Wextra")
+ENDIF (CMAKE_COMPILER_IS_GNUCXX OR MINGW)
+
+ADD_DEFINITIONS(-DQT_NO_STL -DQT_NO_CAST_TO_ASCII)
+
+IF (${CMAKE_BUILD_TYPE} MATCHES "Release")
+  ADD_DEFINITIONS("-O3")
+  ADD_DEFINITIONS(-DNDEBUG)
+  ADD_DEFINITIONS(-DQT_NO_DEBUG_OUTPUT)
+  ADD_DEFINITIONS(-DQT_NO_WARNING_OUTPUT)
+ENDIF (${CMAKE_BUILD_TYPE} MATCHES "Release")
 
 INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
 
-SET(QCurve_SRC src/Core/interval.cpp src/Core/variable.cpp src/Core/parameter.cpp src/Core/primitive.cpp src/Core/point.cpp src/Core/function.cpp
-               src/Primitives/graphicalpoint.cpp src/Primitives/graphicalline.cpp src/Primitives/graphicalcircle.cpp
-               src/Functions/circle.cpp src/Functions/ellipse.cpp src/Functions/cissoid.cpp src/Functions/hyperbola.cpp src/Functions/lemniscate.cpp
-               src/Functions/limacon.cpp src/Functions/parabola.cpp src/Functions/strophoid.cpp src/Functions/astroid.cpp
-               src/Functions/archspiral.cpp src/Functions/logspiral.cpp src/Functions/tractrix.cpp src/Functions/cycloid.cpp
-               src/Functions/hypocycloid.cpp src/Functions/catenary.cpp src/Functions/helix.cpp src/Functions/clothoids.cpp
-               src/Widgets/qtmmlwidget.cpp src/Widgets/splitter.cpp
-               src/Models/treeitem.cpp src/Models/functionitemmodel.cpp
-               src/variableedit.cpp src/parameteredit.cpp src/graph2d.cpp src/functionwidget.cpp src/mainwindow.cpp src/main.cpp)
+ADD_SUBDIRECTORY(icons)
+ADD_SUBDIRECTORY(src)
 
-ADD_EXECUTABLE(QCurve ${QCurve_SRC})
+IF (WIN32)
+  QT4_ADD_RESOURCES(QCURVE_RES oxygen.qrc)
+
+  IF (${CMAKE_BUILD_TYPE} MATCHES "Release")
+    ADD_EXECUTABLE(QCurve WIN32 ${QCURVE_SRCS} ${QCURVE_RES})
+  ELSE (${CMAKE_BUILD_TYPE} MATCHES "Release")
+    ADD_EXECUTABLE(QCurve ${QCURVE_SRCS} ${QCURVE_RES})
+  ENDIF (${CMAKE_BUILD_TYPE} MATCHES "Release")
+ELSE (WIN32)
+  ADD_EXECUTABLE(QCurve ${QCURVE_SRCS})
+ENDIF (WIN32)
+
 TARGET_LINK_LIBRARIES(QCurve ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTXML_LIBRARY})
+
+IF (UNIX)
+  INSTALL(TARGETS QCurve RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+  SET(XDG_APPS_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/applications")
+
+  IF (UNIX AND NOT APPLE)
+    INSTALL(FILES qcurve.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+  ENDIF(UNIX AND NOT APPLE)
+ENDIF (UNIX)

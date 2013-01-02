@@ -1,0 +1,8 @@
+[Icon Theme]
+Name=Oxygen
+Comment=Oxygen Fallback Theme
+Inherits=default
+Directories=16x16/actions
+
+[16x16/actions]
+Size=16
