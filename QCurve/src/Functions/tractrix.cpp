@@ -29,7 +29,7 @@ Function* Tractrix::clone() const
 
 QString Tractrix::toParametricFormula() const
 {
-  static QString genFormula = QString("<math></math>");
+  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mrow> <mi/> <mo stretchy=\"false\">-</mo> <mi>a</mi> </mrow> </mrow> <mi>cos</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">-</mo> <mi>a</mi> </mrow> <mi>ln</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>tan</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <mi>t</mi> </mrow> <mrow> <mn>2</mn> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi/> <mi>,</mi> <mi/> <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mi>a</mi> <mi>sin</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi/> <mi>,</mi> <mi/> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mn>0,</mn> <mo stretchy=\"false\">&pi;</mo> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> </semantics> </math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
