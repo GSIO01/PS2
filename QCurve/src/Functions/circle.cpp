@@ -7,7 +7,7 @@
 Circle::Circle(double r, double x0, double y0)
 {
   m_param = Parameter(0, 2 * PI, "t");
-  m_name = "Circle";
+  m_name = QCoreApplication::translate("Circle", "Circle");
 
   Variable var("r", r);
   var.setColor(QColor(255, 255, 0));
@@ -33,7 +33,7 @@ QString Circle::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

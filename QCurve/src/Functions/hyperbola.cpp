@@ -6,7 +6,7 @@
 
 Hyperbola::Hyperbola(double a, double b, double x0, double y0)
 {
-  m_name = "Hyperbola";
+  m_name = QCoreApplication::translate("Hyperbola", "Hyperbola");
   m_param = Parameter(-PI, PI, "t");
 
   Variable var("a", a);
@@ -36,7 +36,7 @@ QString Hyperbola::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

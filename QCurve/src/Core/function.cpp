@@ -1,6 +1,6 @@
 #include "function.h"
 
-#include <QtCore/QDebug>
+#include <QObject>
 
 Function::Function()
   : m_dimension(QRectF(0, 0, 0, 0)), m_is2Dimensional(true)
@@ -8,13 +8,13 @@ Function::Function()
   Variable var("x0", 0);
   var.setColor(QColor(0, 0, 255));
   var.setFormula("<math><mrow><msub><mi color=\"#0000FF\">x</mi><mr color=\"#00F\">0</mr></msub></mrow></math>");
-  var.setDescription("Moves the function on the x-axis.");
+  var.setDescription(QObject::tr("Moves the function on the x-axis."));
   setVariable(var);
 
   var = Variable("y0", 0);
   var.setColor(QColor(0, 255, 0));
   var.setFormula("<math><mrow><msub><mi color=\"#00FF00\">y</mi><mr color=\"#00FF00\">0</mr></msub></mrow></math>");
-  var.setDescription("Moves the function on the y-axis.");
+  var.setDescription(QObject::tr("Moves the function on the y-axis."));
   setVariable(var);
 }
 
@@ -79,9 +79,6 @@ void Function::setVariable(const Variable& variable)
     m_variables.insert(idx, variable);
   }
   else { m_variables.append(variable); }
-
-  //updatePoints(variable.name(), variable.value());
-  //initDimension();
 }
 
 Primitive* Function::getHelperItem(const QString& name) const

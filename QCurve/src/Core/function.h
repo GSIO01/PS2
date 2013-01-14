@@ -1,6 +1,8 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
+#include <QtCore/QCoreApplication>
+
 #include <QtCore/QString>
 #include <QtCore/QRectF>
 #include <QtCore/QList>

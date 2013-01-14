@@ -9,16 +9,18 @@
 Ellipse::Ellipse(double a, double b, double x0, double y0)
 {
   m_param = Parameter(0, 2 * PI, "t");
-  m_name = "Ellipse";
+  m_name = QCoreApplication::translate("Ellipse", "Ellipse");
 
   Variable var("a", a);
-  var.setDescription("The radius along the x-axis. The x-axis is the major radius [a > b] or the minor radius.");
+  var.setDescription(QCoreApplication::translate("Ellipse",
+    "The radius along the x-axis. The x-axis is the major radius [a > b] or the minor radius."));
   var.setColor(QColor(255, 255, 0));
   var.interval().setLowerEnd(0);
   setVariable(var);
 
   var = Variable("b", b);
-  var.setDescription("The radius along the y-axis. The y-axis is the major radius [b < a] or the minor radius.");
+  var.setDescription(QCoreApplication::translate("Ellipse",
+    "The radius along the y-axis. The y-axis is the major radius [b < a] or the minor radius."));
   var.setColor(QColor(0, 255, 255));
   var.interval().setLowerEnd(0);
   setVariable(var);
@@ -43,7 +45,7 @@ QString Ellipse::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 
@@ -76,9 +78,9 @@ void Ellipse::updatePoints(const QString& name, double value)
   if (name.isNull()) // first call -> init
   {
     m_helper.clear();
-    QString desc = "One focus point of the ellipse. \
+    QString desc = QCoreApplication::translate("Ellipse", "One focus point of the ellipse. \
     The foci always lie on the major (longest) axis and \
-    are equidistant from the center point.";
+    are equidistant from the center point.");
 
     m_helper.append(new GraphicalPoint(f1, "F1", desc));
     m_helper.append(new GraphicalPoint(f2, "F2", desc));

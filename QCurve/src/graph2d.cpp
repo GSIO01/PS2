@@ -1,5 +1,7 @@
 #include "graph2d.h"
 
+#include <QtCore/QDebug>
+
 #include <QtGui/QApplication>
 
 #include <QtGui/QGraphicsScene>
@@ -17,7 +19,7 @@ double round(double val) //TODO move
 { return (val > 0.0) ? floor(val + 0.5) : ceil(val - 0.5); }
 
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
-  , m_function(0), m_stepRange(0.005), m_animationDelay(1)
+  , m_function(0), m_stepRange(0.01), m_animationDelay(1)
 { QTimer::singleShot(0, this, SLOT(init())); }
 
 Graph2D::~Graph2D()
@@ -100,9 +102,7 @@ void Graph2D::drawFragment()
 
   Point2D tmp = transfromTo2D(m_function->calculatePoint(m_t));
   addLineToScene(m_functionGroup, m_lastPoint.x(), m_lastPoint.y(), tmp.x(), tmp.y());
-
   m_lastPoint = tmp; //replace old point with the new one
-
   if (m_t >= m_function->parameter().to() + m_stepRange)
   {
     //draw helper items after the complete function is drawn
@@ -113,7 +113,8 @@ void Graph2D::drawFragment()
       QGraphicsItem* item = p->toGraphicsItem();
       m_functionGroup.append(item);
       scene()->addItem(item);
-      //addTextToScene(m_functionGroup, p->name(), item->pos().x() - 0.1, item->pos().y() - 0.1);
+
+      //addTextToScene(m_functionGroup, p->name(), item->scenePos().x(), item->scenePos().y()); //TODO
     }
 
     if (m_animationDelay != 0 && m_repeat) //repeat the anmation...
@@ -202,6 +203,7 @@ void Graph2D::drawCoordinateSystem()
   addLineToScene(m_coordSysGroup, color, 0, b, -0.05, b + 0.1);
   addLineToScene(m_coordSysGroup, color, 0, t,  0.05, t - 0.1);
   addLineToScene(m_coordSysGroup, color, 0, t, -0.05, t - 0.1);
+  addTextToScene(m_coordSysGroup, color , tr("Y"), - 0.3, t - 0.05);
 
   double h = t-b;
   double w = r-l;
@@ -216,10 +218,11 @@ void Graph2D::drawCoordinateSystem()
   for (double i = round(b); i <= round(t); i += gridRange)
   {
     if (i == 0) { addLineToScene(m_coordSysGroup, color, l, i, r, i); }
-    else if (m_showGrid) { addLineToScene(m_coordSysGroup, nColor, l, i, r, i); }
+    else if (m_function->is2Dimensional() && m_showGrid)
+    { addLineToScene(m_coordSysGroup, nColor, l, i, r, i); }
 
     if (!(int(round(i)) % range))
-    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0.1, i); }
+    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0, i); }
   }
 
   //x-axis arrowheads
@@ -227,18 +230,62 @@ void Graph2D::drawCoordinateSystem()
   addLineToScene(m_coordSysGroup, color, l, 0, l + 0.1,  0.05);
   addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1, -0.05);
   addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1,  0.05);
+  addTextToScene(m_coordSysGroup, color , tr("X"), r - 0.3, 0.3);
 
   if (w >= 25) { range = 10; }
   else if (w >= 15) { range = 5; }
   else { range = 1; }
   for (double i = round(l); i <= round(r); i += gridRange)
   {
-    if (i == 0) { addLineToScene(m_coordSysGroup, color, i, b, i, t); }
-    else if (m_showGrid) { addLineToScene(m_coordSysGroup, nColor, i, b, i, t); }
+    if (i == 0) { addLineToScene(m_coordSysGroup, color, i, b, i, t);  }
+    else if (m_function->is2Dimensional() && m_showGrid)
+    { addLineToScene(m_coordSysGroup, nColor, i, b, i, t); }
 
     if (!(int(round(i)) % range))
-    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), i + 0.1, 0); }
+    { addTextToScene(m_coordSysGroup, nColor, QString::number(i), i, 0); }
   }
+
+  for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
+  { m_coordSysGroup[i]->setZValue(-2); }
+
+  blockSignals(false);
+  update();
+}
+
+void Graph2D::drawCoordinateSystem3D()
+{
+  //QColor nColor = QApplication::palette().color(QPalette::Disabled, QPalette::WindowText);
+  QColor color = QApplication::palette().color(QPalette::WindowText);
+
+  blockSignals(true);
+
+  for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
+  { delete m_coordSysGroup.takeAt(i); }
+
+  QRectF rect = QRectF(mapToScene(0, 0),
+                       mapToScene(viewport()->width(), viewport()->height()));
+
+  if (rect.left() > sceneRect().left()) { rect.setLeft(sceneRect().left()); }
+  if (rect.right() < sceneRect().right()) { rect.setRight(sceneRect().right()); }
+  if (rect.bottom() > sceneRect().bottom()) { rect.setBottom(sceneRect().bottom()); }
+  if (rect.top() < sceneRect().top()) { rect.setTop(sceneRect().top()); }
+
+  double l = rect.left(); double r = rect.right();
+  double b = rect.bottom(); double t = rect.top();
+
+
+  Point2D start = transfromTo2D(Point3D(l, 0, 0));
+  Point2D end = transfromTo2D(Point3D(r, 0, 0));
+  addLineToScene(m_coordSysGroup, QColor(255, 0, 0), start.x(), start.y(), end.x(), end.y());
+
+
+  start = transfromTo2D(Point3D(0, b, 0));
+  end = transfromTo2D(Point3D(0, t, 0));
+  addLineToScene(m_coordSysGroup, QColor(0, 255, 0), start.x(), start.y(), end.x(), end.y());
+
+  start = transfromTo2D(Point3D(0, 0, -1));
+  end = transfromTo2D(Point3D(0, 0, 1));
+  addLineToScene(m_coordSysGroup, QColor(0, 0, 255), start.x(), start.y(), end.x(), end.y());
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
   { m_coordSysGroup[i]->setZValue(-2); }
@@ -378,7 +425,10 @@ void Graph2D::setScaleFactor(int factor)
 
   double val = m_scaleBase * factor/100.0f;
   setTransform(QTransform::fromScale(val, -val));
-  drawCoordinateSystem();
+
+  if (m_function->is2Dimensional())
+  { drawCoordinateSystem(); }
+  else { drawCoordinateSystem3D(); }
 
   emit scaleFactorChanged(factor);
 }
@@ -386,7 +436,9 @@ void Graph2D::setScaleFactor(int factor)
 void Graph2D::setShowGrid(bool isVisible)
 {
   m_showGrid = isVisible;
-  drawCoordinateSystem();
+  if (m_function->is2Dimensional())
+  { drawCoordinateSystem(); }
+  else { drawCoordinateSystem3D(); }
 }
 
 void Graph2D::setCenter(const QPointF& centerPoint)
@@ -429,7 +481,7 @@ void Graph2D::setCenter(const QPointF& centerPoint)
 
 void Graph2D::mousePressEvent(QMouseEvent* event)
 {
-  Q_UNUSED(event);
+  m_lastPanPoint = event->pos();
   setCursor(Qt::ClosedHandCursor);
 }
 
@@ -446,20 +498,19 @@ void Graph2D::mouseMoveEvent(QMouseEvent* event)
   {
     QPointF delta = mapToScene(m_lastPanPoint);
 
-    if (delta.x() > 0) { m_yAngle -= 5; }
-    else if (delta.x() < 0) { m_yAngle += 5; }
-
-    if (delta.y() > 0) { m_xAngle -= 5; }
-    else if (delta.y() < 0) { m_xAngle += 5; }
+    m_yAngle += (delta.x() - pos.x()) * 10;
+    m_xAngle += (delta.y() - pos.y()) * 10;
 
     if (m_animationDelay > 0) //ignore delay and redraw entire function...
     {
       int delay = m_animationDelay;
       m_animationDelay = 0;
       redraw();
+      drawCoordinateSystem3D();
       m_animationDelay = delay;
     }
     else { redraw(); }
+    m_lastPanPoint = event->pos();
   }
 
   emit currentPositionChanged(pos.x(), pos.y());

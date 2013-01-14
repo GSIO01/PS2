@@ -8,14 +8,15 @@
 
 Astroid::Astroid(double a, double x0, double y0)
 {
-  m_name = "Astroid";
+  m_name = QCoreApplication::translate("Astroid", "Astroid");
   m_param = Parameter(0, 2 * PI, "t");
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
   Variable var("a");
-  var.setDescription("The radius of the circle where a circle (r=a/4) rolls around inside.");
+  var.setDescription(QCoreApplication::translate("Astroid",
+    "The radius of the circle where a circle (r=a/4) rolls around inside."));
   var.setColor(QColor(255, 255, 0));
   var.interval().setLowerEnd(0);
   var.setValue(a);
@@ -38,7 +39,7 @@ QString Astroid::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

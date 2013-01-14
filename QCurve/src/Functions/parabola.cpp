@@ -8,7 +8,7 @@
 
 Parabola::Parabola(double p, double x0, double y0)
 {
-  m_name = "Parabola";
+  m_name = QCoreApplication::translate("Parabola", "Parabola");
   m_param = Parameter(-PI, PI, "t");
 
   Variable var("p", p);
@@ -34,7 +34,7 @@ QString Parabola::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

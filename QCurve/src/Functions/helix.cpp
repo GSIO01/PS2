@@ -8,7 +8,7 @@ Helix::Helix(double r, double h, double x0, double y0, double z0)
 {
   m_is2Dimensional = false;
 
-  m_name = "Helix";
+  m_name = QCoreApplication::translate("Helix", "Helix");
   m_param = Parameter(0, PI * 2, "t"); //TODO
 
   setVariable("x0", x0, false);
@@ -17,7 +17,7 @@ Helix::Helix(double r, double h, double x0, double y0, double z0)
   Variable var("z0", z0);
   var.setColor(QColor(255, 0, 0));
   var.setFormula("<math><mrow><msub><mi color=\"#FF0000\">z</mi><mr color=\"#FF0000\">0</mr></msub></mrow></math>");
-  var.setDescription("Moves the function on the z-axis");
+  var.setDescription(QCoreApplication::translate("Helix", "Moves the function on the z-axis"));
   setVariable(var);
 
   var = Variable("r");
@@ -48,7 +48,7 @@ QString Helix::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

@@ -2,7 +2,7 @@
 
 Strophoid::Strophoid(double a, double x0, double y0)
 {
-  m_name = "Strophoid";
+  m_name = QCoreApplication::translate("Strophoid", "Strophoid");
   m_param = Parameter(-2, 2, "t");
 
   Variable var("a", a);
@@ -28,7 +28,7 @@ QString Strophoid::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

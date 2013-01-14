@@ -2,9 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QtCore/QModelIndex>
+#include <QtCore/QString>
+#include <QtCore/QTranslator>
+#include <QtCore/QEvent>
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeView>
+#include <QtGui/QMenu>
 
 class Splitter;
 class FunctionWidget;
@@ -17,6 +21,9 @@ class MainWindow : public QMainWindow
     MainWindow(QWidget* parent = 0);
     ~MainWindow();
 
+  protected:
+    virtual void changeEvent(QEvent*);
+
   private slots:
     void init();
     void splitterDoubleClicked();
@@ -26,15 +33,26 @@ class MainWindow : public QMainWindow
     void setUseAntialiasing(bool useAntialiasing);
     void setAnimationMode();
 
+    void languageChanged(QAction* action);
+    void switchTranslator(QTranslator& translator, const QString& filename);
+
   private:
     void initMenu();
     void initComponents();
+    void initFunctions();
+
+    QMenu* createLanguageMenu();
+    void loadLanguage(const QString& rLanguage);
 
     Splitter* m_splitter;
     FunctionWidget* m_functionWgt;
     QTreeView* m_treeView;
 
     FunctionItemModel* m_functionItemModel;
+
+    QTranslator m_translator;
+    QTranslator m_translatorQt;
+    QString m_currLang;
 };
 
 #endif

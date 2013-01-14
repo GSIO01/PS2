@@ -109,6 +109,7 @@ class Graph2D : public QGraphicsView
 
     void redraw();
     void drawCoordinateSystem();
+    void drawCoordinateSystem3D();
 
     void fitInView();
     void updateSceneRect();

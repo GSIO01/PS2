@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
+#include <QtCore/QDebug>
 
+#include <QtGui/QApplication>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QAction>
@@ -15,17 +18,45 @@
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-  setWindowTitle("Parametric Curve Viewer");
+  switchTranslator(m_translator, "de");
+
+  setWindowTitle(tr("Parametric Curve Viewer"));
   //setWindowIcon(QIcon());
 
   initMenu();
   initComponents();
 
+  QTimer::singleShot(0, this, SLOT(init()));
+}
+
+MainWindow::~MainWindow()
+{ }
+
+void MainWindow::init()
+{
+  connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
+  connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
+
+  initFunctions();
+
+  m_functionWgt->setFunction(Ellipse());
+}
+
+void MainWindow::itemActivated(const QModelIndex& idx)
+{
+  Function* func = m_functionItemModel->functionAt(idx);
+
+  if (func)
+  { m_functionWgt->setFunction(*func); }
+}
+
+void MainWindow::initFunctions()
+{
   //TODO use a function creator instead...
 
   m_functionItemModel->addCategory(tr("Rational functions"));
-  //m_functionItemModel->addFunction(tr("Line"), tr("Rational functions");
-  //m_functionItemModel->addFunction(tr("Polynomial"), tr("Rational functions");
+  //m_functionItemModel->addFunction(tr("Line"), tr("Rational functions"));
+  //m_functionItemModel->addFunction(tr("Polynomial"), tr("Rational functions"));
 
   m_functionItemModel->addCategory(tr("Nonrational functions"));
 
@@ -62,27 +93,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
   QFontMetrics fm(font());
   m_treeView->setMaximumWidth(fm.width(tr("Plane algebraic curve of degree 2 (Conic sections)")) + 48);
-
-  QTimer::singleShot(0, this, SLOT(init()));
-}
-
-MainWindow::~MainWindow()
-{ }
-
-void MainWindow::init()
-{
-  connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
-  connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
-
-  m_functionWgt->setFunction(Ellipse());
-}
-
-void MainWindow::itemActivated(const QModelIndex& idx)
-{
-  Function* func = m_functionItemModel->functionAt(idx);
-
-  if (func)
-  { m_functionWgt->setFunction(*func); }
 }
 
 void MainWindow::initMenu()
@@ -157,6 +167,7 @@ void MainWindow::initMenu()
   action = new QAction(QIcon::fromTheme("help-contents"), tr("Help"), this);
   //connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
   menu->addAction(action);
+  menu->addMenu(createLanguageMenu());
   menu->addSeparator();
   action = new QAction(QIcon::fromTheme("help-about"), tr("About"), this);
   //connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
@@ -204,3 +215,103 @@ void MainWindow::setAnimationMode()
 
 void MainWindow::splitterDoubleClicked()
 { m_splitter->setWidgetCollapsed(0, !m_splitter->isWidgetCollapsed(0)); }
+
+QMenu* MainWindow::createLanguageMenu()
+{
+  QMenu* menu = new QMenu(tr("Language"));
+
+  QActionGroup* langGroup = new QActionGroup(this);
+  langGroup->setExclusive(true);
+
+  connect(langGroup, SIGNAL(triggered(QAction *)), this, SLOT(languageChanged(QAction *)));
+
+  // format systems language
+  QString defaultLocale;
+  if (m_currLang.isEmpty())
+  {
+    defaultLocale = QLocale::system().name();       // e.g. "de_DE"
+    defaultLocale.truncate(defaultLocale.lastIndexOf('_')); // e.g. "de"
+  }
+  else { defaultLocale = m_currLang; }
+
+  QString langPath = QApplication::applicationDirPath();
+  langPath.append("/po");
+  QDir dir(langPath);
+  QStringList fileNames = dir.entryList(QStringList("trans_*.qm"));
+
+  for (int i = 0; i < fileNames.size(); ++i)
+  {
+    QString locale;
+    locale = fileNames[i];
+    locale.truncate(locale.lastIndexOf('.'));
+    locale.remove(0, locale.indexOf('_') + 1);
+
+    QString lang = QLocale::languageToString(QLocale(locale).language());
+    QIcon ico(QString("%1/%2.png").arg(langPath).arg(locale));
+
+    QAction *action = new QAction(ico, lang, this);
+    action->setCheckable(true);
+    action->setData(locale);
+
+    menu->addAction(action);
+    langGroup->addAction(action);
+
+    if (defaultLocale == locale)
+    { action->setChecked(true); }
+  }
+
+  return menu;
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+  if(event)
+  {
+    switch(event->type())
+    {
+      case QEvent::LanguageChange:
+      {
+        initMenu();
+        //translateFunctions();
+        break;
+      }
+      case QEvent::LocaleChange:
+      {
+        QString locale = QLocale::system().name();
+        locale.truncate(locale.lastIndexOf('_'));
+        loadLanguage(locale);
+        break;
+      }
+      default: break;
+    }
+  }
+
+  QMainWindow::changeEvent(event);
+}
+
+void MainWindow::languageChanged(QAction* action)
+{
+  if (action)
+  { loadLanguage(action->data().toString()); }
+}
+
+void MainWindow::switchTranslator(QTranslator& translator, const QString& filename)
+{
+  qApp->removeTranslator(&translator);
+
+  if (translator.load(filename))
+  {  qApp->installTranslator(&translator); }
+}
+
+void MainWindow::loadLanguage(const QString& rLanguage)
+{
+  if(m_currLang != rLanguage)
+  {
+    m_currLang = rLanguage;
+    QLocale locale = QLocale(m_currLang);
+    QLocale::setDefault(locale);
+    QString languageName = QLocale::languageToString(locale.language());
+    switchTranslator(m_translator, QString("trans_%1.qm").arg(rLanguage));
+    switchTranslator(m_translatorQt, QString("qt_%1.qm").arg(rLanguage));
+  }
+}

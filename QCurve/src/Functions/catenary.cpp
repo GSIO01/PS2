@@ -6,7 +6,7 @@
 
 Catenary::Catenary(double a, double x0, double y0)
 {
-  m_name = "Catenary";
+  m_name = QCoreApplication::translate("Catenary", "Catenary");
   m_param = Parameter(-1, 1, "t");
 
   setVariable("x0", x0, false);
@@ -32,7 +32,7 @@ QString Catenary::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 

@@ -6,7 +6,7 @@
 
 ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0)
 {
-  m_name = "Archimedean Spiral";
+  m_name = QCoreApplication::translate("ArchimedeanSpiral", "Archimedean Spiral");
   m_param = Parameter(0, 4 * PI, "t");
 
   setVariable("x0", x0, false);
@@ -28,7 +28,7 @@ QString ArchimedeanSpiral::toParametricFormula() const
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
   {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(QString::number(var.value()));
+    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
     curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
   }
 
