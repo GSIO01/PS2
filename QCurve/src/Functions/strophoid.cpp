@@ -1,5 +1,8 @@
 #include "strophoid.h"
 
+#include "Primitives/GraphicalPoint"
+#include "Primitives/GraphicalLine"
+
 Strophoid::Strophoid(double a, double x0, double y0)
 {
   m_name = QCoreApplication::translate("Strophoid", "Strophoid");
@@ -12,6 +15,7 @@ Strophoid::Strophoid(double a, double x0, double y0)
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
+  updatePoints();
   initDimension();
 }
 
@@ -53,4 +57,35 @@ void Strophoid::initDimension()
   double y0 = getVariable("y0");
 
   m_dimension = QRectF(-a + x0, -a * 1.15 + y0, a * 2, a * 2.3);
+}
+
+void Strophoid::updatePoints(const QString& name, double value) {
+  Q_UNUSED(value);
+  
+  QString desc;
+  double a = getVariable("a");
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  Point3D o(x0, y0, 0);
+  Point3D s(-a, 0, 0);
+  
+  if(name.isNull()) {
+    Primitive* item;
+    
+    m_helper.clear();
+    
+    desc = QCoreApplication::translate("Strophoid", "The origin point of the curve.");
+    m_helper.append(new GraphicalPoint(o, "O", desc));
+    desc = QCoreApplication::translate("Strophoid", "Fixed point of the strophoid.");
+    m_helper.append(new GraphicalPoint(s, "S", desc));
+    desc = QCoreApplication::translate("Strophoid", "Asymptote of the curve.");
+    item = new GraphicalLine(Point3D(a, -a * 100), Point3D(a, a * 100), "A", desc);
+    m_helper.append(item);
+  } else {
+    ((GraphicalPoint*)getHelperItem("0"))->setPoint(o);
+    ((GraphicalPoint*)getHelperItem("S"))->setPoint(s);
+    ((GraphicalLine*)getHelperItem("A"))->setStartPoint(Point3D(a, -a * 100 + y0));
+    ((GraphicalLine*)getHelperItem("A"))->setEndPoint(Point3D(a, a * 100, 0));
+  }
+  
 }

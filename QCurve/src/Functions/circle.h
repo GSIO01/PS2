@@ -17,6 +17,7 @@ class Circle : public Function
     virtual Point3D calculatePoint(double t) const;
 
   protected:
+    virtual void updatePoints(const QString& name = QString(), double value = 0);
     virtual void initDimension();
 };
 
