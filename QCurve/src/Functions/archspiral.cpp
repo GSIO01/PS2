@@ -23,7 +23,7 @@ Function* ArchimedeanSpiral::clone() const
 
 QString ArchimedeanSpiral::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><apply><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>t</mi><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>t</mi><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>t</mi><mo>&gt;</mo><mn>0</mn><mi/><mi>,</mi><mi/><mi>t</mi><mo stretchy=\"false\">&isin;</mo><mo>R</mo></apply></math>");
+  static QString genFormula = QString("<math><apply><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>x0</mi><mo>+</mo><mi>t</mi><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>y0</mi><mo>+</mo><mi>t</mi><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mi>,</mi><mi/><mi>t</mi><mo>&gt;</mo><mn>0</mn><mi/><mi>,</mi><mi/><mi>t</mi><mo stretchy=\"false\">&isin;</mo><mo>R</mo></apply></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
