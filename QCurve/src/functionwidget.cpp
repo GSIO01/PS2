@@ -11,6 +11,10 @@
 #include "VariableEdit"
 #include "ParameterEdit"
 
+/**
+ * Implements a widget for mathematical functions.
+ * 
+ */
 FunctionWidget::FunctionWidget(QWidget* parent) : QWidget(parent)
 {
   initComponents();

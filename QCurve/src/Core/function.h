@@ -12,57 +12,141 @@
 #include "Core/Point"
 #include "Core/Primitive"
 
-/***
+/**
  * Represents a (abstract) class for mathmatical functions.
  */
 class Function
 {
   public:
+    /**
+     * Constructor.
+     */
     Function();
+    /**
+     * Destructor.
+     */
     virtual ~Function();
 
-    /*** Creates a copy of the current function. */
+    /**
+     * Creates a copy of the current function. 
+     * 
+     * \return Copy of the current function.
+     */
     virtual Function* clone() const = 0;
 
-    /*** Returns parametric form as formula in MathMl. */
+    /**
+     * Returns parametric form as formula in MathMl. 
+     * 
+     * \return Parametric form as formula in MathMl. 
+     */
     virtual QString toParametricFormula() const = 0;
 
-    /*** Returns the name of the function class. */
+    /**
+     * Returns the name of the function class. 
+     * 
+     * \return Name of the function class
+     */
     QString name() const { return m_name; }
 
+    /**
+     * Returns whether this function is a 2D function.
+     * 
+     * \return Is 2D function?
+     */
     bool is2Dimensional() const { return m_is2Dimensional; }
 
-    /*** Returns the parameter. */
+    /**
+     * Returns the parameter. 
+     * 
+     * \return Parameter.
+     */
     Parameter& parameter() const;
 
-    /*** Replaces the current parameter with a new one. */
+    /**
+     * Replaces the current parameter with a new one. 
+     * 
+     * \param param New Parameter.
+     */
     void setParameter(const Parameter& param);
 
-    /*** Returns a list of all variables. */
+    /** 
+     * Returns a list of all variables. 
+     * 
+     * \return List of all variables.
+     */
     QList<Variable> variables() const;
 
-    /*** Returns the value of the specified variable. */
+    /**
+     * Returns the value of the specified variable. 
+     * 
+     * \param name Name of variable.
+     * \return Value of specified variable.
+     */
     double getVariable(const QString& name) const;
 
+    /**
+     * Sets value of a specified variable to the specified value.
+     * 
+     * \param name Variable name.
+     * \param value New value.
+     */
     void setVariable(const QString& name, double value);
 
-    /*** Returns a list of helper primitves. */
+    /**
+     * Returns a list of helper primitves.
+     * 
+     * \return List of helper primitves.
+     */
     QList<Primitive*> helperItems() const;
 
-    /*** Returns the boundaries as rectangle. */
+    /** 
+     * Returns the boundaries as rectangle. 
+     * 
+     * \return Boundaries as rectangle.
+     */
     const QRectF& dimension() const;
 
+    /**
+     * Calculates and returns the coordinates of the function for the giving parameter value.
+     * 
+     * \param t Parameter value.
+     * \return Coordinates.
+     */
     virtual Point3D calculatePoint(double t) const = 0;
 
   protected:
+    /**
+     * Set variable.
+     * 
+     * \param name New name.
+     * \param value New value.
+     * \param triggerUpdate Trigger update?
+     */
     void setVariable(const QString& name, double value, bool triggerUpdate);
+    /**
+     * Set variable.
+     * 
+     * \param var Reference to other variable.
+     */
     void setVariable(const Variable& var);
 
-    /*** Helper function to update points after a variable has changed. */
+    /**
+     * Helper function to update points after a variable has changed. 
+     * 
+     * \param var Variable that has changed.
+     * \param value New value.
+     */
     virtual void updatePoints(const QString& var = QString(), double value = 0);
-    /*** Calculates the boundaries. */
+    /**
+     * Calculates the boundaries. 
+     */
     virtual void initDimension() = 0;
 
+    /**
+     * Returns the specified helper item.
+     * 
+     * \param name Name of helper item.
+     */
     Primitive* getHelperItem(const QString& name) const;
 
     QString m_name;
