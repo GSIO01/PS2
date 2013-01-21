@@ -82,7 +82,7 @@ void Strophoid::updatePoints(const QString& name, double value) {
     item = new GraphicalLine(Point3D(a, -a * 100), Point3D(a, a * 100), "A", desc);
     m_helper.append(item);
   } else {
-    ((GraphicalPoint*)getHelperItem("0"))->setPoint(o);
+    ((GraphicalPoint*)getHelperItem("O"))->setPoint(o);
     ((GraphicalPoint*)getHelperItem("S"))->setPoint(s);
     ((GraphicalLine*)getHelperItem("A"))->setStartPoint(Point3D(a, -a * 100 + y0));
     ((GraphicalLine*)getHelperItem("A"))->setEndPoint(Point3D(a, a * 100, 0));
