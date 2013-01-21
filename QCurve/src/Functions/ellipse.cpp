@@ -40,7 +40,7 @@ Function* Ellipse::clone() const
 
 QString Ellipse::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>), y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>b</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
+  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>)<mtext>,&ThickSpace;&ThickSpace;</mtext> y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>b</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

@@ -15,7 +15,7 @@ Cycloid::Cycloid(double r, double m, double x0, double y0)
   var.setColor(QColor(255, 255, 0));
   setVariable(var);
 
-  var = Variable("mu", m);
+  var = Variable("&mu;", m);
   var.setColor(QColor(0, 255, 255));
   var.setFormula("<mi color=\"#00FFFF\">&mu;</mi>");
   setVariable(var);
@@ -31,12 +31,12 @@ Cycloid::Cycloid(const Cycloid& other)
 { *this = other; }
 
 Function* Cycloid::clone() const
-{ return new Cycloid(getVariable("r"), getVariable("mu"), getVariable("x0"), getVariable("y0")); }
+{ return new Cycloid(getVariable("r"), getVariable("&mu;"), getVariable("x0"), getVariable("y0")); }
 
 QString Cycloid::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><semantics><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>r</mi><mo>(</mo><mi>t</mi><mo>-</mo><mi>mu</mi><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>)</mo><mi/><mi>,</mi><mi/>" \
-                                      "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>r</mi><mo>(</mo><mn>1</mn><mo>-</mo><mi>mu</mi><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>)</mo><mi/><mi>,</mi><mi/><mi>t</mi><mo>&isin;</mo><mo>R</mo></semantics></math>");
+  static QString genFormula = QString("<math><semantics><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>r</mi><mo>(</mo><mi>t</mi><mo>-</mo><mi>&mu;</mi><mo>&middot;</mo><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>)</mo><mi/><mtext>,&ThickSpace;&ThickSpace;</mtext><mi/>" \
+                                      "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>r</mi><mo>(</mo><mn>1</mn><mo>-</mo><mi>&mu;</mi><mo>&middot;</mo><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>)</mo><mi/><mtext>,&ThickSpace;&ThickSpace;</mtext><mi/><mi>t</mi><mo>&isin;</mo><mo>R</mo></semantics></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

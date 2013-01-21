@@ -29,7 +29,7 @@ Function* Parabola::clone() const
 
 QString Parabola::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mi>,</mi> <mi>y</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <mrow> <msqrt> <mrow> <mn>2</mn> <mo>&middot;</mo> <mi>p</mi> </mrow> </msqrt> <mo>&middot;</mo> <mi>t</mi> </mrow> </mrow> <mi>,</mi> <mi>t</mi> <mo>&isin;</mo> <mo>R</mo> </mrow> </semantics> </math>");
+  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>y</mi> <mrow> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mo>=</mo> <mrow> <msqrt> <mrow> <mn>2</mn> <mo>&middot;</mo> <mi>p</mi> </mrow> </msqrt> <mo>&middot;</mo> <mi>t</mi> </mrow> </mrow> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>t</mi> <mo>&isin;</mo> <mo>R</mo> </mrow> </semantics> </math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)

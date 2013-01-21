@@ -34,7 +34,7 @@ Function* Astroid::clone() const
 
 QString Astroid::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo>  <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>cos</mi><mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi><mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>a</mi><mo>&gt;</mo><mn>0</mn> <mi>,</mi><mi>a</mi><mo>&isin;</mo><mo>R</mo><mi>,</mi><mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo> </semantics></math>");
+  static QString genFormula = QString("<math><semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo>  <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>cos</mi><mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mtext>,&ThickSpace;&ThickSpace;</mtext><mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>a</mi><mo>&gt;</mo><mn>0</mn> <mtext>,&ThickSpace;&ThickSpace;</mtext><mi>a</mi><mo>&isin;</mo><mo>R</mo><mtext>,&ThickSpace;&ThickSpace;</mtext><mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo> </semantics></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
