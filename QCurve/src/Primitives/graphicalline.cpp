@@ -17,7 +17,9 @@ void GraphicalLine::setEndPoint(const Point3D& p)
 QGraphicsItem* GraphicalLine::toGraphicsItem() const
 {
   QGraphicsLineItem* item = new QGraphicsLineItem(m_start.x(), m_start.y(), m_end.x(), m_end.y());
+  item->setData(0, m_name);
   item->setToolTip(QString("<b>%1</b><br>%2").arg(m_name).arg(m_description));
+  item->setZValue(-1);
 
   if (m_color.isValid())
   {
@@ -27,4 +29,10 @@ QGraphicsItem* GraphicalLine::toGraphicsItem() const
   }
 
   return item;
+}
+
+void GraphicalLine::updateGraphicsItem(QGraphicsItem* item) const
+{
+  if (item->data(0).toString() == m_name)
+  { ((QGraphicsLineItem*)item)->setLine(m_start.x(), m_start.y(), m_end.x(), m_end.y()); }
 }

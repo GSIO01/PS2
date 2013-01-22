@@ -20,7 +20,7 @@ Ellipse::Ellipse(double a, double b, double x0, double y0)
 
   var = Variable("b", b);
   var.setDescription(QCoreApplication::translate("Ellipse",
-    "The radius along the y-axis. The y-axis is the major radius [b < a] or the minor radius."));
+    "The radius along the y-axis. The y-axis is the major radius [b > a] or the minor radius."));
   var.setColor(QColor(0, 255, 255));
   var.interval().setLowerEnd(0);
   setVariable(var);
@@ -40,14 +40,13 @@ Function* Ellipse::clone() const
 
 QString Ellipse::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>)<mtext>,&ThickSpace;&ThickSpace;</mtext> y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>b</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
+  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>)" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>b</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -82,12 +81,14 @@ void Ellipse::updatePoints(const QString& name, double value)
     The foci always lie on the major (longest) axis and \
     are equidistant from the center point.");
 
+    m_helper.append(new GraphicalPoint(Point3D(x0, y0), "M",
+      QCoreApplication::translate("Ellipse", "The center point of the ellipse.")));
     m_helper.append(new GraphicalPoint(f1, "F1", desc));
     m_helper.append(new GraphicalPoint(f2, "F2", desc));
-    m_helper.append(new GraphicalPoint(Point3D( a + x0, y0, 0), "a"));
-    m_helper.append(new GraphicalPoint(Point3D(-a + x0, y0, 0), "-a"));
-    m_helper.append(new GraphicalPoint(Point3D(x0,  b + y0, 0), "b"));
-    m_helper.append(new GraphicalPoint(Point3D(x0, -b + y0, 0), "-b"));
+    m_helper.append(new GraphicalPoint(Point3D( a + x0, y0, 0), "a", m_variables.at(2).description()));
+    m_helper.append(new GraphicalPoint(Point3D(-a + x0, y0, 0), "-a", m_variables.at(2).description()));
+    m_helper.append(new GraphicalPoint(Point3D(x0,  b + y0, 0), "b", m_variables.at(3).description()));
+    m_helper.append(new GraphicalPoint(Point3D(x0, -b + y0, 0), "-b", m_variables.at(3).description()));
   }
   else //update helper items
   {

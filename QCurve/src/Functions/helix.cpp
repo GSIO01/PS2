@@ -9,7 +9,7 @@ Helix::Helix(double r, double h, double x0, double y0, double z0)
   m_is2Dimensional = false;
 
   m_name = QCoreApplication::translate("Helix", "Helix");
-  m_param = Parameter(0, PI * 2, "t"); //TODO
+  m_param = Parameter(-PI * 2, PI * 2, "t"); //TODO
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
@@ -43,14 +43,17 @@ Function* Helix::clone() const
 
 QString Helix::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><semantics> <mrow> <mi>x</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>x0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>r</mi> <mo stretchy=\"false\">&middot;</mo> <mi>cos</mi> </mrow> </mrow> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>y</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>y0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>r</mi> <mo stretchy=\"false\">&middot;</mo> <mi>sin</mi> </mrow> </mrow> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>z</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>z0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>h</mi> <mo stretchy=\"false\">&middot;</mo> <mi>t</mi> </mrow> </mrow> </mrow> </mrow>, <mi>t</mi> <mo>&isin;</mo> <mi>R</mi> </semantics> </math>");
+  static QString genFormula = QString("<math><mrow> <mi>x</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>x0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>r</mi> <mo stretchy=\"false\">&middot;</mo> <mi>cos</mi> </mrow> </mrow> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>y0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>r</mi> <mo stretchy=\"false\">&middot;</mo> <mi>sin</mi> </mrow> </mrow> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>z</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">=</mo> <mrow> <mi>z0</mi> <mo stretchy=\"false\">+</mo> <mrow> <mi>h</mi> <mo stretchy=\"false\">&middot;</mo> <mi>t</mi> </mrow> </mrow> </mrow> </mrow>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi> <mo>&isin;</mo> <mi>R</mi></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -69,7 +72,7 @@ Point3D Helix::calculatePoint(double t) const
 void Helix::initDimension()
 {
   double r = getVariable("r");
-  //double h = getVariable("h");
+  double h = getVariable("h");
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
 

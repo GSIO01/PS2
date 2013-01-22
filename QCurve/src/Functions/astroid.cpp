@@ -34,14 +34,17 @@ Function* Astroid::clone() const
 
 QString Astroid::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><semantics> <mi>x</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo>  <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>cos</mi><mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mtext>,&ThickSpace;&ThickSpace;</mtext><mi>y</mi> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mo>=</mo> <mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>a</mi><mo>&gt;</mo><mn>0</mn> <mtext>,&ThickSpace;&ThickSpace;</mtext><mi>a</mi><mo>&isin;</mo><mo>R</mo><mtext>,&ThickSpace;&ThickSpace;</mtext><mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo> </semantics></math>");
+  static QString genFormula = QString("<math><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><msup><mi>cos</mi><mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo>" \
+  "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+  "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>y0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>a</mi><mo>&gt;</mo><mn>0</mn>" \
+  "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+  "<mi>a</mi><mo>&isin;</mo><mo>R</mo>" \
+  ",<mo>&InvisibleTimes;</mo>" \
+  "<mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -110,4 +113,3 @@ void Astroid::initDimension()
 
   m_dimension = QRectF(x0 + w0, y0 + h0, -w0 * 2, -h0 * 2);
 }
-

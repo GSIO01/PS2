@@ -2,55 +2,41 @@
 #define EPSEXPORTER_H
 
 #include <QtCore/QString>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
+class Point2D;
+class Function;
 /**
- * Implemts an EPS exporter.
+ * Implements an simple exporter to draw functions in the EPS format.
  */
 class EpsExporter
 {
   public:
-    /**
-     * Constructor.
-     */
-    EpsExporter();
-    /**
-     * Destructor.
-     */
+    EpsExporter(const QString& fileName, const QString& author= QString("QCurve"));
     ~EpsExporter();
 
     /**
-     * Get author.
-     * 
-     * \returns Author.
-     */
-    QString author() const;
-    /**
-     * Set the author.
-     * 
-     * \param author New value for author.
-     */
-    void setAuthor(const QString& author);
-
-    /**
      * Export to EPS file.
-     * 
+     *
      * \param fileName File name for the EPS file.
      */
-    void exportToFile(const QString& fileName);
+    bool exportToFile(const Function& function);
 
   private:
-    /**
-     * Write the header to the file.
-     */
+    void drawLine(double x1, double y1, double x2, double y2);
+    void drawLine(const Point2D& start, const Point2D& end);
+    /** Write the header to the file. */
     void writeHeader();
-    /**
-     * Write the defintions to the file.
-     */
+    /** Write the defintions to the file. */
     void writeDefinitions();
-    /**
-     * Write footer to the file.
-     */
-    void writeFooter();
+    /** Write footer to the file. */
+    void writeFooter(const QRectF& dimension);
+
+    QFile m_file;
+    QTextStream m_writer;
+
+    QString m_author;
 };
 
 #endif

@@ -33,6 +33,8 @@ class MainWindow : public QMainWindow
     void setUseAntialiasing(bool useAntialiasing);
     void setAnimationMode();
 
+    void exportAsEPS();
+
     void languageChanged(QAction* action);
     void switchTranslator(QTranslator& translator, const QString& filename);
 

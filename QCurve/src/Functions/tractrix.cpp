@@ -29,14 +29,15 @@ Function* Tractrix::clone() const
 
 QString Tractrix::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mrow> <mi/> <mo stretchy=\"false\">-</mo> <mi>a</mi> </mrow> </mrow> <mi>cos</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">-</mo> <mi>a</mi> </mrow> <mi>ln</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>tan</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <mi>t</mi> </mrow> <mrow> <mn>2</mn> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mi>a</mi> <mi>sin</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mn>0,</mn> <mo stretchy=\"false\">&pi;</mo> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> </semantics> </math>");
+  static QString genFormula = QString("<math><mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo> <mi>x0</mi><mo>+</mo> <mrow>  <mo stretchy=\"false\">-</mo> <mi>a</mi><mo>&middot;</mo> </mrow> </mrow> <mi>cos</mi> <mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mo stretchy=\"false\">-</mo> <mi>a</mi><mo>&middot;</mo> </mrow> <mi>ln</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>tan</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <mi>t</mi> </mrow> <mrow> <mn>2</mn> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> " \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo> <mi>y0</mi><mo>+</mo> </mrow> <mi>a</mi><mo>&middot;</mo> <mi>sin</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mn>0,</mn> <mo stretchy=\"false\">&pi;</mo> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }

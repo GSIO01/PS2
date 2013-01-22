@@ -15,11 +15,11 @@
 #include "functionwidget.h"
 
 #include "Functions/Functions"
+#include "Export/EPSExporter"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-  switchTranslator(m_translator, "de");
-
+  loadLanguage("de");
   setWindowTitle(tr("Parametric Curve Viewer"));
   //setWindowIcon(QIcon());
 
@@ -34,12 +34,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
-  connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
-  connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
-
   initFunctions();
 
   m_functionWgt->setFunction(Ellipse());
+  m_treeView->expandAll();
+  m_treeView->setCurrentIndex(m_functionItemModel->index(2, 0).child(1, 0)); //select 'ellipse'
+
+  connect(m_splitter, SIGNAL(mouseDoubleClicked()), this, SLOT(splitterDoubleClicked()));
+  connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
 }
 
 void MainWindow::itemActivated(const QModelIndex& idx)
@@ -82,10 +84,10 @@ void MainWindow::initFunctions()
   m_functionItemModel->addCategory(tr("Spirals"));
   m_functionItemModel->addFunction(ArchimedeanSpiral(), tr("Spirals"));
   m_functionItemModel->addFunction(LogarithmicSpiral(), tr("Spirals"));
+  m_functionItemModel->addFunction(Clothoids(1), tr("Spirals"));
 
   m_functionItemModel->addCategory(tr("Other curves"));
   m_functionItemModel->addFunction(Catenary(), tr("Other curves"));
-  m_functionItemModel->addFunction(Clothoids(1), tr("Other curves"));
   m_functionItemModel->addFunction(Tractrix(), tr("Other curves"));
 
   m_functionItemModel->addCategory(tr("3D curves"));
@@ -100,10 +102,15 @@ void MainWindow::initMenu()
   QMenuBar* menubar = new QMenuBar();
 
   QMenu* menu = new QMenu(tr("File"));
+
   QMenu* subMenu = new QMenu(tr("Export"));
+  QAction* action = new QAction(QIcon::fromTheme("document-export"), tr("Export as EPS..."), this);
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(exportAsEPS()));
+  subMenu->addAction(action);
   menu->addMenu(subMenu);
   menu->addSeparator();
-  QAction* action = new QAction(QIcon::fromTheme("window-close"), tr("Close"), this);
+
+  action = new QAction(QIcon::fromTheme("window-close"), tr("Close"), this);
   connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
   menu->addAction(action);
   menubar->addMenu(menu);
@@ -159,7 +166,7 @@ void MainWindow::initMenu()
 
   action = new QAction(tr("Antialiasing"), this);
   action->setCheckable(true);
-  action->setChecked(true);
+  action->setChecked(false);
   connect(action, SIGNAL(triggered(bool)), this, SLOT(setUseAntialiasing(bool)));
   menu->addAction(action);
 
@@ -191,6 +198,12 @@ void MainWindow::initComponents()
   m_splitter->addWidget(m_functionWgt);
 
   setCentralWidget(m_splitter);
+}
+
+void MainWindow::exportAsEPS()
+{
+  EpsExporter exporter("Test.eps");
+  exporter.exportToFile(m_functionWgt->function());
 }
 
 void MainWindow::setShowGrid(bool isVisible)

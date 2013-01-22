@@ -13,6 +13,7 @@ Circle::Circle(double r, double x0, double y0)
   m_name = QCoreApplication::translate("Circle", "Circle");
 
   Variable var("r", r);
+  var.setDescription(QCoreApplication::translate("Circle", "Radius of the circle."));
   var.setColor(QColor(255, 255, 0));
   var.interval().setLowerEnd(0);
   setVariable(var);
@@ -32,14 +33,13 @@ Function* Circle::clone() const
 
 QString Circle::toParametricFormula() const
 {
-  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>)<mtext>,&ThickSpace;&ThickSpace;</mtext> y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
+  static QString genFormula = QString("<math>x(t)<mo>=</mo><mi>x0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>cos</mi>(<mi>t</mi>)" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "y(t)<mo>=</mo><mi>y0</mi><mo>+</mo><mi>r</mi><mo>&middot;</mo><mi>sin</mi>(<mi>t</mi>)</math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -62,28 +62,33 @@ void Circle::initDimension()
   m_dimension = QRectF(-r + x0, -r + y0 , 2 * r, 2 * r);
 }
 
-void Circle::updatePoints(const QString& name, double value) {
+void Circle::updatePoints(const QString& name, double value)
+{
   Q_UNUSED(value);
-  
+
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
   double r = getVariable("r");
-  
+
   Point3D m(x0, y0, 0);
-  Point3D d1 = calculatePoint(M_PI/4);
-  Point3D d2 = calculatePoint(M_PI*1.25);
-  
-  if(name.isNull()) {
-    Primitive* item = new GraphicalLine(Point3D(x0 + r, y0, 0), Point3D(x0, y0, 0), "r", QCoreApplication::translate("Circle", "Radius of the circle."));
+  Point3D d1 = calculatePoint(PI / 4);
+  Point3D d2 = calculatePoint(PI * 1.25);
+
+  if(name.isNull())
+  {
+    Primitive* item = new GraphicalLine(Point3D(x0 + r, y0, 0), Point3D(x0, y0, 0),
+      "r", m_variables.at(2).description());
     QString desc = QCoreApplication::translate("Circle", "The Center point of the circle.");
 
     m_helper.clear();
-    
+
     m_helper.append(new GraphicalPoint(m, "M", desc));
     m_helper.append(item);
     item = new GraphicalLine(d1, d2, "d", QCoreApplication::translate("Circle", "Diameter of the circle."));
     m_helper.append(item);
-  } else {
+  }
+  else
+  {
     ((GraphicalPoint*)getHelperItem("M"))->setPoint(m);
     ((GraphicalLine*)getHelperItem("r"))->setStartPoint(Point3D(x0 + r, y0, 0));
     ((GraphicalLine*)getHelperItem("r"))->setEndPoint(Point3D(x0, y0, 0));

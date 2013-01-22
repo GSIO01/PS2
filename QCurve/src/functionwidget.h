@@ -8,6 +8,7 @@
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QPushButton>
 #include <QtGui/QStatusBar>
+#include <QtGui/QLabel>
 
 #include "Core/Function"
 
@@ -15,7 +16,6 @@ class QtMmlWidget;
 class QBoxLayout;
 class Graph2D;
 class ParameterEdit;
-
 /**
  * Represents a complex widget to visualize a function
  * and to change its specification.
@@ -27,7 +27,7 @@ class FunctionWidget : public QWidget
   public:
     /**
      * Constructor.
-     * 
+     *
      * \param parent The parent object.
      */
     FunctionWidget(QWidget* parent = 0);
@@ -38,33 +38,33 @@ class FunctionWidget : public QWidget
 
     /**
      * Get the function.
-     * 
+     *
      * \return The function.
      */
     const Function& function() const;
     /**
      * Set the function.
-     * 
+     *
      * \param function New function.
      */
     void setFunction(const Function& function);
 
     /**
      * Set the animation mode.
-     * 
+     *
      * \param delay Delay animation for this ammount of time.
      * \param repeat Repeat the animation?
      */
     void setAnimationMode(int delay, bool repeat);
     /**
      * Enable/disable the grid.
-     * 
+     *
      * \param isVisible Should the grid be visible?
      */
     void setShowGrid(bool isVisible);
     /**
      * Enable/disable use of Antialiasing.
-     * 
+     *
      * \param useAntialiasing Should Antialiasing be enabled?
      */
     void setUseAntialiasing(bool useAntialiasing);
@@ -72,19 +72,19 @@ class FunctionWidget : public QWidget
   private slots:
     /**
      * Update function to be used if the from value has changed.
-     * 
+     *
      * \param value The new value.
      */
     void fromValueChanged(double value);
     /**
      * Update function to be used if the to value has changed.
-     * 
+     *
      * \param value The new value.
      */
     void toValueChanged(double value);
     /**
      * Update function to be used if a variable has been changed.
-     * 
+     *
      * \param var Variable name.
      * \param value The new value.
      */
@@ -92,11 +92,13 @@ class FunctionWidget : public QWidget
 
     /**
      * Update function to be used if the position has been changed.
-     * 
+     *
      * \param x X coordinate.
      * \param y Y coordinate.
      */
     void positionChanged(double x, double y);
+
+    void updateScaleFactor(int value);
 
   private:
     /**
@@ -119,6 +121,7 @@ class FunctionWidget : public QWidget
 
     QStatusBar* m_statusBar;
     QSlider* m_scaleFactor;
+    QLabel* m_scaleFactorLbl;
     QPushButton* m_settings;
 };
 

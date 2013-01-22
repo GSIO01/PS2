@@ -18,13 +18,13 @@ class ParameterEdit : public QWidget
   signals:
     /**
      * Signal for changes of the from value.
-     * 
+     *
      * \param from New value.
      */
     void fromValueChanged(double from);
     /**
      * Signal for changes of the to value.
-     * 
+     *
      * \param to New value.
      */
     void toValueChanged(double to);
@@ -32,13 +32,13 @@ class ParameterEdit : public QWidget
   public:
     /**
      * Constructor.
-     * 
+     *
      * \param parent Parent object.
      */
     ParameterEdit(QWidget* parent = 0);
     /**
      * Copy constructor.
-     * 
+     *
      * \param param Other parameter.
      * \param parent Parent object.
      */
@@ -46,26 +46,26 @@ class ParameterEdit : public QWidget
 
     /**
      * Get the parameter.
-     * 
+     *
      * \return Parameter.
      */
     QString parameter() const { return m_parameter; }
     /**
      * Set the parameter.
-     * 
+     *
      * \param param Reference to another Parameter.
      */
     void setParameter(const Parameter& param);
 
     /**
      * Get from value.
-     * 
+     *
      * \return From value.
      */
     double from() const { return m_from->value(); }
     /**
      * Get to value.
-     * 
+     *
      * \return To value.
      */
     double to() const { return m_to->value(); }

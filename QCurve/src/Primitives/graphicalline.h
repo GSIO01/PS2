@@ -12,7 +12,7 @@ class GraphicalLine : public Primitive
   public:
     /**
      * Constructor.
-     * 
+     *
      * \param start The start point.
      * \param end The end point.
      * \param name Name of the line.
@@ -23,36 +23,37 @@ class GraphicalLine : public Primitive
 
     /**
      * Get the start point of the line.
-     * 
+     *
      * \return The start point.
      */
     const Point3D& start() const { return m_start; }
     /**
      * Set the start point of the line.
-     * 
+     *
      * \param p New start point.
      */
     void setStartPoint(const Point3D& p);
 
     /**
      * Get the end point of the line.
-     * 
+     *
      * \return The end point.
      */
     const Point3D& end() const { return m_end; }
     /**
      * Set the end point of the line.
-     * 
+     *
      * \param p New end point.
      */
     void setEndPoint(const Point3D& p);
 
     /**
      * Create a QGraphicsItem for the line.
-     * 
+     *
      * \return QGraphicsItem for the line.
      */
     virtual QGraphicsItem* toGraphicsItem() const;
+    virtual void updateGraphicsItem(QGraphicsItem* item) const;
 
   protected:
     Point3D m_start; /**< The lines start point. */

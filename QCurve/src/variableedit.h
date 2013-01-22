@@ -28,7 +28,7 @@ class VariableEdit : public QWidget
   public:
     /**
      * Copy Constructor.
-     * 
+     *
      * \param var Other variable.
      * \param parent Parent object.
      */
@@ -36,20 +36,20 @@ class VariableEdit : public QWidget
 
     /**
      * Get the value.
-     * 
+     *
      * \return Value of the variable.
      */
     double value() { return m_value->value(); }
 
     /**
      * Get variable.
-     * 
+     *
      * \return variable.
      */
     QString variable() const { return m_variable; }
     /**
      * Set variable.
-     * 
+     *
      * \param var Reference to another Variable.
      */
     void setVariable(const Variable& var);
@@ -57,7 +57,7 @@ class VariableEdit : public QWidget
   private slots:
     /**
      * Slot for value changes.
-     * 
+     *
      * \param value New value.
      */
     void valueChanged(double value);

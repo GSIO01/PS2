@@ -27,14 +27,16 @@ Function* Strophoid::clone() const
 
 QString Strophoid::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics> <mrow> <mi>x</mi> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mrow> <mi/><mo stretchy=\"false\">=</mo> <mi/> </mrow> <mfrac> <mrow> <mi>a</mi> <mrow><mo>(</mo> <mrow> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> <mo stretchy=\"false\">-</mo> <mn>1</mn> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mrow> <mn>1</mn> <mo stretchy=\"false\">+</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mrow> </mfrac> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mfrac> <mrow> <mi>a</mi> <mo>t</mo> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> <mo stretchy=\"false\">-</mo> <mn>1</mn> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mrow> <mn>1</mn> <mo stretchy=\"false\">+</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mrow> </mfrac> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mo stretchy=\"false\">R</mo> </mrow> </semantics> </math>");
+  static QString genFormula = QString("<math><mrow> <mi>x</mi> <mrow> <mo>(</mo> <mrow> <mi>t</mi> </mrow> <mo>)</mo> </mrow> <mrow> <mo stretchy=\"false\">=</mo> <mi>x0</mi><mo>+</mo> </mrow> <mfrac> <mrow> <mi>a</mi> <mrow><mo>(</mo> <mrow> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> <mo stretchy=\"false\">-</mo> <mn>1</mn> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mrow> <mn>1</mn> <mo stretchy=\"false\">+</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mrow> </mfrac>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo> <mi>y0</mi><mo>+</mo> </mrow> <mfrac> <mrow> <mi>a</mi> <mo>t</mo> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mrow> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> <mo stretchy=\"false\">-</mo> <mn>1</mn> </mrow> </mrow> <mo stretchy=\"false\">)</mo> </mrow> </mrow> <mrow> <mrow> <mn>1</mn> <mo stretchy=\"false\">+</mo> <msup> <mi>t</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mrow> </mfrac>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mo stretchy=\"false\">R</mo> </mrow></math>");
+
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -59,21 +61,23 @@ void Strophoid::initDimension()
   m_dimension = QRectF(-a + x0, -a * 1.15 + y0, a * 2, a * 2.3);
 }
 
-void Strophoid::updatePoints(const QString& name, double value) {
+void Strophoid::updatePoints(const QString& name, double value)
+{
   Q_UNUSED(value);
-  
-  QString desc;
+
   double a = getVariable("a");
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
   Point3D o(x0, y0, 0);
   Point3D s(-a, 0, 0);
-  
-  if(name.isNull()) {
-    Primitive* item;
-    
+
+  if (name.isNull())
+  {
+    QString desc;
+    Primitive* item = 0;
+
     m_helper.clear();
-    
+
     desc = QCoreApplication::translate("Strophoid", "The origin point of the curve.");
     m_helper.append(new GraphicalPoint(o, "O", desc));
     desc = QCoreApplication::translate("Strophoid", "Fixed point of the strophoid.");
@@ -81,11 +85,12 @@ void Strophoid::updatePoints(const QString& name, double value) {
     desc = QCoreApplication::translate("Strophoid", "Asymptote of the curve.");
     item = new GraphicalLine(Point3D(a, -a * 100), Point3D(a, a * 100), "A", desc);
     m_helper.append(item);
-  } else {
+  }
+  else
+  {
     ((GraphicalPoint*)getHelperItem("O"))->setPoint(o);
     ((GraphicalPoint*)getHelperItem("S"))->setPoint(s);
     ((GraphicalLine*)getHelperItem("A"))->setStartPoint(Point3D(a, -a * 100 + y0));
     ((GraphicalLine*)getHelperItem("A"))->setEndPoint(Point3D(a, a * 100, 0));
   }
-  
 }

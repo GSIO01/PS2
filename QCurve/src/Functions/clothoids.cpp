@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-Clothoids::Clothoids(double a,double n, double x0, double y0)
+Clothoids::Clothoids(double a, double x0, double y0)
 {
   m_name = QCoreApplication::translate("Clothoids", "Clothoids");
   m_param = Parameter(-9.42, 9.42, "t");
@@ -16,12 +16,6 @@ Clothoids::Clothoids(double a,double n, double x0, double y0)
   var.setValue(a);
   setVariable(var);
 
-  var = Variable("n");
-  var.setColor(QColor(0, 255, 255));
-  var.interval().setLowerEnd(0);
-  var.setValue(n);
-  setVariable(var);
-
   initDimension();
 }
 
@@ -29,18 +23,21 @@ Clothoids::Clothoids(const Clothoids& other)
 { *this = other; }
 
 Function* Clothoids::clone() const
-{ return new Clothoids(getVariable("a"), getVariable("n"), getVariable("x0"), getVariable("y0")); }
+{ return new Clothoids(getVariable("a"), getVariable("x0"), getVariable("y0")); }
 
 QString Clothoids::toParametricFormula() const
 {
-  static QString genFormula = QString("<math> <semantics>  <mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mrow> <munderover> <mo stretchy=\"false\">&int;</mo> <mrow> <mn>0</mn> </mrow> <mrow> <mi>t</mi> </mrow> </munderover> <mi>cos</mi> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <msup> <mi>s</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mrow> <msup> <mn>2a</mn> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi mathvariant=\"italic\">ds</mi> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow> <mi/> <mo stretchy=\"false\">=</mo> <mi/> </mrow> <mrow> <munderover> <mo stretchy=\"false\">&int;</mo> <mrow> <mn>0</mn> </mrow> <mrow> <mi>t</mi> </mrow> </munderover> <mi>sin</mi> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <msup> <mi>s</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mrow> <msup> <mn>2a</mn> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> <mi mathvariant=\"italic\">ds</mi> </mrow> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mrow> <mi>a</mi> <mo stretchy=\"false\">&gt;</mo> <mn>0</mn> </mrow> <mi/> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi/> <mi>a</mi> <mtext>,&ThickSpace;&ThickSpace;</mtext> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mo stretchy=\"false\">R</mo> </mrow> </semantics> </math>");
+  static QString genFormula = QString("<math><mrow> <mi>x</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo> <mi>x0</mi><mo>+</mo>  </mrow> <mrow> <munderover> <mo stretchy=\"false\">&int;</mo> <mrow> <mn>0</mn> </mrow> <mrow> <mi>t</mi> </mrow> </munderover> <mi>cos</mi> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <msup> <mi>s</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mrow> <msup> <mn>2<mi>a</mi></mn> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mi mathvariant=\"italic\">ds</mi>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mi>t</mi> </mrow> <mo stretchy=\"false\">)</mo> </mrow> <mrow>  <mo stretchy=\"false\">=</mo> <mi>y0</mi><mo>+</mo> </mrow> <mrow> <munderover> <mo stretchy=\"false\">&int;</mo> <mrow> <mn>0</mn> </mrow> <mrow> <mi>t</mi> </mrow> </munderover> <mi>sin</mi> </mrow> <mrow> <mo stretchy=\"false\">(</mo> <mrow> <mfrac> <mrow> <msup> <mi>s</mi> <mrow> <mn>2</mn> </mrow> </msup> </mrow> <mrow> <msup> <mn>2<mi>a</mi></mn> <mrow> <mn>2</mn> </mrow> </msup> </mrow> </mfrac> </mrow> <mo stretchy=\"false\">)</mo> <mi mathvariant=\"italic\">ds</mi> </mrow>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mrow> <mi>a</mi> <mo stretchy=\"false\">&gt;</mo> <mn>0</mn> </mrow> " \
+    ",<mo>&InvisibleTimes;</mo>"
+    "<mi>a</mi> <mi>,</mi> <mi>t</mi> <mo stretchy=\"false\">&isin;</mo> <mo stretchy=\"false\">R</mo> </mrow></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -51,7 +48,7 @@ Point3D Clothoids::calculatePoint(double t) const
   double y0 = getVariable("y0");
   double a = getVariable("a");
 
-  double n = getVariable("n");
+  double n = 30; //TODO
   double h = t / n;
   double r1, r2;
 

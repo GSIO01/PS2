@@ -31,7 +31,7 @@ class Graph2D : public QGraphicsView
      * Returns the animation delay in milliseconds.
      *
      * @Note A value of zero means the the complete function should be drawn immediately.
-     * 
+     *
      * \return Animation delay in milliseconds.
      */
     int animationDelay() const { return m_animationDelay; }
@@ -42,21 +42,21 @@ class Graph2D : public QGraphicsView
      * the next value should be drawn.
      *
      * @Note: A value of 0 or less turns off the animation.
-     * 
+     *
      * \param delaytime Time after which the next value should be drawn.
      * \param repeat Should the animation be repeated?
      */
     void setAnimationDelay(int delay, bool repeat = false);
 
-    /** 
-     * Returns true if the grid is visible otherwise false. 
-     * 
+    /**
+     * Returns true if the grid is visible otherwise false.
+     *
      * \return Grid visible?
      */
     bool showGrid() const { return m_showGrid; }
-    /** 
-     * Sets a value which indicates if the grid should be visible or not. 
-     * 
+    /**
+     * Sets a value which indicates if the grid should be visible or not.
+     *
      * \param isVisible Whether to enable or disable the grid.
      */
     void setShowGrid(bool isVisible);
@@ -71,27 +71,27 @@ class Graph2D : public QGraphicsView
      * Sets the step range whic is used to calculate the next value of the parameter.
      *
      * @Note The value should be in range from 0.01 to 1.
-     * 
+     *
      * \param stepRange The stepRange (value from 0.01 to 1).
      */
     void setStepRange(float stepRange);
 
-    /** 
-     * Returns the scale factor as normalized value between 50 and 400. 
-     * 
+    /**
+     * Returns the scale factor as normalized value between 50 and 400.
+     *
      * \return Scale factor.
      */
     int scaleFactor() const { return transform().m11()/m_scaleBase * 100; }
 
     /**
      * Enable/disable Antialiasing.
-     * 
+     *
      * \param useAntialiasing Whether the Antialiasing should be enabled or disabled.
      */
     void setUseAntialiasing(bool useAntialiasing);
-    /** 
+    /**
      * Returns a value indicating whether the graph should be antialised or not.
-     * 
+     *
      * \return Antialiasing enabled?
      */
     bool useAntialiasing() const { return m_useAntialiasing; }
@@ -99,13 +99,13 @@ class Graph2D : public QGraphicsView
     /**
      * Returns a reference to the current function.
      * TODO/FIXME Should only be accessible by friends
-     * 
+     *
      * \return A reference to the current function
      */
     Function& function() const { return *m_function; }
 
-    /** 
-     * Updates both the variable and the view. 
+    /**
+     * Updates both the variable and the view.
      *
      * \param var Variable name.
      * \param value New value.
@@ -113,18 +113,22 @@ class Graph2D : public QGraphicsView
     void setVariable(const QString& var, double value);
 
     /**
-     * Draws the specified function. 
-     * 
+     * Draws the specified function.
+     *
      * \param function Function to draw.
      */
     void plot(const Function& function);
+    /**
+     * Redraw the graph.
+     */
+    void redraw();
 
   public slots:
     /**
      * Sets the scale factor of the scene.
      *
      * @Note the value should be between 50 and 400.
-     * 
+     *
      * \param factor Scale factor.
      */
     void setScaleFactor(int factor);
@@ -151,19 +155,6 @@ class Graph2D : public QGraphicsView
      */
     virtual void resizeEvent(QResizeEvent* event);
 
-    /**
-     * Get the center point.
-     * 
-     * \return The center point.
-     */
-    QPointF center() const { return m_curCenterPoint; }
-    /**
-     * Sets the center point.
-     * 
-     * \param centerPoint New center point.
-     */
-    void setCenter(const QPointF& centerPoint);
-
   private slots:
     /**
      * Draw a fragment.
@@ -181,7 +172,7 @@ class Graph2D : public QGraphicsView
   private:
     /**
      * Get the grid range.
-     * 
+     *
      * \return Grid range.
      */
     double gridRange();
@@ -190,10 +181,6 @@ class Graph2D : public QGraphicsView
      */
     double labelRange();
 
-    /**
-     * Redraw the graph.
-     */
-    void redraw();
     /**
      * Draw the 2D coordinate system.
      */
@@ -214,7 +201,7 @@ class Graph2D : public QGraphicsView
 
     /**
      * Transform a Point3D to Point2D using perspective or parallel projection.
-     * 
+     *
      * \param p 3D point to transform.
      * \return 2D point.
      */
@@ -222,7 +209,7 @@ class Graph2D : public QGraphicsView
 
     /**
      * Add text to the scene.
-     * 
+     *
      * \param group List of QGraphicsItems.
      * \param text Text.
      * \param x X coordinate.
@@ -231,7 +218,7 @@ class Graph2D : public QGraphicsView
     void addTextToScene(QList<QGraphicsItem*>& group, const QString& text, double x, double y);
      /**
      * Add text to the scene.
-     * 
+     *
      * \param group List of QGraphicsItems.
      * \param text Text.
      * \param x X coordinate.
@@ -241,19 +228,19 @@ class Graph2D : public QGraphicsView
     void addTextToScene(QList<QGraphicsItem*>& group, const QColor& color, const QString& text, double x, double y);
     /**
      * Add a rectangle to scene.
-     * 
+     *
      * \param group List of QGraphicsItems.
      * \param x1 First x coordinate.
      * \param x2 Second x coordinate.
      * \param y1 First y coordinate.
      * \param y2 Second y coordinate.
-     * 
+     *
      * \return QGraphicsItem
      */
     QGraphicsItem* addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
     /**
      * Add a line to the scene.
-     * 
+     *
      * \param group List of QGraphicsItems.
      * \param x1 X coordinate of start point.
      * \param y1 Y coordinate of start point.
@@ -263,7 +250,7 @@ class Graph2D : public QGraphicsView
     void addLineToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2);
     /**
      * Add a line to the scene.
-     * 
+     *
      * \param group List of QGraphicsItems.
      * \param x1 X coordinate of start point.
      * \param y1 Y coordinate of start point.
@@ -280,7 +267,6 @@ class Graph2D : public QGraphicsView
     QTimer* m_timer;
     Function* m_function;
 
-    QPointF m_curCenterPoint;
     QPoint m_lastPanPoint;
 
     double m_scaleBase;
@@ -290,7 +276,7 @@ class Graph2D : public QGraphicsView
     double m_t;
 
     int m_xAngle;
-    int m_yAngle;
+    double m_yAngle;
 
     int m_animationDelay;
     bool m_repeat;

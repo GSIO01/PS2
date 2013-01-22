@@ -24,6 +24,7 @@ class Primitive
               const QString& description = QString());
 
     QString name() const { return m_name; }
+    PrimitiveType type() const { return m_type; }
 
     QString description() const { return m_description; }
     void setDescription(const QString& m_description);
@@ -35,6 +36,7 @@ class Primitive
     void setIsAnimated(bool isAnimated);
 
     virtual QGraphicsItem* toGraphicsItem() const = 0;
+    virtual void updateGraphicsItem(QGraphicsItem* item) const = 0;
 
     bool operator==(const Primitive& other);
 

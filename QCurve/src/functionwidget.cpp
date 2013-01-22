@@ -13,7 +13,6 @@
 
 /**
  * Implements a widget for mathematical functions.
- * 
  */
 FunctionWidget::FunctionWidget(QWidget* parent) : QWidget(parent)
 {
@@ -22,8 +21,8 @@ FunctionWidget::FunctionWidget(QWidget* parent) : QWidget(parent)
   connect(m_paramEdit, SIGNAL(fromValueChanged(double)), this, SLOT(fromValueChanged(double)));
   connect(m_paramEdit, SIGNAL(toValueChanged(double)), this, SLOT(toValueChanged(double)));
 
-  connect(m_plotter, SIGNAL(scaleFactorChanged(int)), m_scaleFactor, SLOT(setValue(int)));
-  connect(m_scaleFactor, SIGNAL(valueChanged(int)), m_plotter, SLOT(setScaleFactor(int)));
+  connect(m_plotter, SIGNAL(scaleFactorChanged(int)), this, SLOT(updateScaleFactor(int)));
+  connect(m_scaleFactor, SIGNAL(valueChanged(int)), this, SLOT(updateScaleFactor(int)));
 
   connect(m_plotter, SIGNAL(currentPositionChanged(double,double)), this, SLOT(positionChanged(double, double)));
 }
@@ -108,8 +107,11 @@ void FunctionWidget::initComponents()
   m_scaleFactor->setMinimum(50);
   m_scaleFactor->setMaximum(400);
 
+  m_scaleFactorLbl = new QLabel("100%");
+
   m_statusBar = new QStatusBar();
   m_statusBar->addPermanentWidget(m_scaleFactor);
+  m_statusBar->addPermanentWidget(m_scaleFactorLbl);
 
   lyt = new QVBoxLayout(this);
   lyt->addWidget(splitter);
@@ -119,22 +121,18 @@ void FunctionWidget::initComponents()
 void FunctionWidget::fromValueChanged(double value)
 {
   m_plotter->function().parameter().setFrom(value);
-
-  updateFormula();
+  m_plotter->redraw();
 }
 
 void FunctionWidget::toValueChanged(double value)
 {
   m_plotter->function().parameter().setTo(value);
-
-  updateFormula();
+  m_plotter->redraw();
 }
 
 void FunctionWidget::varValueChanged(const QString& var, double value)
 {
   m_plotter->setVariable(var, value);
-
-  updateFormula();
 }
 
 void FunctionWidget::positionChanged(double x, double y)
@@ -165,4 +163,14 @@ void FunctionWidget::updateFormula()
       "(line " + QString::number(errLine) +
       ", col " + QString::number(errColumn) + ")";
   }
+}
+
+void FunctionWidget::updateScaleFactor(int value)
+{
+
+  if (sender() == m_plotter)
+  { m_scaleFactor->setValue(value); }
+  else if (sender() == m_scaleFactor)
+  { m_plotter->setScaleFactor(value); }
+  m_scaleFactorLbl->setText(QString("%1%").arg(QString::number(value)));
 }
