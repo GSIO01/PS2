@@ -150,7 +150,8 @@ class Function
     QString m_name;
     Parameter m_param;
 
-    /** @Note Use @link setVariable to add/set a variable since it will maintain the order,
+    /** @Note Use @link setVariable to add/set a variable since it will
+	 *  maintain the order,
      *  This makes it saves to assume that e.g x0/y1 is at index 0/1.
      *
      *  Both \c x0 and \c y0 are already defined since all functions use them.
