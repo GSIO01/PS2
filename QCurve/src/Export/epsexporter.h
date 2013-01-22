@@ -6,6 +6,7 @@
 #include <QtCore/QTextStream>
 
 class Point2D;
+class Point3D;
 class Function;
 /**
  * Implements an simple exporter to draw functions in the EPS format.
@@ -26,6 +27,8 @@ class EpsExporter
   private:
     void drawLine(double x1, double y1, double x2, double y2);
     void drawLine(const Point2D& start, const Point2D& end);
+    void drawCircle(const Point3D& p, double r);
+
     /** Write the header to the file. */
     void writeHeader();
     /** Write the defintions to the file. */

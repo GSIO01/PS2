@@ -318,7 +318,6 @@ void Graph2D::drawCoordinateSystem3D()
   double l = rect.left(); double r = rect.right();
   double b = rect.bottom(); double t = rect.top();
 
-
   Point2D start = transfromTo2D(Point3D(l, 0, 0));
   Point2D end = transfromTo2D(Point3D(r, 0, 0));
   addLineToScene(m_coordSysGroup, QColor(255, 0, 0), start.x(), start.y(), end.x(), end.y());

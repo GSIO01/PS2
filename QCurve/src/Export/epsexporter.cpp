@@ -3,6 +3,8 @@
 #include <Core/Point>
 #include <Core/Function>
 
+#include <Primitives/GraphicalCircle>
+
 EpsExporter::EpsExporter(const QString& fileName, const QString& author)
   :  m_file(fileName), m_writer(&m_file), m_author(author)
 { }
@@ -21,8 +23,8 @@ bool EpsExporter::exportToFile(const Function& function)
   writeDefinitions();
 
   //y-axis
-  drawLine(0, function.dimension().top(),  0.05, function.dimension().top() - 0.1);
-  drawLine(0, function.dimension().top(), -0.05, function.dimension().top() - 0.1);
+  drawLine(0, function.dimension().bottom(),  0.05, function.dimension().bottom() - 0.1);
+  drawLine(0, function.dimension().bottom(), -0.05, function.dimension().bottom() - 0.1);
   drawLine(0, function.dimension().bottom(), 0, function.dimension().top());
 
   //x-axis
@@ -39,6 +41,27 @@ bool EpsExporter::exportToFile(const Function& function)
     last = tmp;
   }
 
+  foreach (Primitive* p, function.helperItems())
+  {
+    if (p->isAnimated()) //ignore animations
+    { continue; }
+
+    if (p->type() == Primitive::PT_Circle)
+    {
+      drawCircle(((GraphicalCircle*)p)->midPoint(), ((GraphicalCircle*)p)->radius());
+    }
+
+    /**QGraphicsItem* item = p->toGraphicsItem();
+    m_functionGroup.append(item);
+    scene()->addItem(item);*/
+
+    /*if (p->type() == Primitive::PT_Point)
+    {
+      addTextToScene(m_functionGroup, p->color(), p->name(),
+                     item->boundingRect().x() + 0.1, item->boundingRect().y());
+    }*/
+  }
+
   writeFooter(function.dimension());
 
   return false;
@@ -48,6 +71,11 @@ void EpsExporter::drawLine(double x1, double y1, double x2, double y2)
 {
   m_writer << fixed << x1 << " " << fixed << y1 << " m ";
   m_writer << fixed << x2 << " " << fixed << y2 << " l s" << endl;
+}
+
+void EpsExporter::drawCircle(const Point3D& p, double r)
+{
+  m_writer << fixed << p.x() << " " << fixed << p.y() << " " << fixed << r << " a s" << endl;
 }
 
 void EpsExporter::drawLine(const Point2D& start, const Point2D& end)
@@ -96,7 +124,7 @@ void EpsExporter::writeDefinitions()
   m_writer << "SC SC scale" << endl;
   m_writer << "0 0 translate" << endl;
   m_writer << "0.0 0.0 0.0 sc" << endl;
-  m_writer << "1.5 w" << endl;
+  m_writer << "0.01 w" << endl; //TODO
 }
 
 void EpsExporter::writeFooter(const QRectF& dimension)
