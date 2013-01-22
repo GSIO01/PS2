@@ -177,37 +177,24 @@ Point2D Graph2D::transfromTo2D(const Point3D& p)
   if (m_function->is2Dimensional())
   { return Point2D(p.x(), p.y()); }
 
-  double a = 0;
+  double a = m_xAngle;
   double b = 0;
   double c = m_yAngle;
 
-  /*double x = p.x();
-  x  = x * ( cos(a) * cos(c));
-  x += x * ( sin(a) * sin(b) * cos(c) + cos(a) * sin(c));
-  x += x * ( cos(a) * sin(b) * cos(c) + sin(a) * sin(c));
-  double y = p.y();
-  y  = y * (-cos(b) * sin(c));
-  y += y * ( cos(a) * cos(c)          - sin(a) * sin(b) * cos(c));
-  y += y * (-cos(a) * sin(b) * sin(c) - sin(a) * cos(c));
-  double z = p.z();
-  z  = z * -sin(b);
-  z += z * (sin(a) * cos(b));
-  z += z * (cos(a) * cos(b));*/
-
   // x-axis
-  /*double y = p.y() * cos(a) - p.z() * sin(a);
+  double y = p.y() * cos(a) - p.z() * sin(a);
   double z = p.y() * sin(a) + p.z() * cos(a);
-  double x = p.x();*/
+  double x = p.x();
 
   // y-axis
-  /*double z = p.z() * cos(b) - p.x() * sin(b);
-  double x = p.z() * sin(b) + p.x() * cos(b);
-  double y = p.y();*/
+  z = z * cos(b) - x * sin(b);
+  x = z * sin(b) + x * cos(b);
+  y = y;
 
   //z-axis
-  double x = p.x() * cos(c) - p.y() * sin(c);
-  double y = p.x() * sin(c) + p.y() * cos(c);
-  double z = p.z();
+  x = x * cos(c) - y * sin(c);
+  y = x * sin(c) + y * cos(c);
+  z = z;
 
   int v = 1;
   if (v == 0) //parallel x
