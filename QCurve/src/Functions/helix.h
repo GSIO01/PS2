@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a helix. */
+/**
+ * Represents a helix. 
+ * 
+ * @see Function
+ */
 class Helix : public Function
 {
   public:

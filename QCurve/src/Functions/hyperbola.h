@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/** Represents a hyperpolic curve. */
+/**
+ * Represents a hyperpolic curve.
+ * 
+ * @see Function 
+ */
 class Hyperbola : public Function
 {
   public:

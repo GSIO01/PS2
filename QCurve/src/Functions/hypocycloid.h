@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a hypocycloid. */
+/**
+ * Represents a hypocycloid. 
+ * 
+ * @see Function
+ */
 class Hypocycloid : public Function
 {
   public:

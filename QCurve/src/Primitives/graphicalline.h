@@ -53,6 +53,12 @@ class GraphicalLine : public Primitive
      * \return QGraphicsItem for the line.
      */
     virtual QGraphicsItem* toGraphicsItem() const;
+    
+    /**
+     * Update the QGraphicsItem.
+     * 
+     * \param item item to update
+     */
     virtual void updateGraphicsItem(QGraphicsItem* item) const;
 
   protected:

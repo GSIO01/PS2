@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a logarithmic spiral. */
+/**
+ * Represents a logarithmic spiral. 
+ * 
+ * @see Function
+ */
 class LogarithmicSpiral : public Function
 {
   public:

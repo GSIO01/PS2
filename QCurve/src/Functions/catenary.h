@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a catenary. */
+/**
+ * Represents a catenary.
+ *
+ * @see Function 
+ */
 class Catenary : public Function
 {
   public:

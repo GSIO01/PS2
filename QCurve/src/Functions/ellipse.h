@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a ellipse. */
+/**
+ * Represents a ellipse.
+ *
+ * @see Function 
+ */
 class Ellipse : public Function
 {
   public:

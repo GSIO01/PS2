@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/** Represents a parabola. */
+/**
+ * Represents a parabola. 
+ * 
+ * @see Function
+ */
 class Parabola : public Function
 {
   public:

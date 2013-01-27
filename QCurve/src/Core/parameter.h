@@ -19,55 +19,55 @@ class Parameter
     virtual ~Parameter();
 
     /**
-	 * The formal name (symbol) of the parameter (usualy 't'). 
-	 *
-	 * \return formal name (symbol) of the parameter
-	 */
+      * The formal name (symbol) of the parameter (usualy 't'). 
+      *
+      * \return formal name (symbol) of the parameter
+      */
     QString name() const;
 
-	/**
-	 * Get the description for this parameter.
-	 *
-	 * \return description for this parameter
-	 */
+    /**
+      * Get the description for this parameter.
+      *
+      * \return description for this parameter
+      */
     QString description() const;
 
     /**
-	 * Returns the minimum value of the parameter. 
-	 *
-	 * \return minimum value of the parameter
-	 */
+      * Returns the minimum value of the parameter. 
+      *
+      * \return minimum value of the parameter
+      */
     double from() const;
 
     /**
-	 * Sets the minimum value of the parameter. 
-	 *
-	 * \param from new minimum value of parameter
-	 */
+      * Sets the minimum value of the parameter. 
+      *
+      * \param from new minimum value of parameter
+      */
     void setFrom(double from);
 
     /**
-	 * Returns the maximum value of the parameter.
-	 *
-	 * \return maximum value of the parameter
-	 */
+      * Returns the maximum value of the parameter.
+      *
+      * \return maximum value of the parameter
+      */
     double to() const;
 
     /**
-	 * Sets the maximum value of the parameter
-	 *
-	 * \param to new maximum value of parameter
-	 */
+      * Sets the maximum value of the parameter
+      *
+      * \param to new maximum value of parameter
+      */
     void setTo(double to);
 
     /*QList<double> excludedValues() const;
     void setExcludedValues(const QList<double>& excluded);*/
 
-	/**
-	 * Get a String representation of the parameter.
-	 *
-	 * \return A string representation of the parameter.
-	 */
+    /**
+      * Get a String representation of the parameter.
+      *
+      * \return A string representation of the parameter.
+      */
     QString toString() const;
 
   private:

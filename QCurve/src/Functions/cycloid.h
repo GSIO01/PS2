@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a cycloid. */
+/**
+ * Represents a cycloid. 
+ * 
+ * @see Function
+ */
 class Cycloid : public Function
 {
   public:

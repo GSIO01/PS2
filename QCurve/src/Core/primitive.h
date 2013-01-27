@@ -13,9 +13,9 @@
 class Primitive
 {
   public:
-	/**
-	 * Different primitive types.
-	 */
+    /**
+      * Different primitive types.
+      */
     enum PrimitiveType
     {
       PT_Point,
@@ -26,69 +26,69 @@ class Primitive
     Primitive(PrimitiveType type, const QString& name,
               const QString& description = QString());
 
-	/**
-	 * Get name of the primitive.
-	 *
-	 * \return name of primitive
-	 */
+    /**
+    * Get name of the primitive.
+    *
+    * \return name of primitive
+    */
     QString name() const { return m_name; }
-	/**
-	 * Get type of the primitive.
-	 *
-	 * \return type of primitive
-	 */
+    /**
+      * Get type of the primitive.
+      *
+      * \return type of primitive
+      */
     PrimitiveType type() const { return m_type; }
 
-	/**
-	 * Get the description for the primitive.
-	 *
-	 * \return description of primitive.
-	 */
+    /**
+      * Get the description for the primitive.
+      *
+      * \return description of primitive.
+      */
     QString description() const { return m_description; }
     /**
-	 * Set description for the primitive.
-	 *
-	 * \param m_description new description
-	 */
-	void setDescription(const QString& m_description);
+    * Set description for the primitive.
+    *
+    * \param m_description new description
+    */
+    void setDescription(const QString& m_description);
 
-	/**
-	 * Get the color of the primitive.
-	 *
-	 * \return color of primitive
-	 */
+    /**
+      * Get the color of the primitive.
+      *
+      * \return color of primitive
+      */
     QColor color() const { return m_color; }
-	/**
-	 * Set color of primitive.
-	 *
-	 * \param color new color
-	 */
+    /**
+      * Set color of primitive.
+      *
+      * \param color new color
+      */
     void setColor(const QColor& color);
 
-	/**
-	 * Check if primitive is animated.
-	 *
-	 * \return whether primitive is animated
-	 */
+    /**
+      * Check if primitive is animated.
+      *
+      * \return whether primitive is animated
+      */
     bool isAnimated() const { return m_isAnimated; }
-	/**
-	 * Set if primitive is animated.
-	 *
-	 * \param isAnimated true if animated
-	 */
-	void setIsAnimated(bool isAnimated);
+    /**
+      * Set if primitive is animated.
+      *
+      * \param isAnimated true if animated
+      */
+    void setIsAnimated(bool isAnimated);
 
-	/**
-	 * Convert to QGraphicsItem.
-	 *
-	 * \return QGraphicsItem for the primitive.
-	 */
+    /**
+      * Convert to QGraphicsItem.
+      *
+      * \return QGraphicsItem for the primitive.
+      */
     virtual QGraphicsItem* toGraphicsItem() const = 0;
-	/**
-	 * Update graphics item.
-	 *
-	 * \param item item to update
-	 */
+    /**
+      * Update graphics item.
+      *
+      * \param item item to update
+      */
     virtual void updateGraphicsItem(QGraphicsItem* item) const = 0;
 
     bool operator==(const Primitive& other);

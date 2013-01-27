@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a circle. */
+/**
+ * Represents a circle. 
+ * 
+ * @see Function
+ */
 class Circle : public Function
 {
   public:

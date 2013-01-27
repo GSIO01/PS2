@@ -39,6 +39,12 @@ class GraphicalPoint : public Primitive
      * \return QGraphicsItem for the point.
      */
     virtual QGraphicsItem* toGraphicsItem() const;
+    
+    /**
+     * Update the QGraphicsItem.
+     * 
+     * \param item item to update
+     */
     virtual void updateGraphicsItem(QGraphicsItem* item) const;
 
   protected:

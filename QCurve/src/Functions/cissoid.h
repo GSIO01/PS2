@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a cissoid. */
+/**
+ * Represents a cissoid. 
+ * 
+ * @see Function
+ */
 class Cissoid : public Function
 {
   public:

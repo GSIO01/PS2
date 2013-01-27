@@ -54,6 +54,11 @@ class GraphicalCircle : public Primitive
      */
     virtual QGraphicsItem* toGraphicsItem() const;
 
+    /**
+     * Update the QGraphicsItem.
+     * 
+     * \item item to update
+     */
     virtual void updateGraphicsItem(QGraphicsItem* item) const;
 
   protected:

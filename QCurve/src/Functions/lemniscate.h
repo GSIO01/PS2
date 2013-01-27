@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a lemniscate. */
+/**
+ * Represents a lemniscate. 
+ * 
+ * @see Function
+ */
 class Lemniscate : public Function
 {
   public:

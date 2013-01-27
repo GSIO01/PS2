@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a archimedean spiral. */
+/**
+ * Represents a archimedean spiral.
+ *
+ * @see Function 
+ */
 class ArchimedeanSpiral : public Function
 {
   public:

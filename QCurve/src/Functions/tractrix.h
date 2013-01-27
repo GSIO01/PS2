@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a tractrix. */
+/**
+ * Represents a tractrix. 
+ * 
+ * @see Function
+ */
 class Tractrix : public Function
 {
   public:

@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/*** Represents a astroid. */
+/**
+ * Represents a astroid. 
+ * 
+ * @see Function
+ */
 class Astroid : public Function
 {
   public:

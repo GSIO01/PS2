@@ -17,76 +17,76 @@ class Variable
     Variable(const QString& name, double value = 0);
     virtual ~Variable();
 
-	/**
-	 * Get the name of the variable.
-	 *
-	 * \return name of variable
-	 */
+    /**
+      * Get the name of the variable.
+      *
+      * \return name of variable
+      */
     QString name() const { return m_name; }
 
-	/**
-	 * Get color of variable.
-	 *
-	 * \return color of variable
-	 */
+    /**
+      * Get color of variable.
+      *
+      * \return color of variable
+      */
     QColor color() const { return m_color; }
-	/**
-	 * Set color of variable.
-	 *
-	 * \param color new color
-	 */
+    /**
+      * Set color of variable.
+      *
+      * \param color new color
+      */
     void setColor(const QColor& color);
 
-	/**
-	 * Get formula for the variable.
-	 *
-	 * \return formala for variable
-	 */
+    /**
+      * Get formula for the variable.
+      *
+      * \return formala for variable
+      */
     QString formula() const;
-	/**
-	 * Set formula for variable.
-	 *
-	 * \param formula new formula
-	 */
+    /**
+      * Set formula for variable.
+      *
+      * \param formula new formula
+      */
     void setFormula(const QString& formula);
 
-	/**
-	 * Get description for variable.
-	 *
-	 * \return description for variable
-	 */
+    /**
+      * Get description for variable.
+      *
+      * \return description for variable
+      */
     QString description() const { return m_description; }
-	/**
-	 * Set description for variable.
-	 *
-	 * \param desc new description
-	 */
+    /**
+      * Set description for variable.
+      *
+      * \param desc new description
+      */
     void setDescription(const QString& desc);
 
-	/**
-	 * Get interval of variable.
-	 *
-	 * \return interval of variable
-	 */
+    /**
+      * Get interval of variable.
+      *
+      * \return interval of variable
+      */
     Interval& interval() const { return const_cast<Interval&>(m_interval); }
     /**
-	 * Set interval for variable.
-	 *
-	 * \param interval new interval
-	 */
-	void setInterval(const Interval& interval);
+    * Set interval for variable.
+    *
+    * \param interval new interval
+    */
+    void setInterval(const Interval& interval);
 
-	/**
-	 * Get value of variable.
-	 *
-	 * \return value of variable.
-	 */
+    /**
+      * Get value of variable.
+      *
+      * \return value of variable.
+      */
     double value() const { return m_value; }
-	/**
-	 * Set value of variable.
-	 *
-	 * \param value new value
-	 */
+    /**
+      * Set value of variable.
+      *
+      * \param value new value
+      */
     void setValue(double value);
 
     bool operator==(const Variable& constant);

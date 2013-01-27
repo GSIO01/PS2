@@ -3,7 +3,11 @@
 
 #include "Core/Function"
 
-/** Represents a limacon. */
+/**
+ * Represents a limacon. 
+ * 
+ * @see Function
+ */
 class Limacon : public Function
 {
   public:

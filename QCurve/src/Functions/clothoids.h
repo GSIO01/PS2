@@ -10,6 +10,11 @@
 
 #include "Core/Function"
 
+/**
+ * Represents a clothoid. 
+ * 
+ * @see Function
+ */
 class Clothoids : public Function
 {
   public:
