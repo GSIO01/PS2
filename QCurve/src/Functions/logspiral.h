@@ -7,7 +7,7 @@
 class LogarithmicSpiral : public Function
 {
   public:
-    LogarithmicSpiral(double a = 1.1, double x0 = 0, double y0 = 0);
+    LogarithmicSpiral(double a = 0.1, double k = 1, double x0 = 0, double y0 = 0);
     LogarithmicSpiral(const LogarithmicSpiral& other);
 
     virtual Function* clone() const;
@@ -18,6 +18,7 @@ class LogarithmicSpiral : public Function
 
   protected:
     virtual void initDimension();
+    virtual void updatePoints(const QString& name = QString(), double value = 0);
 };
 
 #endif

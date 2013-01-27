@@ -21,8 +21,8 @@ double round(double val) //TODO move
 Graph2D::Graph2D(QWidget* parent) : QGraphicsView(parent)
   ,m_timer(0), m_function(0), m_stepRange(0.01), m_animationDelay(7)
 {
-  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   QTimer::singleShot(0, this, SLOT(init()));
 }
 
@@ -54,14 +54,18 @@ void Graph2D::init()
 
 void Graph2D::plot(const Function& function)
 {
-
   blockSignals(true);
   if (m_timer->isActive()) { m_timer->stop(); }
-  if (m_function) { delete m_function; }
+  if (m_function)
+  {
+    delete m_function;
+    delete [] m_lastPoints;
+  }
 
   m_xAngle = 0; m_yAngle = 0;
 
   m_function = function.clone();
+  m_lastPoints = new Point2D[m_function->calculations()];
 
   updateSceneRect();
   fitInView();
@@ -92,7 +96,9 @@ void Graph2D::redraw()
   update();
 
   m_t = m_function->parameter().from();
-  m_lastPoint = transfromTo2D(m_function->calculatePoint(m_t));
+
+  for (int i = 0; i < m_function->calculations(); i++)
+  { m_lastPoints[i] = transfromTo2D(m_function->calculate(i, m_t)); }
 
   if (m_animationDelay > 0) { m_timer->start(); }
   else { drawFragment(); }
@@ -107,11 +113,14 @@ void Graph2D::drawFragment()
   bool finished = (m_t >= m_function->parameter().to());
   m_t += m_stepRange;
 
-  Point2D tmp = transfromTo2D(m_function->calculatePoint(m_t));
   if (!finished)
   {
-    addLineToScene(m_functionGroup, m_lastPoint.x(), m_lastPoint.y(), tmp.x(), tmp.y());
-    m_lastPoint = tmp;
+    for (int i = 0; i < m_function->calculations(); i++)
+    {
+      Point2D tmp = transfromTo2D(m_function->calculate(i, m_t));;
+      addLineToScene(m_functionGroup, m_lastPoints[i].x(), m_lastPoints[i].y(), tmp.x(), tmp.y());
+      m_lastPoints[i] = tmp;
+    }
 
     if (m_animationDelay > 0)
     {
@@ -174,12 +183,14 @@ void Graph2D::drawFragment()
 
 Point2D Graph2D::transfromTo2D(const Point3D& p)
 {
+  static const double degToRad = 3.141592653589793/180;
+
   if (m_function->is2Dimensional())
   { return Point2D(p.x(), p.y()); }
 
-  double a = m_xAngle;
-  double b = 0;
-  double c = m_yAngle;
+  double a = m_xAngle * degToRad;
+  //double b = 0;
+  double c = m_yAngle * degToRad;
 
   // x-axis
   double y = p.y() * cos(a) - p.z() * sin(a);
@@ -187,33 +198,16 @@ Point2D Graph2D::transfromTo2D(const Point3D& p)
   double x = p.x();
 
   // y-axis
-  z = z * cos(b) - x * sin(b);
-  x = z * sin(b) + x * cos(b);
-  y = y;
+  //z = z * cos(b) - x * sin(b); // z = z * 1 - x * 0;
+  //x = z * sin(b) + x * cos(b); // x = z * 0 + x * 1;
+  //y = y;
 
   //z-axis
   x = x * cos(c) - y * sin(c);
   y = x * sin(c) + y * cos(c);
-  z = z;
+  //z = z;
 
-  int v = 1;
-  if (v == 0) //parallel x
-  {
-    x = 1 * y + 0;
-    y = 1 * z + 0;
-  }
-  else if (v == 1) //parallel y
-  {
-    x = 1 * x + 0;
-    y = 1 * z + 0;
-  }
-  else if (v == 2) //parallel z
-  {
-    x = 1 * x + 0;
-    y = 1 * y + 0;
-  }
-
-  return Point2D(x, y);
+  return Point2D(x, z); //x = 1*x+0; y = 1*z+0;
 }
 
 /*** Draws the entire coordinate system. **/
@@ -231,57 +225,77 @@ void Graph2D::drawCoordinateSystem()
 
   if (rect.left() > sceneRect().left()) { rect.setLeft(sceneRect().left()); }
   if (rect.right() < sceneRect().right()) { rect.setRight(sceneRect().right()); }
-  if (rect.bottom() > sceneRect().bottom()) { rect.setBottom(sceneRect().bottom()); }
-  if (rect.top() < sceneRect().top()) { rect.setTop(sceneRect().top()); }
+
+  //NOTE y axis is inverted...
+  if (rect.bottom() > sceneRect().top()) { rect.setBottom(sceneRect().top()); }
+  if (rect.top() < sceneRect().bottom()) { rect.setTop(sceneRect().bottom()); }
 
   double l = rect.left(); double r = rect.right();
   double b = rect.bottom(); double t = rect.top();
 
+  int psf = (r + t) / 2; //arrow head calculation is based upon this size
+
   //y-axis
-  addLineToScene(m_coordSysGroup, color, 0, t,  0.05, t - 0.1);
-  addLineToScene(m_coordSysGroup, color, 0, t, -0.05, t - 0.1);
-  addTextToScene(m_coordSysGroup, color , tr("Y"), - 0.3, t - 0.05);
+  addLineToScene(m_coordSysGroup, color, 0, t, psf *  0.01, t - psf * 0.04);
+  addLineToScene(m_coordSysGroup, color, 0, t, psf * -0.01, t - psf * 0.04);
+  addTextToScene(m_coordSysGroup, color, tr("Y"), psf * 0.015, t - psf * 0.01);
   addLineToScene(m_coordSysGroup, color, 0, b, 0, t);
 
   //x-axis
-  addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1, -0.05);
-  addLineToScene(m_coordSysGroup, color, r, 0, r - 0.1,  0.05);
-  addTextToScene(m_coordSysGroup, color , tr("X"), r - 0.3, 0.3);
+  addLineToScene(m_coordSysGroup, color, r, 0, r - psf * 0.04, psf * -0.01);
+  addLineToScene(m_coordSysGroup, color, r, 0, r - psf * 0.04, psf *  0.01);
+  addTextToScene(m_coordSysGroup, color, tr("X"), r - psf * 0.035, -psf * 0.01);
   addLineToScene(m_coordSysGroup, color, l, 0, r, 0);
 
-  int h = round(t-b);
-  int w = round(r-l);
-
-  int wRange = (w < 10) ? 1 : w / 10;
-  int hRange = (h < 10) ? 1 : h / 10;
-  int range = (wRange < hRange) ? wRange : hRange;
-
-  for (int i = -range; i >= b; i -= range)
+  if (m_showGrid)
   {
-    addLineToScene(m_coordSysGroup, nColor, l, i, r, i);
-    addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0, i);
-  }
+    int h = t - b; int w = r - l;
+    int wRange = (w < 10) ? 1 : w / 10;
+    int hRange = (h < 10) ? 1 : h / 10;
+    int range = (wRange < hRange) ? wRange : hRange;
 
-  for (int i = range; i <= t; i += range)
-  {
-    addLineToScene(m_coordSysGroup, nColor, l, i, r, i);
-    addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0, i);
-  }
+    //horizontal lines
+    int cells = h / range;
+    if (cells > 10) { cells = 5; }
+    else if (cells > 6) { cells = 2; }
+    else { cells = 1; }
+    for (int i = -range; i >= b; i -= range)
+    {
+      addLineToScene(m_coordSysGroup, nColor, l, i, r, i);
+      if (i % (range * cells) == 0)
+      { addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0, i); }
+    }
+    for (int i = range; i <= t; i += range)
+    {
+      addLineToScene(m_coordSysGroup, nColor, l, i, r, i);
+      if (i % (range * cells) == 0)
+      { addTextToScene(m_coordSysGroup, nColor, QString::number(i), 0, i); }
+    }
 
-  for (int i = -range; i >= l; i -= range)
-  {
-    addLineToScene(m_coordSysGroup, nColor, i, b, i, t);
-    addTextToScene(m_coordSysGroup, nColor, QString::number(i), i, 0);
-  }
-
-  for (int i = range; i <= r; i += range)
-  {
-    addLineToScene(m_coordSysGroup, nColor, i, b, i, t);
-    addTextToScene(m_coordSysGroup, nColor, QString::number(i), i, 0);
+    //vertical lines
+    cells = w / range;
+    if (cells > 10) { cells = 5; }
+    else if (cells > 5) { cells = 2; }
+    else { cells = 1; }
+    for (int i = -range; i >= l; i -= range)
+    {
+      addLineToScene(m_coordSysGroup, nColor, i, b, i, t);
+      if (i % (range * cells) == 0)
+      { addTextToScene(m_coordSysGroup, nColor, QString::number(i), i, 0); }
+    }
+    for (int i = range; i <= r; i += range)
+    {
+      addLineToScene(m_coordSysGroup, nColor, i, b, i, t);
+      if (i % (range * cells) == 0)
+      { addTextToScene(m_coordSysGroup, nColor, QString::number(i), i, 0); }
+    }
   }
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
-  { m_coordSysGroup[i]->setZValue(-2); }
+  {
+    if (i < 8) { m_coordSysGroup[i]->setZValue(-2); }
+    else { m_coordSysGroup[i]->setZValue(-3); }
+  }
 
   blockSignals(false);
   update();
@@ -289,6 +303,8 @@ void Graph2D::drawCoordinateSystem()
 
 void Graph2D::drawCoordinateSystem3D()
 {
+  QColor color = QApplication::palette().color(QPalette::WindowText);
+
   blockSignals(true);
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
@@ -307,15 +323,21 @@ void Graph2D::drawCoordinateSystem3D()
 
   Point2D start = transfromTo2D(Point3D(l, 0, 0));
   Point2D end = transfromTo2D(Point3D(r, 0, 0));
-  addLineToScene(m_coordSysGroup, QColor(255, 0, 0), start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
 
   start = transfromTo2D(Point3D(0, b, 0));
   end = transfromTo2D(Point3D(0, t, 0));
-  addLineToScene(m_coordSysGroup, QColor(0, 255, 0), start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
 
   start = transfromTo2D(Point3D(0, 0, -6));
   end = transfromTo2D(Point3D(0, 0, 6));
-  addLineToScene(m_coordSysGroup, QColor(0, 0, 255), start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
+
+  //show angles
+  addTextToScene(m_coordSysGroup, QString(" %1=%2%3\n %4=%5%3")
+    .arg(QChar(0x03B1)).arg(QString::number(m_xAngle)).arg(QChar(0xB0))
+    .arg(QChar(0x03B2)).arg(QString::number(m_yAngle)),
+    l, t);
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)
   { m_coordSysGroup[i]->setZValue(-2); }
@@ -327,10 +349,10 @@ void Graph2D::drawCoordinateSystem3D()
 void Graph2D::updateSceneRect()
 {
   QRectF rect = m_function->dimension();
-  rect.setLeft(rect.left() - 0.5);
-  rect.setRight(rect.right() + 0.5);
+  //rect.setLeft(rect.left() - 0.5);
+  //rect.setRight(rect.right() + 0.5);
 
-  if (rect.top() < rect.bottom())
+  /*if (rect.top() < rect.bottom())
   {
     double top = rect.bottom() + 0.5;
     rect.setBottom(rect.top() - 0.5);
@@ -340,7 +362,7 @@ void Graph2D::updateSceneRect()
   {
     rect.setBottom(rect.bottom() - 0.5);
     rect.setTop(rect.top() + 0.5);
-  }
+  }*/
 
   scene()->setSceneRect(rect);
 }
@@ -351,7 +373,8 @@ void Graph2D::fitInView()
   m_scaleBase = transform().m11();
 }
 
-void Graph2D::addLineToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2)
+void Graph2D::addLineToScene(QList<QGraphicsItem*>& group,
+                             double x1, double y1, double x2, double y2)
 {
   QGraphicsLineItem* item = scene()->addLine(x1, y1, x2, y2);
   item->setPen(QPen(QApplication::palette().color(QPalette::WindowText)));
@@ -359,16 +382,19 @@ void Graph2D::addLineToScene(QList<QGraphicsItem*>& group, double x1, double y1,
   group.append(item);
 }
 
-void Graph2D::addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, double x1, double y1, double x2, double y2)
+void Graph2D::addLineToScene(QList<QGraphicsItem*>& group, const QColor& color,
+                             double x1, double y1, double x2, double y2, bool scale)
 {
   QGraphicsLineItem* item = scene()->addLine(x1, y1, x2, y2);
+  if (!scale) { item->setFlags(QGraphicsItem::ItemIgnoresTransformations); }
   //if (x1 == x2 || y1 == y2) { } TODO ignore antialiasing
   item->setPen(QPen(color));
 
   group.append(item);
 }
 
-QGraphicsItem* Graph2D::addRectToScene(QList<QGraphicsItem*>& group, double x1, double y1, double x2, double y2)
+QGraphicsItem* Graph2D::addRectToScene(QList<QGraphicsItem*>& group, double x1,
+                                       double y1, double x2, double y2)
 {
   QGraphicsRectItem* item = scene()->addRect(x1, y1, x2, y2);
   item->setPen(QPen(QApplication::palette().color(QPalette::WindowText)));
@@ -378,9 +404,11 @@ QGraphicsItem* Graph2D::addRectToScene(QList<QGraphicsItem*>& group, double x1, 
   return item;
 }
 
-void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QString& text, double x, double y)
+void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QString& text,
+                             double x, double y)
 {
-  QGraphicsSimpleTextItem* item = scene()->addSimpleText(text); //non rich text is sufficient
+  //non rich text is sufficient
+  QGraphicsSimpleTextItem* item = scene()->addSimpleText(text);
   item->setFlags(QGraphicsItem::ItemIgnoresTransformations);
   item->setPen(QPen(QApplication::palette().color(QPalette::WindowText)));
   item->setPos(x, y);
@@ -388,9 +416,11 @@ void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QString& text, 
   group.append(item);
 }
 
-void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QColor& color, const QString& text, double x, double y)
+void Graph2D::addTextToScene(QList<QGraphicsItem*>& group, const QColor& color,
+                             const QString& text, double x, double y)
 {
-  QGraphicsSimpleTextItem* item = scene()->addSimpleText(text); //non rich text is sufficient
+  //non rich text is sufficient
+  QGraphicsSimpleTextItem* item = scene()->addSimpleText(text);
   item->setFlags(QGraphicsItem::ItemIgnoresTransformations);
   item->setPen(QPen(color));
   item->setPos(x, y);
@@ -431,6 +461,18 @@ void Graph2D::setUseAntialiasing(bool useAntialiasing)
     setRenderHints(QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
     setOptimizationFlags(QGraphicsView::DontSavePainterState | QGraphicsView::DontAdjustForAntialiasing);
   }
+
+  redraw();
+}
+
+void Graph2D::setParameter(double from, double to)
+{
+  m_function->setParameter(from, to);
+  updateSceneRect();
+
+  int scale = scaleFactor();
+  fitInView();
+  setScaleFactor(scale);
 
   redraw();
 }
@@ -489,10 +531,17 @@ void Graph2D::mouseMoveEvent(QMouseEvent* event)
   QPointF pos = mapToScene(event->pos());
   if (!m_function->is2Dimensional() && event->buttons() != Qt::NoButton)
   {
-    QPointF delta = mapToScene(m_lastPanPoint);
+    QPointF delta = m_lastPanPoint;
 
-    m_yAngle += (delta.x() - pos.x()) * 10;
-    m_xAngle += (delta.y() - pos.y()) * 10;
+    if (delta.x() - event->pos().x() > 0)
+    { m_yAngle = (m_yAngle - 5) % 360; }
+    else if (delta.x() - event->pos().x() < 0)
+    { m_yAngle = (m_yAngle + 5) % 360; }
+
+    if (delta.y() - event->pos().y() > 0) //inverted y axis (scale -1)
+    { m_xAngle = (m_xAngle + 5) % 360; }
+    else if (delta.y() - event->pos().y() < 0) //inverted y axis (scale -1)
+    { m_xAngle = (m_xAngle - 5) % 360; }
 
     if (m_animationDelay > 0) //ignore delay and redraw entire function...
     {

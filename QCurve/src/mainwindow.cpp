@@ -2,7 +2,7 @@
 
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
-#include <QtCore/QDebug>
+#include <QtCore/QSettings>
 
 #include <QtGui/QApplication>
 #include <QtGui/QMenu>
@@ -15,11 +15,14 @@
 #include "functionwidget.h"
 
 #include "Functions/Functions"
+
 #include "Export/EPSExporter"
+#include "Export/ExportDialog"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-  loadLanguage("de");
+  loadLanguage(preferredLanguage());
+
   setWindowTitle(tr("Parametric Curve Viewer"));
   //setWindowIcon(QIcon());
 
@@ -54,8 +57,6 @@ void MainWindow::itemActivated(const QModelIndex& idx)
 
 void MainWindow::initFunctions()
 {
-  //TODO use a function creator instead...
-
   m_functionItemModel->addCategory(tr("Rational functions"));
   //m_functionItemModel->addFunction(tr("Line"), tr("Rational functions"));
   //m_functionItemModel->addFunction(tr("Polynomial"), tr("Rational functions"));
@@ -115,8 +116,8 @@ void MainWindow::initMenu()
   menu->addAction(action);
   menubar->addMenu(menu);
 
-  menu = new QMenu(tr("Edit"));
-  menubar->addMenu(menu);
+  //menu = new QMenu(tr("Edit"));
+  //menubar->addMenu(menu);
 
   menu = new QMenu(tr("View"));
   menubar->addMenu(menu);
@@ -125,12 +126,12 @@ void MainWindow::initMenu()
   QActionGroup* actionGroup = new QActionGroup(this);
   action = new QAction(tr("Paralell"), this);
   action->setCheckable(true);
-  action->setEnabled(false);
+  action->setChecked(true);
   actionGroup->addAction(action);
   subMenu->addAction(action);
   action = new QAction(tr("Perspective"), this);
   action->setCheckable(true);
-  action->setChecked(true);
+  action->setEnabled(false);
   actionGroup->addAction(action);
   subMenu->addAction(action);
   menu->addMenu(subMenu);
@@ -202,8 +203,15 @@ void MainWindow::initComponents()
 
 void MainWindow::exportAsEPS()
 {
-  EpsExporter exporter("Test.eps");
-  exporter.exportToFile(m_functionWgt->function());
+  ExportDialog dlg;
+  if (dlg.exec())
+  {
+    EpsExporter exporter(dlg.selectedFiles().at(0), dlg.author());
+    exporter.setShowGrid(dlg.showGrid());
+    exporter.setShowLabels(dlg.showLabels());
+    exporter.setShowHelperItems(dlg.showHelperItems());
+    exporter.exportToFile(m_functionWgt->function());
+  }
 }
 
 void MainWindow::setShowGrid(bool isVisible)
@@ -220,9 +228,9 @@ void MainWindow::setAnimationMode()
 
   switch (action->data().toInt())
   {
-    case 0: m_functionWgt->setAnimationMode(1, true); break;
-    case 1: m_functionWgt->setAnimationMode(1, false); break;
-    case 2: m_functionWgt->setAnimationMode(0, false); break;
+    case 0: m_functionWgt->setAnimationMode(7, true); break;  //Repeat
+    case 1: m_functionWgt->setAnimationMode(7, false); break; //Once
+    case 2: m_functionWgt->setAnimationMode(0, false); break; //None
   }
 }
 
@@ -238,17 +246,10 @@ QMenu* MainWindow::createLanguageMenu()
 
   connect(langGroup, SIGNAL(triggered(QAction *)), this, SLOT(languageChanged(QAction *)));
 
-  // format systems language
-  QString defaultLocale;
   if (m_currLang.isEmpty())
-  {
-    defaultLocale = QLocale::system().name();       // e.g. "de_DE"
-    defaultLocale.truncate(defaultLocale.lastIndexOf('_')); // e.g. "de"
-  }
-  else { defaultLocale = m_currLang; }
+  { m_currLang = preferredLanguage(); }
 
-  QString langPath = QApplication::applicationDirPath();
-  langPath.append("/po");
+  QString langPath = QApplication::applicationDirPath() + "/po";
   QDir dir(langPath);
   QStringList fileNames = dir.entryList(QStringList("trans_*.qm"));
 
@@ -269,7 +270,7 @@ QMenu* MainWindow::createLanguageMenu()
     menu->addAction(action);
     langGroup->addAction(action);
 
-    if (defaultLocale == locale)
+    if (m_currLang == locale)
     { action->setChecked(true); }
   }
 
@@ -324,7 +325,39 @@ void MainWindow::loadLanguage(const QString& rLanguage)
     QLocale locale = QLocale(m_currLang);
     QLocale::setDefault(locale);
     QString languageName = QLocale::languageToString(locale.language());
-    switchTranslator(m_translator, QString("trans_%1.qm").arg(rLanguage));
+    switchTranslator(m_translator, QString("po/trans_%1.qm").arg(rLanguage));
     switchTranslator(m_translatorQt, QString("qt_%1.qm").arg(rLanguage));
   }
+}
+
+QString MainWindow::preferredLanguage() const
+{
+  QString lang;
+  //If the app runs under KDE try to use it's language settings
+  if (!qgetenv("KDE_FULL_SESSION").isEmpty())
+  {
+    QSettings settings(QDir::homePath() +
+      QLatin1String("/.kde4/share/config/kdeglobals"), QSettings::IniFormat);
+
+    lang = settings.value(QLatin1String("Locale/Language"), QString()).toString();
+
+    if (!lang.isEmpty())
+    { return lang.left(2); }
+  }
+
+  lang = QLocale::system().name();
+  lang = lang.toLower();
+  lang = lang.left(2);
+
+  /* Window XP Prof MUI Multiuser && Multilanguage == stay
+   * only "c" language && user setting setenv !!! */
+  if (lang == "c")
+  {
+    QString languser = getenv("LANG");
+    languser = languser.toLower();
+    if (languser.size() > 2 && languser.contains("_"))
+    { lang = languser.left(2); }
+  }
+
+  return lang;
 }

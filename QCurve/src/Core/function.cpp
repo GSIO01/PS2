@@ -1,22 +1,11 @@
 #include "function.h"
 
-#include <QObject>
+#include <QtCore/QDebug>
+#include <QtCore/QObject>
 
 Function::Function()
   : m_dimension(QRectF(0, 0, 0, 0)), m_is2Dimensional(true)
-{
-  Variable var("x0", 0);
-  var.setColor(QColor(0, 0, 255));
-  var.setFormula("<math><mrow><msub><mi color=\"#0000FF\">x</mi><mr color=\"#00F\">0</mr></msub></mrow></math>");
-  var.setDescription(QObject::tr("Moves the function on the x-axis."));
-  setVariable(var);
-
-  var = Variable("y0", 0);
-  var.setColor(QColor(0, 255, 0));
-  var.setFormula("<math><mrow><msub><mi color=\"#00FF00\">y</mi><mr color=\"#00FF00\">0</mr></msub></mrow></math>");
-  var.setDescription(QObject::tr("Moves the function on the y-axis."));
-  setVariable(var);
-}
+{ }
 
 Function::~Function()
 {
@@ -25,11 +14,39 @@ Function::~Function()
   //{ delete m_helper.takeAt(i); }
 }
 
+void Function::init()
+{
+  m_calculations = new CalculateMethod[calculations()];
+  m_calculations[0] = &Function::calculatePoint;
+
+  Variable var("x0", 0);
+  var.setColor(QColor(0, 0, 255));
+  var.setFormula("<math><mrow><msub><mi color=\"#0000FF\">x</mi><mr color=\"#00F\">0</mr></msub></mrow></math>");
+  var.setDescription(QObject::tr("Moves the function on the x-axis."));
+  setVariable(var);
+
+  var = Variable("y0", 0);
+  var.setColor(QColor(0, 200, 0));
+  var.setFormula("<math><mrow><msub><mi color=\"#00C800\">y</mi><mr color=\"#00C800\">0</mr></msub></mrow></math>");
+  var.setDescription(QObject::tr("Moves the function on the y-axis."));
+  setVariable(var);
+}
+
 Parameter& Function::parameter() const
 { return const_cast<Parameter&>(m_param); }
 
 void Function::setParameter(const Parameter& param)
-{ m_param = param; }
+{
+  m_param = param;
+  initDimension();
+}
+
+void Function::setParameter(double from, double to)
+{
+  m_param.setFrom(from);
+  m_param.setTo(to);
+  initDimension();
+}
 
 QList<Variable> Function::variables() const
 { return m_variables; }
@@ -65,8 +82,8 @@ void Function::setVariable(const QString& name, double value, bool triggerUpdate
 
   if (triggerUpdate)
   {
-    updatePoints(name, value);
     initDimension();
+    updatePoints(name, value);
   }
 }
 

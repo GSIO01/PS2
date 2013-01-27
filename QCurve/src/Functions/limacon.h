@@ -7,7 +7,7 @@
 class Limacon : public Function
 {
   public:
-    Limacon(double a = 1, double b = 1.5, double x0 = 0, double y1 = 0);
+    Limacon(double a = 1, double b = 1.0, double x0 = 0, double y1 = 0);
     Limacon(const Limacon& other);
 
     virtual Function* clone() const;
@@ -17,6 +17,7 @@ class Limacon : public Function
     virtual Point3D calculatePoint(double t) const;
 
   protected:
+    virtual void updatePoints(const QString& name = QString(), double value = 0);
     virtual void initDimension();
 };
 

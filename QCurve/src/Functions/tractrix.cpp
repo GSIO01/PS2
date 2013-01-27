@@ -8,11 +8,13 @@
 
 Tractrix::Tractrix(double a, double x0, double y0)
 {
+  init();
+
   m_name = QCoreApplication::translate("Tractrix", "Tractrix");
   m_param = Parameter(0, PI, "t");
 
   Variable var("a", a);
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
   setVariable("x0", x0, false);

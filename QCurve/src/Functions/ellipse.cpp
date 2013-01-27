@@ -8,20 +8,22 @@
 
 Ellipse::Ellipse(double a, double b, double x0, double y0)
 {
+  init();
+
   m_param = Parameter(0, 2 * PI, "t");
   m_name = QCoreApplication::translate("Ellipse", "Ellipse");
 
   Variable var("a", a);
   var.setDescription(QCoreApplication::translate("Ellipse",
     "The radius along the x-axis. The x-axis is the major radius [a > b] or the minor radius."));
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   var.interval().setLowerEnd(0);
   setVariable(var);
 
   var = Variable("b", b);
   var.setDescription(QCoreApplication::translate("Ellipse",
     "The radius along the y-axis. The y-axis is the major radius [b > a] or the minor radius."));
-  var.setColor(QColor(0, 255, 255));
+  var.setColor(QColor(0, 128, 255));
   var.interval().setLowerEnd(0);
   setVariable(var);
 
@@ -81,17 +83,33 @@ void Ellipse::updatePoints(const QString& name, double value)
     The foci always lie on the major (longest) axis and \
     are equidistant from the center point.");
 
-    m_helper.append(new GraphicalPoint(Point3D(x0, y0), "M",
-      QCoreApplication::translate("Ellipse", "The center point of the ellipse.")));
+    GraphicalPoint* p = new GraphicalPoint(Point3D(x0, y0), "M(x0,y0)",
+      QCoreApplication::translate("Ellipse", "The center point of the ellipse."));
+    p->setColor(QColor(0, 200, 0));
+    m_helper.append(p);
+
     m_helper.append(new GraphicalPoint(f1, "F1", desc));
     m_helper.append(new GraphicalPoint(f2, "F2", desc));
-    m_helper.append(new GraphicalPoint(Point3D( a + x0, y0, 0), "a", m_variables.at(2).description()));
-    m_helper.append(new GraphicalPoint(Point3D(-a + x0, y0, 0), "-a", m_variables.at(2).description()));
-    m_helper.append(new GraphicalPoint(Point3D(x0,  b + y0, 0), "b", m_variables.at(3).description()));
-    m_helper.append(new GraphicalPoint(Point3D(x0, -b + y0, 0), "-b", m_variables.at(3).description()));
+
+    p = new GraphicalPoint(Point3D( a + x0, y0, 0), "a", m_variables.at(2).description());
+    p->setColor(m_variables.at(2).color());
+    m_helper.append(p);
+
+    p = new GraphicalPoint(Point3D(-a + x0, y0, 0), "-a", m_variables.at(2).description());
+    p->setColor(m_variables.at(2).color());
+    m_helper.append(p);
+
+    p = new GraphicalPoint(Point3D(x0,  b + y0, 0), "b", m_variables.at(3).description());
+    p->setColor(m_variables.at(3).color());
+    m_helper.append(p);
+
+    p = new GraphicalPoint(Point3D(x0, -b + y0, 0), "-b", m_variables.at(3).description());
+    p->setColor(m_variables.at(3).color());
+    m_helper.append(p);
   }
   else //update helper items
   {
+    ((GraphicalPoint*)getHelperItem("M(x0,y0)"))->setPoint(Point3D(x0, y0));
     ((GraphicalPoint*)getHelperItem("F1"))->setPoint(f1);
     ((GraphicalPoint*)getHelperItem("F2"))->setPoint(f2);
     ((GraphicalPoint*)getHelperItem("a"))->setPoint(Point3D( a + x0, y0, 0));

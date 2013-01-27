@@ -10,6 +10,8 @@
 
 Catenary::Catenary(double a, double x0, double y0)
 {
+  init();
+
   m_name = QCoreApplication::translate("Catenary", "Catenary");
   m_param = Parameter(-10, 10, "t");
 
@@ -20,7 +22,7 @@ Catenary::Catenary(double a, double x0, double y0)
   var.setDescription(QCoreApplication::translate("Catenary", "The parameter a \
     describes the height above the reference point and \
     the distans from the tangent to the base-point."));
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
   updatePoints();
@@ -81,14 +83,18 @@ Point3D Catenary::calculatePoint(double t) const
 
 void Catenary::initDimension()
 {
-  double x0 = getVariable("x0");
-  double y0 = getVariable("y0");
-  double a = getVariable("a");
+    double x0 = getVariable("x0");
+    double y0 = getVariable("y0");
+    double a = getVariable("a");
 
-  double w = m_param.to() - m_param.from();
-  double h = a * cosh(0);
+    double absFromT = m_param.from() < 0 ? m_param.from() * -1 : m_param.from();
+    double absToT   = m_param.to() < 0 ? m_param.to() * -1 : m_param.to();
+    double maxT     = absFromT > absToT ? absFromT : absToT;
 
-  m_dimension = QRectF(m_param.from() + x0, a + y0, w, h);
+    double w = m_param.to() - m_param.from();
+    double h = a * cosh(maxT / a);
+
+    m_dimension = QRectF(m_param.from() + x0, y0, w, h);
 }
 
 void Catenary::updatePoints(const QString& name, double value)
@@ -112,7 +118,7 @@ void Catenary::updatePoints(const QString& name, double value)
     {
       m_helper.clear();
 
-      GraphicalPoint *graphRefPoint = new GraphicalPoint(refPoint, "Reference Point",
+      GraphicalPoint *graphRefPoint = new GraphicalPoint(refPoint, "(x0,y0)",
         QCoreApplication::translate("Catenary", "Reference point of the Catenary line"));
       graphRefPoint->setColor(QColor("green"));
 
@@ -140,7 +146,7 @@ void Catenary::updatePoints(const QString& name, double value)
     }
     else //update helper items
     {
-      ((GraphicalPoint*)getHelperItem("Reference Point"))->setPoint(refPoint);
+        ((GraphicalPoint*)getHelperItem("(x0,y0)"))->setPoint(refPoint);
       GraphicalLine *aLine = (GraphicalLine *)getHelperItem("Parameter a");
       aLine->setStartPoint(Point3D(x0, y0));
       aLine->setEndPoint(Point3D(x0, y0 + a, 0));

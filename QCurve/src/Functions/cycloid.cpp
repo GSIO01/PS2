@@ -8,16 +8,18 @@
 
 Cycloid::Cycloid(double r, double m, double x0, double y0)
 {
+  init();
+
   m_name = QCoreApplication::translate("Cycloid", "Cycloid");
   m_param = Parameter(-2*PI, 2*PI, "t");
 
   Variable var("r",r);
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
   var = Variable("mu", m);
-  var.setColor(QColor(0, 255, 255));
-  var.setFormula("<mi color=\"#00FFFF\">&mu;</mi>");
+  var.setColor(QColor(0, 128, 255));
+  var.setFormula("<mi color=\"#0088FF\">&mu;</mi>");
   setVariable(var);
 
   setVariable("x0", x0, false);
@@ -62,13 +64,14 @@ void Cycloid::updatePoints(const QString& name, double value)
     item->setIsAnimated(true);
     m_helper.append(item);
 
-    item = new GraphicalLine(Point3D(x0, y0 + r, 0), Point3D(x0, y0, 0), "Rcl");
+    item = new GraphicalLine(Point3D(x0, y0 + r, 0), Point3D(x0, y0, 0), "r");
+    item->setColor(QColor(255, 128, 0));
     item->setIsAnimated(true);
     m_helper.append(item);
   }
   else
   {
-    ((GraphicalLine*)getHelperItem("Rcl"))->setStartPoint(Point3D(x0, y0 + r, 0));
+    ((GraphicalLine*)getHelperItem("r"))->setStartPoint(Point3D(x0, y0 + r, 0));
 
     GraphicalCircle* item = (GraphicalCircle*)getHelperItem("Rc");
     item->setMidPoint(Point3D(x0, y0 + r, 0));
@@ -87,7 +90,7 @@ Point3D Cycloid::calculatePoint(double t) const
 
   ((GraphicalCircle*)getHelperItem("Rc"))->setMidPoint(Point3D(result.x() + r * sin(t), y0 + r, 0));
 
-  GraphicalLine* item = (GraphicalLine*)getHelperItem("Rcl");
+  GraphicalLine* item = (GraphicalLine*)getHelperItem("r");
   item->setStartPoint(Point3D(result.x() + r * sin(t), y0 + r, 0));
   item->setEndPoint(Point3D(result.x(), result.y(), 0));
 

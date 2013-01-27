@@ -18,6 +18,7 @@ class Parabola : public Function
 
   protected:
     virtual void initDimension();
+    virtual void updatePoints(const QString& name = QString(), double value = 0);
 };
 
 #endif

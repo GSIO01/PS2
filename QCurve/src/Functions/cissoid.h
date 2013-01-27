@@ -11,7 +11,9 @@ class Cissoid : public Function
     Cissoid(const Cissoid& other);
 
     virtual Function* clone() const;
+
     virtual QString toParametricFormula() const;
+
     virtual Point3D calculatePoint(double t) const;
 
   protected:

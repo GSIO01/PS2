@@ -9,12 +9,14 @@
 
 Circle::Circle(double r, double x0, double y0)
 {
+  init();
+
   m_param = Parameter(0, 2 * PI, "t");
   m_name = QCoreApplication::translate("Circle", "Circle");
 
   Variable var("r", r);
   var.setDescription(QCoreApplication::translate("Circle", "Radius of the circle."));
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   var.interval().setLowerEnd(0);
   setVariable(var);
 
@@ -76,15 +78,15 @@ void Circle::updatePoints(const QString& name, double value)
 
   if(name.isNull())
   {
-    Primitive* item = new GraphicalLine(Point3D(x0 + r, y0, 0), Point3D(x0, y0, 0),
-      "r", m_variables.at(2).description());
-    QString desc = QCoreApplication::translate("Circle", "The Center point of the circle.");
-
-    m_helper.clear();
-
-    m_helper.append(new GraphicalPoint(m, "M", desc));
+    Primitive* item = new GraphicalPoint(m, "M(x0, y0)", QCoreApplication::translate("Circle", "The Center point of the circle."));
+    item->setColor(QColor(0, 200, 0));
     m_helper.append(item);
-    item = new GraphicalLine(d1, d2, "d", QCoreApplication::translate("Circle", "Diameter of the circle."));
+
+    item = new GraphicalLine(Point3D(x0 + r, y0), Point3D(x0, y0), "r", m_variables.at(2).description());
+    item->setColor(m_variables.at(2).color());
+    m_helper.append(item);
+
+    item = new GraphicalLine(d1, d2, "d=2*r", QCoreApplication::translate("Circle", "Diameter of the circle."));
     m_helper.append(item);
   }
   else

@@ -4,13 +4,24 @@
 #include <Core/Function>
 
 #include <Primitives/GraphicalCircle>
+#include <Primitives/GraphicalLine>
 
 EpsExporter::EpsExporter(const QString& fileName, const QString& author)
-  :  m_file(fileName), m_writer(&m_file), m_author(author)
+  : m_file(fileName), m_writer(&m_file), m_author(author),
+    m_showHelpers(true), m_showLabels(false), m_showGrid(false)
 { }
 
 EpsExporter::~EpsExporter()
 { }
+
+void EpsExporter::setShowHelperItems(bool showHelperItems)
+{ m_showHelpers = showHelperItems; }
+
+void EpsExporter::setShowLabels(bool showLabels)
+{ m_showLabels = showLabels; }
+
+void EpsExporter::setShowGrid(bool showGrid)
+{ m_showGrid = showGrid; }
 
 bool EpsExporter::exportToFile(const Function& function)
 {
@@ -22,6 +33,8 @@ bool EpsExporter::exportToFile(const Function& function)
   writeHeader();
   writeDefinitions();
 
+  m_writer << "%% coordinate system" << endl;
+
   //y-axis
   drawLine(0, function.dimension().bottom(),  0.05, function.dimension().bottom() - 0.1);
   drawLine(0, function.dimension().bottom(), -0.05, function.dimension().bottom() - 0.1);
@@ -32,34 +45,43 @@ bool EpsExporter::exportToFile(const Function& function)
   drawLine(function.dimension().right(), 0, function.dimension().right() - 0.1,  0.05);
   drawLine(function.dimension().left(),  0, function.dimension().right(), 0);
 
-  Point3D last = function.calculatePoint(function.parameter().from());
+  m_writer << "%%" << function.name() << endl;
+
+  Point3D* last = new Point3D[function.calculations()];
+  for (int i = 0; i < function.calculations(); i++)
+  { last[i] = function.calculate(i, function.parameter().from()); }
+
   for (double t = function.parameter().from() + stepRange; t < function.parameter().to() + stepRange; t += stepRange)
   {
-    Point3D tmp = function.calculatePoint(t); //TODO transform
-    drawLine(Point2D( tmp.x(),  tmp.y()),
-             Point2D( last.x(),  last.y()));
-    last = tmp;
+    Point3D tmp;
+    for (int i = 0; i < function.calculations(); i++)
+    {
+      tmp = function.calculate(i, t); //TODO transform
+      drawLine(tmp, last[i]);
+      last[i] = tmp;
+    }
   }
 
-  foreach (Primitive* p, function.helperItems())
+  delete [] last;
+
+  if (m_showHelpers)
   {
-    if (p->isAnimated()) //ignore animations
-    { continue; }
-
-    if (p->type() == Primitive::PT_Circle)
+    m_writer << "%% helper items / descriptions" << endl;
+    foreach (Primitive* p, function.helperItems())
     {
-      drawCircle(((GraphicalCircle*)p)->midPoint(), ((GraphicalCircle*)p)->radius());
+      if (p->isAnimated()) //ignore animations
+      { continue; }
+
+      if (p->type() == Primitive::PT_Circle)
+      { drawCircle(((GraphicalCircle*)p)->midPoint(), ((GraphicalCircle*)p)->radius()); }
+      else if (p->type() == Primitive::PT_Line)
+      { drawLine(((GraphicalLine*)p)->start(), ((GraphicalLine*)p)->end()); }
+      else if (p->type() == Primitive::PT_Point)
+      {
+        //addTextToScene(m_functionGroup, p->color(), p->name(),
+        //               item->boundingRect().x() + 0.1, item->boundingRect().y());
+      }
     }
-
-    /**QGraphicsItem* item = p->toGraphicsItem();
-    m_functionGroup.append(item);
-    scene()->addItem(item);*/
-
-    /*if (p->type() == Primitive::PT_Point)
-    {
-      addTextToScene(m_functionGroup, p->color(), p->name(),
-                     item->boundingRect().x() + 0.1, item->boundingRect().y());
-    }*/
   }
 
   writeFooter(function.dimension());
@@ -78,7 +100,7 @@ void EpsExporter::drawCircle(const Point3D& p, double r)
   m_writer << fixed << p.x() << " " << fixed << p.y() << " " << fixed << r << " a s" << endl;
 }
 
-void EpsExporter::drawLine(const Point2D& start, const Point2D& end)
+void EpsExporter::drawLine(const Point3D& start, const Point3D& end)
 {
   m_writer << fixed << start.x() << " " << fixed << start.y() << " m ";
   m_writer << fixed << end.x()   << " " << fixed << end.y()   << " l s" << endl;

@@ -113,13 +113,21 @@ class Graph2D : public QGraphicsView
     void setVariable(const QString& var, double value);
 
     /**
+     * Updates parameter and the view.
+     *
+     * \param from new from value
+     * \param to new to value
+     */
+    void setParameter(double from, double to);
+
+    /**
      * Draws the specified function.
      *
      * \param function Function to draw.
      */
     void plot(const Function& function);
     /**
-     * Redraw the graph.
+     * Redraws the graph.
      */
     void redraw();
 
@@ -258,7 +266,8 @@ class Graph2D : public QGraphicsView
      * \param y2 Y coordinate of end point.
      * \param color Color to use.
      */
-    void addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, double x1, double y1, double x2, double y2);
+    void addLineToScene(QList<QGraphicsItem*>& group, const QColor& color, double x1,
+                        double y1, double x2, double y2, bool scale = true);
 
     QList<QGraphicsItem*> m_coordSysGroup;
     QList<QGraphicsItem*> m_functionGroup;
@@ -272,11 +281,11 @@ class Graph2D : public QGraphicsView
     double m_scaleBase;
     double m_stepRange;
 
-    Point2D m_lastPoint;
+    Point2D* m_lastPoints;
     double m_t;
 
     int m_xAngle;
-    double m_yAngle;
+    int m_yAngle;
 
     int m_animationDelay;
     bool m_repeat;

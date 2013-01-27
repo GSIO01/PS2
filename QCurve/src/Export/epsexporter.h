@@ -5,7 +5,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
-class Point2D;
 class Point3D;
 class Function;
 /**
@@ -17,6 +16,10 @@ class EpsExporter
     EpsExporter(const QString& fileName, const QString& author= QString("QCurve"));
     ~EpsExporter();
 
+    void setShowHelperItems(bool showHelperItems);
+    void setShowLabels(bool showLabels);
+    void setShowGrid(bool showGrid);
+
     /**
      * Export to EPS file.
      *
@@ -26,7 +29,7 @@ class EpsExporter
 
   private:
     void drawLine(double x1, double y1, double x2, double y2);
-    void drawLine(const Point2D& start, const Point2D& end);
+    void drawLine(const Point3D& start, const Point3D& end);
     void drawCircle(const Point3D& p, double r);
 
     /** Write the header to the file. */
@@ -40,6 +43,10 @@ class EpsExporter
     QTextStream m_writer;
 
     QString m_author;
+
+    bool m_showHelpers;
+    bool m_showLabels;
+    bool m_showGrid;
 };
 
 #endif

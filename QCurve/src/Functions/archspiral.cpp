@@ -1,17 +1,27 @@
 #include "archspiral.h"
 
+#include "Primitives/GraphicalPoint"
+#include "Primitives/GraphicalLine"
+
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
 
-ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0)
+ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0, int a)
 {
+  init();
+
   m_name = QCoreApplication::translate("ArchimedeanSpiral", "Archimedean Spiral");
-  m_param = Parameter(0, 4 * PI, "t");
+  m_param = Parameter(0, 3.99, "t");
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
+  Variable var = Variable("a", a);
+  var.setColor(QColor(255, 128, 0));
+  setVariable(var);
+
+  updatePoints();
   initDimension();
 }
 
@@ -19,18 +29,21 @@ ArchimedeanSpiral::ArchimedeanSpiral(const ArchimedeanSpiral& other)
 { *this = other; }
 
 Function* ArchimedeanSpiral::clone() const
-{ return new ArchimedeanSpiral(getVariable("x0"), getVariable("y0")); }
+{ return new ArchimedeanSpiral(getVariable("x0"), getVariable("y0"), getVariable("a")); }
 
 QString ArchimedeanSpiral::toParametricFormula() const
 {
-  static QString genFormula = QString("<math><apply><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>x0</mi><mo>+</mo><mi>t</mi><mi>cos</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mtext>,&ThickSpace;&ThickSpace;</mtext><mi/><mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mo>=</mo><mi/><mi>y0</mi><mo>+</mo><mi>t</mi><mi>sin</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi/><mtext>,&ThickSpace;&ThickSpace;</mtext><mi/><mi>t</mi><mo>&gt;</mo><mn>0</mn><mi/><mtext>,&ThickSpace;&ThickSpace;</mtext><mi/><mi>t</mi><mo stretchy=\"false\">&isin;</mo><mo>R</mo></apply></math>");
+  static QString genFormula = QString("<math><apply><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>t</mi><mo>&middot;</mo><mi>cos</mi><mo>(</mo><mi>2</mi><mi>&pi;</mi><mo>&middot;</mo><mi>t</mi><mo>)</mo>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>y0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><mi>t</mi><mo>&middot;</mo><mi>sin</mi><mo>(</mo><mi>2</mi><mi>&pi;</mi><mo>&middot;</mo><mi>t</mi><mo>)</mo>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi><mo>&geq;</mo><mn>0</mn>" \
+    ",<mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi><mo stretchy=\"false\">&isin;</mo><mo>R</mo></apply></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
-  {
-    QString replace = QString("<mi color=\"%1\">%2</mi>").arg(var.color().name()).arg(var.name());
-    curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), replace);
-  }
+  { curFormula.replace(QString("<mi>%1</mi>").arg(var.name()), var.formula()); }
 
   return curFormula;
 }
@@ -39,19 +52,48 @@ Point3D ArchimedeanSpiral::calculatePoint(double t) const
 {
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
+  int    a  = getVariable("a");
 
-  return Point3D(x0 + t * cos(t), y0 + t * sin(t), 0);
+  return Point3D(x0 + a * t * cos(2*PI*t), y0 + a * t * sin(2*PI*t), 0);
 }
 
 void ArchimedeanSpiral::initDimension()
 {
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
+  int     a = getVariable("a");
 
-  double w = m_param.to() * cos(m_param.to());
-  double h = m_param.to() * sin(m_param.to());
+  double w = a * m_param.to() * cos(2 * PI * m_param.to());
+  double h = a * m_param.to() * sin(2 * PI * m_param.to());
 
   if (w < h) { w = h; }
 
-  m_dimension = QRectF(-w + x0, -w + y0, 2 * w, 2 * w);
+  m_dimension = QRectF(-w + x0, -w + y0, 2*w, 2*w);
 }
+
+void ArchimedeanSpiral::updatePoints(const QString& name, double value)
+{
+  Q_UNUSED(value);
+
+  double x0 = getVariable("x0");
+  double y0 = getVariable("y0");
+  double a = getVariable("a");
+
+  if(name.isNull())
+  {
+    Primitive* item = new GraphicalPoint(Point3D(x0, y0), "P(x0,y0)", QCoreApplication::translate("ArchimedeanSpiral", "The Center point of the circle."));
+    item->setColor(QColor(0, 200, 0));
+    m_helper.append(item);
+
+    item = new GraphicalLine(Point3D(x0, y0, 0), Point3D(x0 + a, y0, 0), "2*&#x3c0;*a", m_variables.at(2).description());
+    item->setColor(QColor(255, 128, 0));
+    m_helper.append(item);
+  }
+  else
+  {
+    ((GraphicalPoint*)getHelperItem("P(x0,y0)"))->setPoint(Point3D(x0, y0));
+    ((GraphicalLine*)getHelperItem("2*&#x3c0;*a"))->setStartPoint(Point3D(x0, y0));
+    ((GraphicalLine*)getHelperItem("2*&#x3c0;*a"))->setEndPoint(Point3D(x0 + a, y0));
+  }
+}
+

@@ -5,18 +5,20 @@
 
 Strophoid::Strophoid(double a, double x0, double y0)
 {
+  init();
+
   m_name = QCoreApplication::translate("Strophoid", "Strophoid");
-  m_param = Parameter(-2, 2, "t");
+  m_param = Parameter(-2.8, 2.8, "t");
 
   Variable var("a", a);
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
-  updatePoints();
   initDimension();
+  updatePoints();
 }
 
 Strophoid::Strophoid(const Strophoid& other)
@@ -47,9 +49,7 @@ Point3D Strophoid::calculatePoint(double t) const
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
 
-  double t2 = t * t;
-
-  return Point3D(x0 + (a * (t2 - 1))/(1 + t2), y0 + (a * t * (t2 - 1))/(1 + t2), 0);
+  return Point3D(x0 + (a * (t*t - 1))/(1 + t*t), y0 + (a * t * (t*t - 1))/(1 + t*t), 0);
 }
 
 void Strophoid::initDimension()
@@ -58,7 +58,10 @@ void Strophoid::initDimension()
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
 
-  m_dimension = QRectF(-a + x0, -a * 1.15 + y0, a * 2, a * 2.3);
+  double h = (a * m_param.to()   * (m_param.to()   * m_param.to()   - 1)) / (1 + m_param.to()   * m_param.to()) -
+             (a * m_param.from() * (m_param.from() * m_param.from() - 1)) / (1 + m_param.from() * m_param.from());
+
+  m_dimension = QRectF(-a + x0, y0 - h/2, a * 2, h);
 }
 
 void Strophoid::updatePoints(const QString& name, double value)
@@ -73,17 +76,15 @@ void Strophoid::updatePoints(const QString& name, double value)
 
   if (name.isNull())
   {
-    QString desc;
-    Primitive* item = 0;
+    Primitive * item = new GraphicalPoint(o, "O", QCoreApplication::translate("Strophoid", "The origin point of the curve."));
+    item->setColor(QColor(0, 200, 0));
+    m_helper.append(item);
 
-    m_helper.clear();
+    item = new GraphicalPoint(s, "S", QCoreApplication::translate("Strophoid", "Fixed point of the strophoid."));
+    m_helper.append(item);
 
-    desc = QCoreApplication::translate("Strophoid", "The origin point of the curve.");
-    m_helper.append(new GraphicalPoint(o, "O", desc));
-    desc = QCoreApplication::translate("Strophoid", "Fixed point of the strophoid.");
-    m_helper.append(new GraphicalPoint(s, "S", desc));
-    desc = QCoreApplication::translate("Strophoid", "Asymptote of the curve.");
-    item = new GraphicalLine(Point3D(a, -a * 100), Point3D(a, a * 100), "A", desc);
+    item = new GraphicalLine(Point3D(a, m_dimension.top() * 2), Point3D(a, m_dimension.bottom() * 2), "A",
+                             QCoreApplication::translate("Strophoid", "Asymptote of the curve."));
     m_helper.append(item);
   }
   else

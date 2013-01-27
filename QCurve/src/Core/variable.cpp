@@ -26,7 +26,6 @@ void Variable::setInterval(const Interval& interval)
 
 void Variable::setValue(double value)
 {
-  //TODO Respect open interval bounds...
   if (value < m_interval.lowerEnd()) { m_value = m_interval.lowerEnd(); }
   else if (value > m_interval.upperEnd()) { m_value = m_interval.upperEnd(); }
   else { m_value = value; }

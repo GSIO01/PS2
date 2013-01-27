@@ -1,5 +1,6 @@
 #include "astroid.h"
 
+#include "Primitives/GraphicalPoint"
 #include "Primitives/GraphicalCircle"
 #include "Primitives/GraphicalLine"
 
@@ -8,6 +9,8 @@
 
 Astroid::Astroid(double a, double x0, double y0)
 {
+  init();
+
   m_name = QCoreApplication::translate("Astroid", "Astroid");
   m_param = Parameter(0, 2 * PI, "t");
 
@@ -17,7 +20,7 @@ Astroid::Astroid(double a, double x0, double y0)
   Variable var("a");
   var.setDescription(QCoreApplication::translate("Astroid",
     "The radius of the circle where a circle (r=a/4) rolls around inside."));
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   var.interval().setLowerEnd(0);
   var.setValue(a);
   setVariable(var);
@@ -35,12 +38,12 @@ Function* Astroid::clone() const
 QString Astroid::toParametricFormula() const
 {
   static QString genFormula = QString("<math><mi>x</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>x0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><msup><mi>cos</mi><mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo>" \
-  "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
-  "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>y0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>a</mi><mo>&gt;</mo><mn>0</mn>" \
-  "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
-  "<mi>a</mi><mo>&isin;</mo><mo>R</mo>" \
-  ",<mo>&InvisibleTimes;</mo>" \
-  "<mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo></math>");
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>y</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>y0</mi><mo>+</mo><mi>a</mi><mo>&middot;</mo><msup><mi>sin</mi> <mn>3</mn> </msup> <mo>(</mo> <mi>t</mi> <mo>)</mo> <mi>,</mi> <mi>a</mi><mo>&gt;</mo><mn>0</mn>" \
+    "<mo>&InvisibleTimes;</mo><mo>&InvisibleTimes;</mo>" \
+    "<mi>a</mi><mo>&isin;</mo><mo>R</mo>" \
+    ",<mo>&InvisibleTimes;</mo>" \
+    "<mi>t</mi><mo>&isin;</mo> <mo>[</mo> <mn>0</mn> <mo>,</mo><mn>2</mn><mo>&pi;</mo><mo>)</mo></math>");
 
   QString curFormula = genFormula;
   foreach (const Variable& var, m_variables)
@@ -67,13 +70,45 @@ void Astroid::updatePoints(const QString& name, double value)
     item->setIsAnimated(true); //TODO
     m_helper.append(item);
 
-    item = new GraphicalLine(Point3D(x0, y0 + a/4, 0), Point3D(x0, y0, 0), "Rcl");
+    item = new GraphicalLine(Point3D(x0, y0 + a/4, 0), Point3D(x0, y0, 0), "a/4");
     item->setIsAnimated(true);
+    m_helper.append(item);
+
+    item = new GraphicalLine(Point3D(x0 + a, y0, 0), Point3D(x0, y0, 0), "r");
+    item->setColor(QColor(255, 128, 0));
+    item->setIsAnimated(true);
+    m_helper.append(item);
+
+    item = new GraphicalPoint(Point3D(x0, y0), "P(x0,y0)");
+    item->setColor(QColor(0, 200, 0));
+    m_helper.append(item);
+
+    item = new GraphicalPoint(Point3D(x0 + a, y0), "a");
+    item->setColor(QColor(255, 128, 0));
+    m_helper.append(item);
+
+    item = new GraphicalPoint(Point3D(x0, y0 + a), "a ");
+    item->setColor(QColor(255, 128, 0));
+    m_helper.append(item);
+
+    item = new GraphicalPoint(Point3D(x0, y0 - a), "-a");
+    item->setColor(QColor(255, 128, 0));
+    m_helper.append(item);
+
+    item = new GraphicalPoint(Point3D(x0 - a, y0), "-a ");
+    item->setColor(QColor(255, 128, 0));
     m_helper.append(item);
   }
   else
   {
-    ((GraphicalLine*)getHelperItem("Rcl"))->setStartPoint(Point3D(x0, y0 + a/4, 0));
+    ((GraphicalPoint*)getHelperItem("P(x0,y0)"))->setPoint(Point3D(x0, y0, 0));
+    ((GraphicalPoint*)getHelperItem("a"))->setPoint(Point3D(x0 + a, y0, 0));
+    ((GraphicalPoint*)getHelperItem("a "))->setPoint(Point3D(x0, y0 + a, 0));
+    ((GraphicalPoint*)getHelperItem("-a"))->setPoint(Point3D(x0, y0 - a, 0));
+    ((GraphicalPoint*)getHelperItem("-a "))->setPoint(Point3D(x0 - a, y0, 0));
+
+    ((GraphicalLine*)getHelperItem("a/4"))->setStartPoint(Point3D(x0, y0 + a/4, 0));
+    ((GraphicalLine*)getHelperItem("r"))->setStartPoint(Point3D(x0 + a, y0, 0));
 
     GraphicalCircle* item = (GraphicalCircle*)getHelperItem("Rc");
     item->setMidPoint(Point3D(x0, y0 + a/4, 0));
@@ -91,11 +126,11 @@ Point3D Astroid::calculatePoint(double t) const
   double y0 = getVariable("y0");
   double a = getVariable("a");
 
-  Point3D result(x0 + a * pow(cos(t), 3), x0 + a * pow(sin(t), 3), 0);
+  Point3D result(x0 + a * pow(cos(t), 3), y0 + a * pow(sin(t), 3), 0);
 
   ((GraphicalCircle*)getHelperItem("Rc"))->setMidPoint(Point3D(x0 + ((3*a)/4) * cos(t), y0 + ((3*a)/4) * sin(t), 0));
 
-  GraphicalLine* item = (GraphicalLine*)getHelperItem("Rcl");
+  GraphicalLine* item = (GraphicalLine*)getHelperItem("a/4");
   item->setStartPoint(Point3D(x0 + ((3*a)/4) * cos(t), y0 + ((3*a)/4) * sin(t), 0));
   item->setEndPoint(Point3D(result.x(), result.y(), 0));
 

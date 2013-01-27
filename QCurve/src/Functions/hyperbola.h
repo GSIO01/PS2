@@ -15,9 +15,13 @@ class Hyperbola : public Function
     virtual QString toParametricFormula() const;
 
     virtual Point3D calculatePoint(double t) const;
+    virtual Point3D calculatePoint2(double t) const;
+
+    virtual int calculations() const { return 2; }
 
   protected:
     virtual void initDimension();
+    virtual void updatePoints(const QString& name = QString(), double value = 0);
 };
 
 #endif

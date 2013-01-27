@@ -7,7 +7,7 @@
 class Helix : public Function
 {
   public:
-    Helix(double r = 1, double h = 1, double x0 = 0, double y0 = 0, double z0 = 0);
+    Helix(double r = 1, double h = 0.1, double x0 = 0, double y0 = 0, double z0 = 0);
     Helix(const Helix& other);
 
     virtual Function* clone() const;
@@ -20,4 +20,4 @@ class Helix : public Function
     virtual void initDimension();
 };
 
-#endif 
+#endif

@@ -6,6 +6,8 @@
 
 Helix::Helix(double r, double h, double x0, double y0, double z0)
 {
+  init();
+
   m_is2Dimensional = false;
 
   m_name = QCoreApplication::translate("Helix", "Helix");
@@ -21,13 +23,13 @@ Helix::Helix(double r, double h, double x0, double y0, double z0)
   setVariable(var);
 
   var = Variable("r");
-  var.setColor(QColor(255, 255, 0));
+  var.setColor(QColor(255, 128, 0));
   var.interval().setLowerEnd(0);
   var.setValue(r);
   setVariable(var);
 
   var = Variable("h");
-  var.setColor(QColor(0, 255, 255));
+  var.setColor(QColor(0, 128, 255));
   var.interval().setLowerEnd(0);
   var.setValue(h);
   setVariable(var);

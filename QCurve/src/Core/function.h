@@ -66,6 +66,7 @@ class Function
      * \param param New Parameter.
      */
     void setParameter(const Parameter& param);
+    void setParameter(double from, double to);
 
     /**
      * Returns a list of all variables.
@@ -105,6 +106,18 @@ class Function
     const QRectF& dimension() const;
 
     /**
+     * Returns the number of calculation methods.
+     */
+    virtual int calculations() const { return 1; }
+
+    Point3D calculate(int idx, double t) const
+    { return (this->*m_calculations[idx])(t); }
+
+  protected:
+    typedef Point3D (Function::*CalculateMethod)(double) const;
+    Function::CalculateMethod* m_calculations;
+
+    /**
      * Calculates and returns the coordinates of the function for the giving parameter value.
      *
      * \param t Parameter value.
@@ -112,7 +125,6 @@ class Function
      */
     virtual Point3D calculatePoint(double t) const = 0;
 
-  protected:
     /**
      * Set variable.
      *
@@ -128,6 +140,8 @@ class Function
      */
     void setVariable(const Variable& var);
 
+    void init();
+
     /**
      * Helper function to update points after a variable has changed.
      *
@@ -135,9 +149,8 @@ class Function
      * \param value New value.
      */
     virtual void updatePoints(const QString& var = QString(), double value = 0);
-    /**
-     * Calculates the boundaries.
-     */
+
+    /** Calculates the boundaries. */
     virtual void initDimension() = 0;
 
     /**
@@ -151,7 +164,7 @@ class Function
     Parameter m_param;
 
     /** @Note Use @link setVariable to add/set a variable since it will
-	 *  maintain the order,
+     *  maintain the order,
      *  This makes it saves to assume that e.g x0/y1 is at index 0/1.
      *
      *  Both \c x0 and \c y0 are already defined since all functions use them.

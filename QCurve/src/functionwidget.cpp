@@ -119,21 +119,13 @@ void FunctionWidget::initComponents()
 }
 
 void FunctionWidget::fromValueChanged(double value)
-{
-  m_plotter->function().parameter().setFrom(value);
-  m_plotter->redraw();
-}
+{ m_plotter->setParameter(value, m_paramEdit->to()); }
 
 void FunctionWidget::toValueChanged(double value)
-{
-  m_plotter->function().parameter().setTo(value);
-  m_plotter->redraw();
-}
+{ m_plotter->setParameter(m_paramEdit->from(), value); }
 
 void FunctionWidget::varValueChanged(const QString& var, double value)
-{
-  m_plotter->setVariable(var, value);
-}
+{ m_plotter->setVariable(var, value); }
 
 void FunctionWidget::positionChanged(double x, double y)
 {
@@ -167,7 +159,6 @@ void FunctionWidget::updateFormula()
 
 void FunctionWidget::updateScaleFactor(int value)
 {
-
   if (sender() == m_plotter)
   { m_scaleFactor->setValue(value); }
   else if (sender() == m_scaleFactor)

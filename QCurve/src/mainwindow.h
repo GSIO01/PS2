@@ -45,6 +45,7 @@ class MainWindow : public QMainWindow
 
     QMenu* createLanguageMenu();
     void loadLanguage(const QString& rLanguage);
+    QString preferredLanguage() const;
 
     Splitter* m_splitter;
     FunctionWidget* m_functionWgt;
