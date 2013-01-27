@@ -96,7 +96,7 @@ Point3D Cissoid::calculatePoint(double t) const
   ((GraphicalLine*)getHelperItem("g1"))->setStartPoint(Point3D(a+x0, -(a3t / (1 + t2))+y0, 0));
   ((GraphicalLine*)getHelperItem("g1"))->setEndPoint(Point3D(a+x0, (a3t / (1 + t2))+y0, 0));
 
-  return Point3D(x0 + (a3t / (1 + t2)), y0 + (a3t / (1 + t2)), 0);
+  return Point3D(x0 + (a * t2 / (1 + t2)), y0 + (a3t / (1 + t2)), 0);
 }
 
 void Cissoid::initDimension()
