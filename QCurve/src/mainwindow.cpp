@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
   loadLanguage(preferredLanguage());
 
   setWindowTitle(tr("Parametric Curve Viewer"));
-  //setWindowIcon(QIcon());
+  setWindowIcon(QIcon("QCurve.svg"));
 
   initMenu();
   initComponents();
