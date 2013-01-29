@@ -11,6 +11,7 @@ Strophoid::Strophoid(double a, double x0, double y0)
   m_param = Parameter(-2.8, 2.8, "t");
 
   Variable var("a", a);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
@@ -84,7 +85,8 @@ void Strophoid::updatePoints(const QString& name, double value)
     m_helper.append(item);
 
     item = new GraphicalLine(Point3D(a, m_dimension.top() * 2), Point3D(a, m_dimension.bottom() * 2), "A",
-                             QCoreApplication::translate("Strophoid", "Asymptote of the curve."));
+                             QCoreApplication::translate("Strophoid", "Asymptote of the curve (x=a)."));
+    item->setColor(m_variables.at(2).color());
     m_helper.append(item);
   }
   else

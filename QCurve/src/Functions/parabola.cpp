@@ -13,6 +13,7 @@ Parabola::Parabola(double p, double x0, double y0)
   m_param = Parameter(-5, 5, "t");
 
   Variable var("p", p);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(255, 128, 0));
   setVariable(var);
 

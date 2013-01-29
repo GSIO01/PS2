@@ -323,20 +323,20 @@ void Graph2D::drawCoordinateSystem3D()
 
   Point2D start = transfromTo2D(Point3D(l, 0, 0));
   Point2D end = transfromTo2D(Point3D(r, 0, 0));
-  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, QColor(255, 0, 0), start.x(), start.y(), end.x(), end.y());
 
   start = transfromTo2D(Point3D(0, b, 0));
   end = transfromTo2D(Point3D(0, t, 0));
-  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, QColor(0, 255, 0), start.x(), start.y(), end.x(), end.y());
 
   start = transfromTo2D(Point3D(0, 0, -6));
   end = transfromTo2D(Point3D(0, 0, 6));
-  addLineToScene(m_coordSysGroup, color, start.x(), start.y(), end.x(), end.y());
+  addLineToScene(m_coordSysGroup, QColor(0, 0, 255), start.x(), start.y(), end.x(), end.y());
 
   //show angles
   addTextToScene(m_coordSysGroup, QString(" %1=%2%3\n %4=%5%3")
     .arg(QChar(0x03B1)).arg(QString::number(m_xAngle)).arg(QChar(0xB0))
-    .arg(QChar(0x03B2)).arg(QString::number(m_yAngle)),
+    .arg(QChar(0x03B3)).arg(QString::number(m_yAngle)),
     l, t);
 
   for (int i = m_coordSysGroup.size() - 1; i >= 0; i--)

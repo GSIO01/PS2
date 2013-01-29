@@ -19,6 +19,8 @@
 #include "Export/EPSExporter"
 #include "Export/ExportDialog"
 
+#include "aboutdialog.h"
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
   loadLanguage(preferredLanguage());
@@ -178,7 +180,7 @@ void MainWindow::initMenu()
   menu->addMenu(createLanguageMenu());
   menu->addSeparator();
   action = new QAction(QIcon::fromTheme("help-about"), tr("About"), this);
-  //connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(showAbout()));
   menu->addAction(action);
   menubar->addMenu(menu);
 
@@ -232,6 +234,12 @@ void MainWindow::setAnimationMode()
     case 1: m_functionWgt->setAnimationMode(7, false); break; //Once
     case 2: m_functionWgt->setAnimationMode(0, false); break; //None
   }
+}
+
+void MainWindow::showAbout()
+{
+  AboutDialog dlg;
+  dlg.exec();
 }
 
 void MainWindow::splitterDoubleClicked()

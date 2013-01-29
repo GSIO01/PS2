@@ -13,6 +13,8 @@ Circle::Circle(double r, double x0, double y0)
 
   m_param = Parameter(0, 2 * PI, "t");
   m_name = QCoreApplication::translate("Circle", "Circle");
+  m_param.interval().setLowerEnd(0, true);
+  m_param.interval().setUpperEnd(2 * PI, true);
 
   Variable var("r", r);
   var.setDescription(QCoreApplication::translate("Circle", "Radius of the circle."));

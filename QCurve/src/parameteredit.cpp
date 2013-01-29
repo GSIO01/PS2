@@ -56,6 +56,27 @@ void ParameterEdit::setParameter(const Parameter& param)
   m_from->setValue(param.from());
   m_to->setValue(param.to());
 
+  if (!param.interval().lowerEndIsClosed())
+  {
+    m_from->setMinimum(param.interval().lowerEnd() + 0.01);
+    m_to->setMinimum(param.interval().lowerEnd() + 0.01);
+  }
+  else
+  {
+    m_from->setMinimum(param.interval().lowerEnd());
+    m_to->setMinimum(param.interval().lowerEnd());
+  }
+  if (!param.interval().upperEndIsClosed())
+  {
+    m_to->setMaximum(param.interval().upperEnd() - 0.01);
+    m_from->setMaximum(param.interval().upperEnd() - 0.01);
+  }
+  else
+  {
+    m_to->setMaximum(param.interval().upperEnd());
+    m_from->setMaximum(param.interval().upperEnd());
+  }
+
   QString toolTip = QString("<b>%1</b><br/>%2<br/>%3").arg(param.name()).
     arg(param.description()).arg(param.toString());
   setToolTip(toolTip);

@@ -20,7 +20,7 @@ Clothoids::Clothoids(double a, double x0, double y0)
   Variable var("a");
   var.setColor(QColor(255, 128, 0));
   var.setDescription(QCoreApplication::translate("Clothoids","Parameter of the clothoid"));
-  var.interval().setLowerEnd(0.5);
+  var.interval().setLowerEnd(0);
   var.setValue(a);
   setVariable(var);
 

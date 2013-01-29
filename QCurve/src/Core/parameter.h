@@ -4,6 +4,8 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
+#include "Core/Interval"
+
 /**
  * Represents a mathmatical parameter.
  *
@@ -19,7 +21,7 @@ class Parameter
     virtual ~Parameter();
 
     /**
-      * The formal name (symbol) of the parameter (usualy 't'). 
+      * The formal name (symbol) of the parameter (usualy 't').
       *
       * \return formal name (symbol) of the parameter
       */
@@ -33,14 +35,14 @@ class Parameter
     QString description() const;
 
     /**
-      * Returns the minimum value of the parameter. 
+      * Returns the minimum value of the parameter.
       *
       * \return minimum value of the parameter
       */
     double from() const;
 
     /**
-      * Sets the minimum value of the parameter. 
+      * Sets the minimum value of the parameter.
       *
       * \param from new minimum value of parameter
       */
@@ -60,8 +62,21 @@ class Parameter
       */
     void setTo(double to);
 
-    /*QList<double> excludedValues() const;
-    void setExcludedValues(const QList<double>& excluded);*/
+    //QList<double> excludedValues() const;
+    //void setExcludedValues(const QList<double>& excluded);
+
+    /**
+     * Get interval of parameter.
+     *
+     * \return interval of the parameter
+     */
+    Interval& interval() const { return const_cast<Interval&>(m_interval); }
+    /**
+     * Set interval for parameter.
+     *
+     * \param interval new interval
+     */
+    void setInterval(const Interval& interval);
 
     /**
       * Get a String representation of the parameter.
@@ -73,10 +88,11 @@ class Parameter
   private:
     QString m_name;
     QString m_description;
-    //QList<double> m_excludedValues;
+    QList<double> m_excludedValues;
 
     double m_to;
     double m_from;
+    Interval m_interval;
 };
 
 #endif

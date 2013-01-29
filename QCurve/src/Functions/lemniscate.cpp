@@ -13,8 +13,11 @@ Lemniscate::Lemniscate(double a, double x0, double y0)
 
   m_name = QCoreApplication::translate("Lemniscate", "Lemniscate");
   m_param = Parameter(0, 2*PI, "t");
+  m_param.interval().setLowerEnd(0, true);
+  m_param.interval().setUpperEnd(2 * PI, true);
 
   Variable var("a", a);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(255, 128, 0));
   setVariable(var);
 

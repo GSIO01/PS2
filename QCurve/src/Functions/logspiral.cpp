@@ -12,12 +12,15 @@ LogarithmicSpiral::LogarithmicSpiral(double a, double k, double x0, double y0)
 
   m_name = QCoreApplication::translate("LogarithmicSpiral", "Logarithmic Spiral");
   m_param = Parameter(0, 3.99, "t");
+  m_param.interval().setLowerEnd(0, true);
 
   Variable var("a", a);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
   var = Variable("k", k);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(0, 128, 255));
   setVariable(var);
 

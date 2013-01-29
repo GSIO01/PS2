@@ -4,6 +4,7 @@
 #include <QtCore/QString>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QRectF>
 
 class Point3D;
 class Function;
@@ -18,19 +19,19 @@ class EpsExporter
 
     /**
      * Toogles visibility of helper items.
-     * 
+     *
      * \param showHelperItems Whether to show helper items in the exported file or not.
      */
     void setShowHelperItems(bool showHelperItems);
     /**
      * Toogles visibility of Labels.
-     * 
+     *
      * \param showLabels Whether to show labels in the exported file or not.
      */
     void setShowLabels(bool showLabels);
     /**
      * Toogles visibility of the Grid.
-     * 
+     *
      * \param showGrid Whether to show the grid in exported file or not.
      */
     void setShowGrid(bool showGrid);
@@ -45,7 +46,7 @@ class EpsExporter
   private:
     /**
      * Adds a line to the file.
-     * 
+     *
      * \param x1 x coordinate of start point
      * \param x2 x coordinate of end point
      * \param y1 y coordinate of start point
@@ -54,30 +55,30 @@ class EpsExporter
     void drawLine(double x1, double y1, double x2, double y2);
     /**
      * Adds a line to the file.
-     * 
+     *
      * \param start start point
      * \param end end point
      */
     void drawLine(const Point3D& start, const Point3D& end);
     /**
      * Adds a circle to the file.
-     * 
+     *
      * \param p center point
      * \param r radius
      */
     void drawCircle(const Point3D& p, double r);
 
-    /** 
-     * Write the header to the file. 
+    /**
+     * Write the header to the file.
      */
     void writeHeader();
-    /** 
-     * Write the defintions to the file. 
+    /**
+     * Write the defintions to the file.
      */
     void writeDefinitions();
-    /** 
-     * Write footer to the file. 
-     * 
+    /**
+     * Write footer to the file.
+     *
      * \param dimension dimension
      */
     void writeFooter(const QRectF& dimension);

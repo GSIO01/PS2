@@ -13,6 +13,8 @@ Hypocycloid::Hypocycloid( double a, double c, double x0, double y0)
 
   m_name = QCoreApplication::translate("Hypocycloid", "Hypocycloid"); //TODO
   m_param = Parameter(0, 2 * PI, "t");
+  m_param.interval().setLowerEnd(0, true);
+  m_param.interval().setUpperEnd(2 * PI, true);
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);

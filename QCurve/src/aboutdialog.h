@@ -10,7 +10,7 @@ class AboutDialog : public QDialog
 {
   Q_OBJECT
   public:
-    AboutDialog();
+    AboutDialog(QWidget* parent = 0);
     ~AboutDialog();
 
   private:
@@ -21,7 +21,7 @@ class AboutDialog : public QDialog
     QLabel* m_progVersion;
     QLabel* m_description;
 
-    QIcon m_progIcon;
+    QIcon m_icon;
 };
 
 #endif

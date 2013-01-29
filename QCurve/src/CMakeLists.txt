@@ -10,6 +10,7 @@ SET (QCURVE_SRCS ${QCURVE_SRCS}
                  src/variableedit.cpp
                  src/graph2d.cpp
                  src/functionwidget.cpp
+                 src/aboutdialog.cpp
                  src/mainwindow.cpp
                  src/main.cpp)
 

@@ -3,26 +3,30 @@
 #include "Primitives/GraphicalPoint"
 #include "Primitives/GraphicalLine"
 
+#include <QtCore/QDebug>
+
 #include <QtCore/qmath.h> //TODO
 
 #define PI 3.141592653589793
 
-ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0, int a)
+ArchimedeanSpiral::ArchimedeanSpiral(double x0, double y0, double a)
 {
   init();
 
   m_name = QCoreApplication::translate("ArchimedeanSpiral", "Archimedean Spiral");
   m_param = Parameter(0, 3.99, "t");
+  m_param.interval().setLowerEnd(0, true);
+
+  Variable var("a", a);
+  var.interval().setLowerEnd(0);
+  var.setColor(QColor(255, 128, 0));
+  setVariable(var);
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
-  Variable var = Variable("a", a);
-  var.setColor(QColor(255, 128, 0));
-  setVariable(var);
-
-  updatePoints();
   initDimension();
+  updatePoints();
 }
 
 ArchimedeanSpiral::ArchimedeanSpiral(const ArchimedeanSpiral& other)
@@ -52,16 +56,17 @@ Point3D ArchimedeanSpiral::calculatePoint(double t) const
 {
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
-  int    a  = getVariable("a");
+  double  a = getVariable("a");
 
-  return Point3D(x0 + a * t * cos(2*PI*t), y0 + a * t * sin(2*PI*t), 0);
+  Point3D p(x0 + a * t * cos(2 * PI * t), y0 + a * t * sin(2 * PI * t));
+  return p;
 }
 
 void ArchimedeanSpiral::initDimension()
 {
   double x0 = getVariable("x0");
   double y0 = getVariable("y0");
-  int     a = getVariable("a");
+  double  a = getVariable("a");
 
   double w = a * m_param.to() * cos(2 * PI * m_param.to());
   double h = a * m_param.to() * sin(2 * PI * m_param.to());

@@ -12,6 +12,8 @@ Ellipse::Ellipse(double a, double b, double x0, double y0)
 
   m_param = Parameter(0, 2 * PI, "t");
   m_name = QCoreApplication::translate("Ellipse", "Ellipse");
+  m_param.interval().setLowerEnd(0, true);
+  m_param.interval().setUpperEnd(2 * PI, true);
 
   Variable var("a", a);
   var.setDescription(QCoreApplication::translate("Ellipse",

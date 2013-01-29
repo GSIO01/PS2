@@ -24,13 +24,24 @@ double Parameter::from() const
 { return m_from; }
 
 void Parameter::setFrom(double from)
-{ m_from = from; }
+{
+  if (from < m_interval.lowerEnd()) { m_from = m_interval.lowerEnd(); }
+  else if (from > m_interval.upperEnd()) { m_from = m_interval.upperEnd(); }
+  else { m_from = from; }
+}
+
+void Parameter::setInterval(const Interval& interval)
+{ m_interval = interval; }
 
 double Parameter::to() const
 { return m_to; }
 
 void Parameter::setTo(double to)
-{ m_to = to; }
+{
+  if (to < m_interval.lowerEnd()) { m_to = m_interval.lowerEnd(); }
+  else if (to > m_interval.upperEnd()) { m_to = m_interval.upperEnd(); }
+  else { m_to = to; }
+}
 
 QString Parameter::toString() const
 {

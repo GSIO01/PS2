@@ -13,12 +13,13 @@ Catenary::Catenary(double a, double x0, double y0)
   init();
 
   m_name = QCoreApplication::translate("Catenary", "Catenary");
-  m_param = Parameter(-10, 10, "t");
+  m_param = Parameter(-2, 2, "t");
 
   setVariable("x0", x0, false);
   setVariable("y0", y0, false);
 
   Variable var("a", a);
+  var.interval().setLowerEnd(0);
   var.setDescription(QCoreApplication::translate("Catenary", "The parameter a \
     describes the height above the reference point and \
     the distans from the tangent to the base-point."));

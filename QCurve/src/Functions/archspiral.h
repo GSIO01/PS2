@@ -6,18 +6,16 @@
 /**
  * Represents a archimedean spiral.
  *
- * @see Function 
+ * @see Function
  */
 class ArchimedeanSpiral : public Function
 {
   public:
-    ArchimedeanSpiral(double x0 = 0, double y0 = 0, int a = 1);
+    ArchimedeanSpiral(double x0 = 0, double y0 = 0, double a = 1);
     ArchimedeanSpiral(const ArchimedeanSpiral& other);
 
     virtual Function* clone() const;
-
     virtual QString toParametricFormula() const;
-
     virtual Point3D calculatePoint(double t) const;
 
   protected:

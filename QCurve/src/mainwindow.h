@@ -37,6 +37,7 @@ class MainWindow : public QMainWindow
 
     void languageChanged(QAction* action);
     void switchTranslator(QTranslator& translator, const QString& filename);
+    void showAbout();
 
   private:
     void initMenu();

@@ -27,8 +27,8 @@ void Interval::setLowerEnd(double val, bool closed)
 
 void Interval::setUpperEnd(double val, bool closed)
 {
-  m_lower = val;
-  m_lowerIsClosed = closed;
+  m_upper = val;
+  m_upperIsClosed = closed;
 }
 
 QString Interval::toString() const

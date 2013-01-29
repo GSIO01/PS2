@@ -14,6 +14,7 @@ Cycloid::Cycloid(double r, double m, double x0, double y0)
   m_param = Parameter(-2*PI, 2*PI, "t");
 
   Variable var("r",r);
+  var.interval().setLowerEnd(0);
   var.setColor(QColor(255, 128, 0));
   setVariable(var);
 
