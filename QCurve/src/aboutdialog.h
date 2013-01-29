@@ -6,6 +6,9 @@
 #include <QtGui/QIcon>
 #include <QtGui/QDialog>
 
+/**
+ * About dialog.
+ */
 class AboutDialog : public QDialog
 {
   Q_OBJECT

@@ -20,7 +20,19 @@ class Graph2D : public QGraphicsView
   Q_OBJECT
 
   signals:
+    /**
+     * Signal for scale factor changes.
+     * 
+     * \param factor new scale factor
+     */
     void scaleFactorChanged(int factor);
+    
+    /**
+     * Signal for position changes.
+     * 
+     * \param x new x coordinate
+     * \param y new y coordinate
+     */
     void currentPositionChanged(double x, double y);
 
   public:

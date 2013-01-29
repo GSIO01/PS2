@@ -6,6 +6,8 @@
 
 /**
  * Class representing a circle primitive.
+ * 
+ * @see Primitive
  */
 class GraphicalCircle : public Primitive
 {

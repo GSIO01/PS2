@@ -6,6 +6,8 @@
 
 /**
  * Class representing a line primitive.
+ * 
+ * @see Primitive
  */
 class GraphicalLine : public Primitive
 {

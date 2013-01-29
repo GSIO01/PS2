@@ -66,6 +66,13 @@ class Function
      * \param param New Parameter.
      */
     void setParameter(const Parameter& param);
+    
+    /**
+     * Set the parameter to the given values.
+     * 
+     * \param from new from value
+     * \param to new to value
+     */
     void setParameter(double from, double to);
 
     /**
@@ -110,6 +117,12 @@ class Function
      */
     virtual int calculations() const { return 1; }
 
+    /**
+     * Caluclate point for a given function index and value t. (Multifunction support)
+     * 
+     * \param idx function index
+     * \param t parameter
+     */
     Point3D calculate(int idx, double t) const
     { return (this->*m_calculations[idx])(t); }
 
@@ -140,6 +153,9 @@ class Function
      */
     void setVariable(const Variable& var);
 
+    /**
+     * Initialization function.
+     */
     void init();
 
     /**

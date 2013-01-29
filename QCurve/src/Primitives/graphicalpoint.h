@@ -6,6 +6,8 @@
 
 /**
  * Class representing a point primitive.
+ * 
+ * @see Primitive
  */
 class GraphicalPoint : public Primitive
 {

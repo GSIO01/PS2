@@ -98,6 +98,11 @@ class FunctionWidget : public QWidget
      */
     void positionChanged(double x, double y);
 
+    /**
+     * Update the scale factor.
+     * 
+     * \param value new scale factor
+     */
     void updateScaleFactor(int value);
 
   private:
