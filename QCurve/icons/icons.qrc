@@ -1,0 +1,11 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource>
+    <file>oxygen/index.theme</file>
+    <file>oxygen/16x16/actions/window-close.png</file>
+    <file>oxygen/16x16/actions/document-export.png</file>
+    <file>oxygen/16x16/actions/help-contents.png</file>
+    <file>oxygen/16x16/actions/help-about.png</file>
+    <file>hi128-app-qcurve.png</file>
+  </qresource>
+</RCC>

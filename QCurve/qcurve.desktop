@@ -2,7 +2,7 @@
 Type=Application
 Name=QCurve
 Icon=qcurve
-Exec=qcurve
+Exec=QCurve
 X-DocPath=qcurve/index.html
 Terminal=false
 Categories=Qt;KDE;Education;Math;Science;
